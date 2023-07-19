@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.backend.services.TransporterService;
 
-import lib.etickets.transporter.Transporter;
 
 @RestController
 @RequestMapping("/transporters")
@@ -19,8 +18,5 @@ public class TransportersController {
     @Autowired
     TransporterService transporterService;
 
-    @GetMapping("/getTransporters")
-    public ResponseEntity<List<Transporter>> getTransporters(){
-        return ResponseEntity.ok().body(transporterService.getTransporters());
-    }   
+    
 }

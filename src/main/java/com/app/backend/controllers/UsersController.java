@@ -4,6 +4,7 @@ package com.app.backend.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,22 +14,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.backend.models.User;
 import com.app.backend.services.UserService;
 
-import lib.etickets.ticket.Ticket;
-import lib.etickets.users.user.User;
+
 
 @RestController
 @RequestMapping("/api/users")
 public class UsersController {
     @Autowired
     UserService userService;
-
-    @GetMapping("/getUsers")
-    public ResponseEntity<List<User>> getUsers(){
-        return ResponseEntity.ok().body(userService.getUsers());
+   
+    @GetMapping("/getUsers/pagesize={pagesize}size={size}")
+    public ResponseEntity<List<User>> getUsers(@PathVariable("pagesize") int page, @PathVariable("size") int size){
+        return ResponseEntity.ok().body(userService.getUsers(PageRequest.of(page, size)));
     }
 
+    @PostMapping("/find/name")
+    public List<User> findByNameAndLastName(@RequestBody User user){
+        return userService.findByFirstNameAndLastName(user.getFirstName(),user.getLastName());
+    }
+    @PostMapping("/find/email")
+    public List<User> findByEmail(@RequestBody User user){
+        return userService.findByEmail(user.getEmail());
+    }
+ /* 
     //Ovo je improvizacija dodavanja ticket-a od strane administratora radi testiranja funkcionalnosti
     @PostMapping("/addTicket")
     public ResponseEntity<?> addTicket(@RequestBody Ticket ticket){
@@ -59,5 +69,5 @@ public class UsersController {
         if(userService.approval(approval, comment, reqId, supervisorId) != null)
             return ResponseEntity.ok().body("");
         return ResponseEntity.badRequest().body("");
-    }
+    }*/
 }

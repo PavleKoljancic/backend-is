@@ -1,0 +1,33 @@
+package com.app.backend.models;
+
+import java.math.BigDecimal;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+
+@Getter
+@Setter
+@NoArgsConstructor
+@Entity(name = "USER")
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer Id;
+    private String PicturePath;
+    private String DocumentPath1;
+    private String DocumentPath2;
+    private String DocumentPath3;
+    private String email;
+    private String firstName;
+    private String lastName;
+    
+    //private Byte [] PasswordHash;
+    //private Integer NumHash;
+    private BigDecimal Credit;
+}
