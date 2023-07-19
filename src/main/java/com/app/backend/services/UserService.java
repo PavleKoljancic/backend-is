@@ -1,21 +1,29 @@
 package com.app.backend.services;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
+
+import javax.swing.text.html.parser.Entity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.app.backend.models.User;
-import com.app.backend.repositories.UserRepository;
+import com.app.backend.models.UserTicket;
+import com.app.backend.repositories.UserRepo;
+import com.app.backend.repositories.UserTicketRepo;
 
 
 
 @Service
 public class UserService {
     @Autowired
-    UserRepository userRepo;
-
+    UserRepo userRepo;
+    
+    @Autowired
+    UserTicketRepo userTicketRepo;
+    
     public List<User> getUsers(PageRequest pageRequest ){
         return  userRepo.findAll(pageRequest).toList();
     }
@@ -26,5 +34,16 @@ public class UserService {
     }
      public List<User> findByEmail(String email) {
         return userRepo.findByEmailStartingWith(email);
+    }
+
+    public List<UserTicket> getUserTickets(User user) 
+    {
+     return userTicketRepo.findByUSERId(user.getId());
+    }
+
+    public Integer registerUser(User user) 
+    {
+        return userRepo.save(user).getId();
+        
     }
 }
