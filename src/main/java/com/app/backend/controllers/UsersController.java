@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.backend.models.User;
+import com.app.backend.models.UserTicket;
 import com.app.backend.services.UserService;
 
 
@@ -37,6 +38,15 @@ public class UsersController {
     @PostMapping("/find/email")
     public List<User> findByEmail(@RequestBody User user){
         return userService.findByEmail(user.getEmail());
+    }
+    @PostMapping("/getUserTickets")
+    public List<UserTicket> getUserTickets(@RequestBody User user){
+        return userService.getUserTickets(user);
+    }
+
+    @PostMapping("/register")
+    public Integer register(@RequestBody User user){
+        return userService.registerUser(user);
     }
  /* 
     //Ovo je improvizacija dodavanja ticket-a od strane administratora radi testiranja funkcionalnosti
