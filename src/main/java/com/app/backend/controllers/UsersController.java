@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.backend.models.User;
 import com.app.backend.models.UserTicket;
+import com.app.backend.models.UserWithPassword;
 import com.app.backend.services.UserService;
 
 
@@ -45,7 +46,7 @@ public class UsersController {
     }
 
     @PostMapping("/register")
-    public Integer register(@RequestBody User user){
+    public Integer register(@RequestBody UserWithPassword user){
         return userService.registerUser(user);
     }
  /* 
