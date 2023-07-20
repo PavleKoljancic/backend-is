@@ -1,10 +1,7 @@
 package com.app.backend.repositories;
 
-import java.util.List;
-
 import org.springframework.data.repository.CrudRepository;
 
-import com.app.backend.models.Supervisor;
 import com.app.backend.models.SupervisorWithPassword;
 import com.app.backend.models.UserWithPassword;
 
