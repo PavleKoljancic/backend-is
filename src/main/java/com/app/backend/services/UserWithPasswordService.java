@@ -25,7 +25,7 @@ public class UserWithPasswordService implements UserDetailsService{
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserWithPassword user = userWithPasswordRepo.findByEmail(username);
         List<String> roles = List.of("USER");
-        org.springframework.security.core.userdetails.User tmp = new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPasswordHashAsString(), mapRoleToAuhtorities(roles));
+        org.springframework.security.core.userdetails.User tmp = new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPasswordHash(), mapRoleToAuhtorities(roles));
         return tmp;
     }
 

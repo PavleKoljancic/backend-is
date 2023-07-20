@@ -46,8 +46,8 @@ public class SecurityConfig {
         http.authenticationManager(authenticationManager()).cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(authEntryPoint)
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeHttpRequests()
         .requestMatchers("/api/users/login", "/api/users/register").permitAll()
-        .requestMatchers("/api/get/u").hasAnyAuthority("USER")
-        .requestMatchers("/api/get/a").hasAnyAuthority("ADMIN")
+        .requestMatchers("/api/users/**").hasAnyAuthority("USER")
+        .requestMatchers("/api/tickets/**").hasAnyAuthority("ADMIN")
         .requestMatchers("/api/get").hasAnyAuthority("NIKO")
         .and().httpBasic();
         
@@ -90,10 +90,10 @@ public class SecurityConfig {
         return providerManager;
     }
 
-    /*@Bean
+    @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }*/
+    }
 
     @Bean
     public JWTFilter jwtAuthenticationFilter() {

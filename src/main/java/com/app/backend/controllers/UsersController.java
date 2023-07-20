@@ -67,12 +67,12 @@ public class UsersController {
 
      @PostMapping("/login")
     ResponseEntity<?> loginUser(@RequestBody UserWithPassword user, HttpServletRequest request) {
-        
+
         AuthenticationManager authenticationManager = authenticationManagerResolver.resolve(request);
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         user.getEmail(),
-                        user.getPasswordHashAsString()));
+                        user.getPasswordHash()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtGenerator.generateToken(authentication);
         return ResponseEntity.status(HttpStatus.OK).body(token);
