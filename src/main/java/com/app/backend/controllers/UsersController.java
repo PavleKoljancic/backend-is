@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.backend.models.SupervisorWithPassword;
 import com.app.backend.models.User;
 import com.app.backend.models.UserTicket;
 import com.app.backend.models.UserWithPassword;
@@ -66,7 +67,7 @@ public class UsersController {
 
 
      @PostMapping("/login")
-    ResponseEntity<?> loginUser(@RequestBody UserWithPassword user, HttpServletRequest request) {
+    ResponseEntity<?> loginUser(@RequestBody SupervisorWithPassword user, HttpServletRequest request) {
 
         AuthenticationManager authenticationManager = authenticationManagerResolver.resolve(request);
         Authentication authentication = authenticationManager.authenticate(

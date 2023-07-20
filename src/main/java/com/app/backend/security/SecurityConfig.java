@@ -23,6 +23,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.app.backend.repositories.UserWithPasswordRepo;
+import com.app.backend.services.SupervisorWithPasswordService;
 import com.app.backend.services.UserService;
 import com.app.backend.services.UserWithPasswordService;
 
@@ -39,13 +40,16 @@ public class SecurityConfig {
     private AdminService adminService;*/
 
     @Autowired
+    private SupervisorWithPasswordService supervisorWithPasswordService;
+
+    @Autowired
     private UserWithPasswordService userWithPasswordService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authenticationManager(authenticationManager()).cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(authEntryPoint)
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeHttpRequests()
-        .requestMatchers("/api/users/login", "/api/users/register").permitAll()
+        .requestMatchers("/api/users/login", "/supervisor/register").permitAll()
         .requestMatchers("/api/users/**").hasAnyAuthority("USER")
         .requestMatchers("/api/tickets/**").hasAnyAuthority("ADMIN")
         .requestMatchers("/api/get").hasAnyAuthority("NIKO")
@@ -55,13 +59,13 @@ public class SecurityConfig {
         return http.build();
     }
     
-    /*@Bean
-    public DaoAuthenticationProvider getAdminDaoAuthProvider() {
+    @Bean
+    public DaoAuthenticationProvider getSupervisorDaoAuthProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(adminService);
+        provider.setUserDetailsService(supervisorWithPasswordService);
         provider.setPasswordEncoder(new BCryptPasswordEncoder());
         return provider;
-    }*/
+    }
 
 
     @Bean
@@ -80,7 +84,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager() {
         List<DaoAuthenticationProvider> authenticationProviders = new ArrayList<>();
-        //authenticationProviders.add(getAdminDaoAuthProvider());
+        authenticationProviders.add(getSupervisorDaoAuthProvider());
         authenticationProviders.add(getUserDaoAuthProvider());
 
         CustomAuthenticationProvider customAuthProvider = new CustomAuthenticationProvider(authenticationProviders);

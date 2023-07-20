@@ -10,5 +10,5 @@ import com.app.backend.models.UserWithPassword;
 
 public interface SupervisorWithPasswordRepo extends CrudRepository<SupervisorWithPassword,Integer> {
     
-        UserWithPassword findByEmail(String email);
+        SupervisorWithPassword findByEmail(String email);
 }
