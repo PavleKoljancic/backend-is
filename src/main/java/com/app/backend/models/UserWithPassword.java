@@ -3,6 +3,8 @@ package com.app.backend.models;
 import java.math.BigDecimal;
 import java.util.Base64;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,12 +32,11 @@ public class UserWithPassword {
     private String lastName;
     private BigDecimal Credit=new BigDecimal(0.0);
     private byte [] PasswordHash;
-    private Integer NumHash; 
 
-    public void setPasswordHash(String Base64PasswordHash) 
+    public void setPasswordHash(String RawPassword) 
     {
-        if(Base64PasswordHash!=null)
-            this.PasswordHash =Base64.getDecoder().decode(Base64PasswordHash);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2B, 1000);
+        this.PasswordHash = encoder.encode(RawPassword).getBytes();
     }
 }
 
