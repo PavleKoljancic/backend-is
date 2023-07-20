@@ -8,16 +8,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.backend.services.TerminalActivationRequestService;
+import com.app.backend.services.TerminalService;
 
 
 
 @RestController
-@RequestMapping("/terminalActivationRequests")
-public class TerminalActivationRequestsController {
+@RequestMapping("/terminal/ActivationRequests")
+public class TerminalController {
     
     @Autowired
-    TerminalActivationRequestService terminalActivationRequestService;
+    TerminalService terminalActivationRequestService;
 
 
 }
