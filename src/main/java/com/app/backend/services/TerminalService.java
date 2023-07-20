@@ -12,7 +12,7 @@ import com.app.backend.repositories.TerminalActivationRequestRepo;
 
 @Service
 public class TerminalService {
-    private static final Integer Integer = null;
+
     @Autowired
     TerminalActivationRequestRepo terminalActivationRequestRepo;
 

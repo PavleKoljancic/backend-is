@@ -17,7 +17,7 @@ import com.app.backend.services.TerminalService;
 public class TerminalController {
     
     @Autowired
-    TerminalService terminalActivationRequestService;
+    TerminalService terminalService;
 
 
 }

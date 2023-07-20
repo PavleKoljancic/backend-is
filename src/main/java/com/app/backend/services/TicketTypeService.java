@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.app.backend.models.TicketType;
-import com.app.backend.repositories.TicketRequestRepo;
 import com.app.backend.repositories.TicketTypeRepo;
 
 @Service
