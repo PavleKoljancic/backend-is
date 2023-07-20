@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.app.backend.models.User;
 import com.app.backend.models.UserTicket;
+import com.app.backend.models.UserWithPassword;
 import com.app.backend.repositories.UserRepo;
 import com.app.backend.repositories.UserTicketRepo;
+import com.app.backend.repositories.UserWithPasswordRepo;
 
 
 
@@ -24,6 +26,10 @@ public class UserService {
     @Autowired
     UserTicketRepo userTicketRepo;
     
+    @Autowired
+    UserWithPasswordRepo userWithPasswordRepo;
+
+
     public List<User> getUsers(PageRequest pageRequest ){
         return  userRepo.findAll(pageRequest).toList();
     }
@@ -41,9 +47,9 @@ public class UserService {
      return userTicketRepo.findByUSERId(user.getId());
     }
 
-    public Integer registerUser(User user) 
+    public Integer registerUser(UserWithPassword user) 
     {
-        return userRepo.save(user).getId();
+        return userWithPasswordRepo.save(user).getId();
         
     }
 }
