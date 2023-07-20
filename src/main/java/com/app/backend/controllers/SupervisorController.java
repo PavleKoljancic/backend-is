@@ -11,7 +11,7 @@ import com.app.backend.models.UserWithPassword;
 import com.app.backend.services.SupervisorService;
 
 @RestController
-@RequestMapping("/supervisor")
+@RequestMapping("/api/supervisor")
 public class SupervisorController {
     
     @Autowired

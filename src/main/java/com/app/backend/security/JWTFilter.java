@@ -28,7 +28,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)throws ServletException, IOException {
-    if (request.getServletPath().contains("/api/users/login") || request.getServletPath().contains("/supervisor/register")) {
+    if (request.getServletPath().contains("/api/users/login") || request.getServletPath().contains("/api/supervisor/register")) {
 			filterChain.doFilter(request, response);
 	} else {
         String token = getJWTFromRequest(request);

@@ -22,7 +22,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.app.backend.models.AdminWithPassword;
 import com.app.backend.repositories.UserWithPasswordRepo;
+import com.app.backend.services.AdminWithPasswordService;
 import com.app.backend.services.SupervisorWithPasswordService;
 import com.app.backend.services.UserService;
 import com.app.backend.services.UserWithPasswordService;
@@ -36,8 +38,8 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthEntryPoint authEntryPoint;
 
-    /*@Autowired
-    private AdminService adminService;*/
+    @Autowired
+    private AdminWithPasswordService adminWithPasswordService;
 
     @Autowired
     private SupervisorWithPasswordService supervisorWithPasswordService;
@@ -49,8 +51,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authenticationManager(authenticationManager()).cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(authEntryPoint)
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeHttpRequests()
-        .requestMatchers("/api/users/login", "/supervisor/register").permitAll()
-        .requestMatchers("/api/users/**").hasAnyAuthority("USER")
+        .requestMatchers("/api/users/login", "/api/supervisor/register", "/api/users/register").permitAll()
+        .requestMatchers("/api/users/**").hasAnyAuthority("USER", "SUPERVISOR")
         .requestMatchers("/api/tickets/**").hasAnyAuthority("ADMIN")
         .requestMatchers("/api/get").hasAnyAuthority("NIKO")
         .and().httpBasic();
@@ -67,6 +69,13 @@ public class SecurityConfig {
         return provider;
     }
 
+    @Bean
+    public DaoAuthenticationProvider getAdminDaoAuthProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(adminWithPasswordService);
+        provider.setPasswordEncoder(new BCryptPasswordEncoder());
+        return provider;
+    }
 
     @Bean
     public DaoAuthenticationProvider getUserDaoAuthProvider() {
@@ -84,6 +93,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager() {
         List<DaoAuthenticationProvider> authenticationProviders = new ArrayList<>();
+        authenticationProviders.add(getAdminDaoAuthProvider());
         authenticationProviders.add(getSupervisorDaoAuthProvider());
         authenticationProviders.add(getUserDaoAuthProvider());
 

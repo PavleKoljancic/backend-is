@@ -12,19 +12,20 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.app.backend.models.SupervisorWithPassword;
-import com.app.backend.repositories.SupervisorWithPasswordRepo;
+import com.app.backend.models.AdminWithPassword;
+import com.app.backend.repositories.AdminWithPasswordRepo;
+
 @Service
-public class SupervisorWithPasswordService implements UserDetailsService{
+public class AdminWithPasswordService implements UserDetailsService{
 
     @Autowired
-    SupervisorWithPasswordRepo supervisorWithPasswordRepo;
+    AdminWithPasswordRepo adminWithPasswordRepo;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        SupervisorWithPassword user = supervisorWithPasswordRepo.findByEmail(username);
+        AdminWithPassword user = adminWithPasswordRepo.findByEmail(username);
         if(user.getIsActive()){
-            List<String> roles = List.of("SUPERVISOR");
+            List<String> roles = List.of("ADMIN");
             org.springframework.security.core.userdetails.User tmp = new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPasswordHash(), mapRoleToAuhtorities(roles));
             return tmp;
         }

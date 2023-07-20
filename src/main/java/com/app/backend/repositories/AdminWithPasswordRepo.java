@@ -3,9 +3,9 @@ package com.app.backend.repositories;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.app.backend.models.UserWithPassword;
+import com.app.backend.models.AdminWithPassword;
 
-public interface AdminWithPasswordRepo extends CrudRepository<AdminWithPasswordRepo,Integer> {
+public interface AdminWithPasswordRepo extends CrudRepository<AdminWithPassword,Integer> {
     
-        AdminWithPasswordRepo findByEmail(String email);
+        AdminWithPassword findByEmail(String email);
 }
