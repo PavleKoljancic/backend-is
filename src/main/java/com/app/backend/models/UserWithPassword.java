@@ -3,6 +3,8 @@ package com.app.backend.models;
 import java.math.BigDecimal;
 import java.util.Base64;
 
+import com.fasterxml.jackson.databind.JsonSerializable.Base;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,6 +38,10 @@ public class UserWithPassword {
     {
         if(Base64PasswordHash!=null)
             this.PasswordHash =Base64.getDecoder().decode(Base64PasswordHash);
+    }
+
+    public String getPasswordHashAsString(){
+        return Base64.getEncoder().encodeToString(PasswordHash);
     }
 }
 

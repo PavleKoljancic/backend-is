@@ -11,5 +11,6 @@ import com.app.backend.models.UserWithPassword;
 
 public interface UserWithPasswordRepo extends CrudRepository<UserWithPassword,Integer>  {
 
-    List<UserWithPassword> findByEmailStartingWith(String email);
+    UserWithPassword findByEmail(String email);
+
 }

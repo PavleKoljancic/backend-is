@@ -26,17 +26,16 @@ import com.app.backend.repositories.UserWithPasswordRepo;
 
 
 @Service
-public class UserService implements UserDetailsService{
+public class UserService{
     @Autowired
     UserRepo userRepo;
     
     @Autowired
     UserTicketRepo userTicketRepo;
-    
+
     @Autowired
     UserWithPasswordRepo userWithPasswordRepo;
-
-
+    
     public List<User> getUsers(PageRequest pageRequest ){
         return  userRepo.findAll(pageRequest).toList();
     }
@@ -58,16 +57,5 @@ public class UserService implements UserDetailsService{
     {
         return userWithPasswordRepo.save(user).getId();
         
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepo.findByUsername(username);
-        List<String> roles = List.of(user.getRole());
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), mapRoleToAuhtorities(roles));
-    }
-
-    private Collection<GrantedAuthority> mapRoleToAuhtorities(List<String> roles) {
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
     }
 }

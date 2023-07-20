@@ -4,11 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -16,7 +14,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 
@@ -31,12 +28,13 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)throws ServletException, IOException {
-    if (request.getServletPath().contains("/api/login") || request.getServletPath().contains("/api/signup")) {
+    if (request.getServletPath().contains("/api/users/login") || request.getServletPath().contains("/api/users/register")) {
 			filterChain.doFilter(request, response);
 	} else {
         String token = getJWTFromRequest(request);
         if (token != null) {
-            Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+            try{
+                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
 					JWTVerifier verifier = JWT.require(algorithm).build();
 					DecodedJWT decodedJWT = verifier.verify(token);
 					String username = decodedJWT.getSubject();
@@ -46,14 +44,22 @@ public class JWTFilter extends OncePerRequestFilter {
 						authorities.add(new SimpleGrantedAuthority(role));
 					});
 
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,
-            null, authorities);
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,
+                null, authorities);
 
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-            filterChain.doFilter(request, response);
-    }}
+                filterChain.doFilter(request, response);
+            }
+            catch(Exception e){
+                response.setStatus(org.springframework.http.HttpStatus.UNAUTHORIZED.value());
+            }
+        }
+        else{
+            response.setStatus(org.springframework.http.HttpStatus.FORBIDDEN.value());
+        }  
+    }
     }
 
     private String getJWTFromRequest(HttpServletRequest request) {

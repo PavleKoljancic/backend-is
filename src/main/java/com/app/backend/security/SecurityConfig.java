@@ -22,7 +22,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.app.backend.repositories.UserWithPasswordRepo;
 import com.app.backend.services.UserService;
+import com.app.backend.services.UserWithPasswordService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -37,14 +39,14 @@ public class SecurityConfig {
     private AdminService adminService;*/
 
     @Autowired
-    private UserService userService;
-    
+    private UserWithPasswordService userWithPasswordService;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authenticationManager(authenticationManager()).cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(authEntryPoint)
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeHttpRequests()
-        .requestMatchers("/api/login/**", "/api/signup/**").permitAll()
-        .requestMatchers("/api/get/u").hasAnyAuthority("OBICNI")
+        .requestMatchers("/api/users/login", "/api/users/register").permitAll()
+        .requestMatchers("/api/get/u").hasAnyAuthority("USER")
         .requestMatchers("/api/get/a").hasAnyAuthority("ADMIN")
         .requestMatchers("/api/get").hasAnyAuthority("NIKO")
         .and().httpBasic();
@@ -65,7 +67,7 @@ public class SecurityConfig {
     @Bean
     public DaoAuthenticationProvider getUserDaoAuthProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userService);
+        provider.setUserDetailsService(userWithPasswordService);
         provider.setPasswordEncoder(new BCryptPasswordEncoder());
         return provider;
     }

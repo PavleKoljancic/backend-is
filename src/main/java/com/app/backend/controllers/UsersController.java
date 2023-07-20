@@ -7,6 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationManagerResolver;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.backend.models.User;
 import com.app.backend.models.UserTicket;
 import com.app.backend.models.UserWithPassword;
+import com.app.backend.security.JwtGenerator;
 import com.app.backend.services.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 
 
@@ -26,6 +34,12 @@ import com.app.backend.services.UserService;
 public class UsersController {
     @Autowired
     UserService userService;
+
+    @Autowired
+    private JwtGenerator jwtGenerator;
+
+    @Autowired
+    private AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver;
    
     @GetMapping("/getUsers/pagesize={pagesize}size={size}")
     public ResponseEntity<List<User>> getUsers(@PathVariable("pagesize") int page, @PathVariable("size") int size){
@@ -49,6 +63,21 @@ public class UsersController {
     public Integer register(@RequestBody UserWithPassword user){
         return userService.registerUser(user);
     }
+
+
+     @PostMapping("/login")
+    ResponseEntity<?> loginUser(@RequestBody UserWithPassword user, HttpServletRequest request) {
+        
+        AuthenticationManager authenticationManager = authenticationManagerResolver.resolve(request);
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        user.getEmail(),
+                        user.getPasswordHashAsString()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtGenerator.generateToken(authentication);
+        return ResponseEntity.status(HttpStatus.OK).body(token);
+    }
+    
  /* 
     //Ovo je improvizacija dodavanja ticket-a od strane administratora radi testiranja funkcionalnosti
     @PostMapping("/addTicket")
