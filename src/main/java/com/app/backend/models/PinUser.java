@@ -1,11 +1,11 @@
 package com.app.backend.models;
 
-import java.math.BigDecimal;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,14 +13,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity(name = "TICKET_TYPE")
-public class TicketType {
+@Entity(name = "PIN_USER")
+@Inheritance(strategy = InheritanceType.JOINED)
+public class PinUser {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer Id;
-    private String Name;
-    private BigDecimal Cost;
-    private String DocumentaionName;
-    private Boolean NeedsDocumentaion;
-    private Boolean inUse;
+    Integer Id;
+    String Pin;
+    String Firstname;
+    String Lastname;
+    Boolean isActive;
+    String JMB;
+    String Password;
 }
