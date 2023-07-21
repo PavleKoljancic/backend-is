@@ -48,11 +48,11 @@ public class TerminalService {
     }
     List<TerminalActivationRequest> getNotInUSeByTransporterId(Integer TransporterId) 
     {
-        return terminalRepo.findByTransporterIdAndInUseFalse(TransporterId);
+        return terminalRepo.findByTransporterIdAndIsActiveFalse(TransporterId);
     }
     List<TerminalActivationRequest> getInUSeByTransporterId(Integer TransporterId)
     {
 
-        return terminalRepo.findByTransporterIdAndInUseTrue(TransporterId);
+        return terminalRepo.findByTransporterIdAndIsActiveTrue(TransporterId);
     }
 }

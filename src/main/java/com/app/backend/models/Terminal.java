@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity(name="TERMINAL ACTIVATION REQUEST")
+@Entity(name="TERMINAL")
 public class Terminal {
 
     @Id
