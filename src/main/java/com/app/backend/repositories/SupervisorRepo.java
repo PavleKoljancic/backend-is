@@ -9,4 +9,5 @@ import com.app.backend.models.Supervisor;
 public interface SupervisorRepo extends JpaRepository<Supervisor,Integer> {
     
     public List<Supervisor>findByTransporterId(Integer TransporterID);
+    
 }
