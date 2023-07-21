@@ -1,0 +1,77 @@
+package com.app.backend.services;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.app.backend.models.Terminal;
+import com.app.backend.models.TerminalActivationRequest;
+import com.app.backend.repositories.TerminalActivationRequestRepo;
+import com.app.backend.repositories.TerminalRepo;
+
+
+
+@Service
+public class TerminalService {
+
+    @Autowired
+    TerminalActivationRequestRepo terminalActivationRequestRepo;
+    @Autowired
+    TerminalRepo terminalRepo;
+
+
+    public List<TerminalActivationRequest> getTerminalActivationRequestByTransporterId(Integer TRANSPORTER_Id) 
+    {
+        return terminalActivationRequestRepo.findByTransporterIdAndProcessedFalse(TRANSPORTER_Id);
+    }    
+
+    public List<TerminalActivationRequest> getAllPendingActivationRequests() 
+    {
+        return terminalActivationRequestRepo.findByProcessedFalse();
+    }
+
+    public Integer  addTerminalActivationRequest(TerminalActivationRequest terminalActivationRequest)
+    {
+        return terminalActivationRequestRepo.save(terminalActivationRequest).getId();
+    }
+
+    public List<TerminalActivationRequest> getAllActivationRequests() 
+    {
+        return terminalActivationRequestRepo.findAll();
+    }
+
+   public List<Terminal> getTerminalByTransporterId(Integer TransporterId) 
+    {
+        return terminalRepo.findByTransporterId(TransporterId);
+    }
+   public List<Terminal> getNotInUSeByTransporterId(Integer TransporterId) 
+    {
+        return terminalRepo.findByTransporterIdAndIsActiveFalse(TransporterId);
+    }
+  public  List<Terminal> getInUseByTransporterId(Integer TransporterId)
+    {
+
+        return terminalRepo.findByTransporterIdAndIsActiveTrue(TransporterId);
+    }
+
+    public boolean processTerminalActivationRequest(Integer aRId, Boolean approval) {
+        Optional<TerminalActivationRequest> Result = terminalActivationRequestRepo.findById(aRId);
+        if(!Result.isPresent())
+            return false;
+        TerminalActivationRequest terminalActivationRequest = Result.get();
+        if(terminalActivationRequest.getProcessed())
+            return false;
+        terminalActivationRequest.setProcessed(true);
+        terminalActivationRequestRepo.save(terminalActivationRequest);
+        if(approval==true){
+            Terminal terminal = new Terminal();
+            terminal.setActivationRequestID(terminalActivationRequest.getId());
+            terminal.setIsActive(true);
+            terminal.setTransporterId(terminalActivationRequest.getTransporterId());
+            terminalRepo.save(terminal);
+        }
+        return true;
+    }
+}
