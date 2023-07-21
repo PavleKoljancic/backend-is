@@ -7,11 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.backend.models.SupervisorWithPassword;
-import com.app.backend.models.UserWithPassword;
 import com.app.backend.services.SupervisorService;
 
 @RestController
-@RequestMapping("/api/supervisor")
+@RequestMapping("/api/supervisors")
 public class SupervisorController {
     
     @Autowired

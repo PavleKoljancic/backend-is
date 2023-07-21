@@ -1,10 +1,6 @@
 package com.app.backend.models;
 
 import java.math.BigDecimal;
-import java.util.Base64;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,15 +28,5 @@ public class UserWithPassword {
     private String lastName;
     private BigDecimal Credit=new BigDecimal(0.0);
     private String PasswordHash;
-
-    /*public void setPasswordHash(String PasswordHash) 
-    {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2B, 1000);
-        this.PasswordHash = encoder.encode(PasswordHash).getBytes();
-    }
-
-    public String getPasswordHashAsString(){
-        return Base64.getEncoder().encodeToString(PasswordHash);
-    }*/
 }
 

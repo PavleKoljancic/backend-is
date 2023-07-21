@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.backend.models.SupervisorWithPassword;
 import com.app.backend.models.User;
 import com.app.backend.models.UserTicket;
 import com.app.backend.models.UserWithPassword;
@@ -33,8 +32,9 @@ import jakarta.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/api/users")
 public class UsersController {
+    
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
     private JwtGenerator jwtGenerator;
@@ -67,7 +67,7 @@ public class UsersController {
 
 
      @PostMapping("/login")
-    ResponseEntity<?> loginUser(@RequestBody SupervisorWithPassword user, HttpServletRequest request) {
+    ResponseEntity<?> loginUser(@RequestBody UserWithPassword user, HttpServletRequest request) {
 
         AuthenticationManager authenticationManager = authenticationManagerResolver.resolve(request);
         Authentication authentication = authenticationManager.authenticate(
@@ -78,37 +78,4 @@ public class UsersController {
         String token = jwtGenerator.generateToken(authentication);
         return ResponseEntity.status(HttpStatus.OK).body(token);
     }
-    
- /* 
-    //Ovo je improvizacija dodavanja ticket-a od strane administratora radi testiranja funkcionalnosti
-    @PostMapping("/addTicket")
-    public ResponseEntity<?> addTicket(@RequestBody Ticket ticket){
-        return ResponseEntity.ok().body(userService.addTicket(ticket));
-    }
-
-    @GetMapping("/getTickets")
-    public ResponseEntity<?> getTickets(){
-        return ResponseEntity.ok().body(userService.getTickets());
-    }
-
-    //Ovo je ekvivalent registraciji user-a, ali improvizovano radi testiranja ostalih funkcionalnosti
-    @PostMapping("/addUser")
-    public ResponseEntity<?> addUser(@RequestBody User user){
-        return ResponseEntity.ok().body(userService.addUser(user));
-    }
-
-    @PostMapping("/payment/{userId}/{input}/{supervisorId}")
-    public ResponseEntity<?> creditPayment(@PathVariable("userId") String userId, @PathVariable("input") double input, @PathVariable("supervisorId") String supervisorId){
-        if(userService.creditPayment(userId, input, supervisorId))
-            return ResponseEntity.ok().body("Success");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Input error");
-    }
-
-    @PostMapping("/approval/{approval}/{comment}/{reqId}/{supervisorId}")
-    public ResponseEntity<String> approval(@PathVariable("approval") boolean approval, @PathVariable("comment") String comment, 
-    @PathVariable("reqId") String reqId, @PathVariable("supervisorId") String supervisorId){
-        if(userService.approval(approval, comment, reqId, supervisorId) != null)
-            return ResponseEntity.ok().body("");
-        return ResponseEntity.badRequest().body("");
-    }*/
 }

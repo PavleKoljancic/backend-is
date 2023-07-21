@@ -2,9 +2,6 @@ package com.app.backend.models;
 
 import java.math.BigDecimal;
 
-import org.springframework.boot.context.properties.bind.DefaultValue;
-
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

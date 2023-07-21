@@ -20,10 +20,10 @@ public class PinUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer Id;
-    String Pin;
+    String pin;
     String Firstname;
     String Lastname;
-    Boolean isActive;
+    Boolean isActive = true;
     String JMB;
     String Password;
 }

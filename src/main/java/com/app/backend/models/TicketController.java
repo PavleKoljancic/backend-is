@@ -1,6 +1,5 @@
 package com.app.backend.models;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
@@ -12,10 +11,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="DRIVER")
+@Table(name="TICKET_CONTROLLER")
 @PrimaryKeyJoinColumn(name = "PIN_USER_Id", referencedColumnName="Id")
 
-public class Driver extends PinUser{
-    @Column(name = "TRANSPORTER_Id")
-    Integer transporterId;
+public class TicketController extends PinUser{
+    
 }
+

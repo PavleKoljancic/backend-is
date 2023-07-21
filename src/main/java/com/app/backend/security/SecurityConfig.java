@@ -4,16 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,11 +18,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.app.backend.models.AdminWithPassword;
-import com.app.backend.repositories.UserWithPasswordRepo;
 import com.app.backend.services.AdminWithPasswordService;
+import com.app.backend.services.DriverService;
 import com.app.backend.services.SupervisorWithPasswordService;
-import com.app.backend.services.UserService;
+import com.app.backend.services.TicketControllerService;
 import com.app.backend.services.UserWithPasswordService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,6 +30,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
     @Autowired
     private JwtAuthEntryPoint authEntryPoint;
 
@@ -47,14 +43,19 @@ public class SecurityConfig {
     @Autowired
     private UserWithPasswordService userWithPasswordService;
 
+    @Autowired
+    private DriverService driverService;
+
+    @Autowired
+    private TicketControllerService ticketControllerService;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authenticationManager(authenticationManager()).cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(authEntryPoint)
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeHttpRequests()
-        .requestMatchers("/api/users/login", "/api/supervisor/register", "/api/users/register", "/api/**").permitAll()
-        //.requestMatchers("/api/users/**").hasAnyAuthority("USER", "SUPERVISOR")
-        .requestMatchers("/api/tickets/**").hasAnyAuthority("ADMIN")
-        .requestMatchers("/api/get").hasAnyAuthority("NIKO")
+        .requestMatchers("/api/users/login", "/api/pinusers/login", "/api/supervisors/register", "/api/users/register").permitAll()
+        .requestMatchers("/api/users/**").hasAnyAuthority("USER", "SUPERVISOR")
+        .requestMatchers("/api/tickets/**").hasAnyAuthority("CONTROLLER", "ADMIN")
         .and().httpBasic();
         
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -86,6 +87,22 @@ public class SecurityConfig {
     }
 
     @Bean
+    public DaoAuthenticationProvider getDriverDaoAuthProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(driverService);
+        provider.setPasswordEncoder(new BCryptPasswordEncoder());
+        return provider;
+    }
+
+    @Bean
+    public DaoAuthenticationProvider getControllerDaoAuthProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(ticketControllerService);
+        provider.setPasswordEncoder(new BCryptPasswordEncoder());
+        return provider;
+    }
+
+    @Bean
     public AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver(AuthenticationManager authenticationManager) {
         return request -> authenticationManager;
     }
@@ -96,6 +113,8 @@ public class SecurityConfig {
         authenticationProviders.add(getAdminDaoAuthProvider());
         authenticationProviders.add(getSupervisorDaoAuthProvider());
         authenticationProviders.add(getUserDaoAuthProvider());
+        authenticationProviders.add(getDriverDaoAuthProvider());
+        authenticationProviders.add(getControllerDaoAuthProvider());
 
         CustomAuthenticationProvider customAuthProvider = new CustomAuthenticationProvider(authenticationProviders);
 
