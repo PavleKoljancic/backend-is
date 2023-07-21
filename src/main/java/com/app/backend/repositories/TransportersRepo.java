@@ -3,8 +3,12 @@ package com.app.backend.repositories;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.repository.CrudRepository;
+
+import com.app.backend.models.Transporter;
 
 
-public class TransportersRepo {
+
+public interface TransportersRepo extends CrudRepository<Transporter,Integer> {
 
 }
