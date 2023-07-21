@@ -20,13 +20,13 @@ public class TerminalController {
     TerminalService terminalService;
 
 
-    @GetMapping("/getByTransporterdId={transporterID}")
+    @GetMapping("/getARByTransporterdId={transporterID}")
     public List<TerminalActivationRequest> findTerminalActivationRequestByTransporterId(@PathVariable("transporterID") Integer TRANSPORTER_Id) 
     {
         return terminalService.getTerminalActivationRequestByTransporterId(TRANSPORTER_Id);
     }    
 
-    @GetMapping("/getAllPending")
+    @GetMapping("/getAllPendingAR")
     public List<TerminalActivationRequest> getAllPending() 
     {
         return terminalService.getAllPendingActivationRequests();
@@ -38,7 +38,7 @@ public class TerminalController {
         return terminalService.addTerminalActivationRequest(terminalActivationRequest);
     }
 
-    @GetMapping("/getAll")    
+    @GetMapping("/getAllAR")    
     public List<TerminalActivationRequest> getAll() 
     {
         return terminalService.getAllActivationRequests();
