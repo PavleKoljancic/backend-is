@@ -28,6 +28,6 @@ public class Supervisor {
     private String lastName;
     private Boolean isActive=true;
     @Column(name = "TRANSPORTER_Id")
-    private Integer TransporterId;
+    private Integer transporterId;
 
 }
