@@ -20,6 +20,7 @@ public class TerminalActivationRequest {
     String SerialNumber;
     @Column(name = "TRANSPORTER_Id")
     Integer TRANSPORTERId;
-    Boolean Processed=false;
+    @Column(name="Processed")
+    Boolean processed=false;
     //Razmisli kako ces ih pretrazivati
 }
