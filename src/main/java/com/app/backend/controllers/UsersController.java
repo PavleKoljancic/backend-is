@@ -66,7 +66,7 @@ public class UsersController {
     }
 
 
-     @PostMapping("/login")
+    @PostMapping("/login")
     ResponseEntity<?> loginUser(@RequestBody UserWithPassword user, HttpServletRequest request) {
 
         AuthenticationManager authenticationManager = authenticationManagerResolver.resolve(request);
