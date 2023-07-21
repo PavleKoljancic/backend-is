@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.backend.models.TicketType;
-import com.app.backend.models.User;
 import com.app.backend.services.TicketTypeService;
 
 @RestController
