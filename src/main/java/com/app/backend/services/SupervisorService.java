@@ -31,4 +31,8 @@ public class SupervisorService {
         public List<Supervisor> getSupervisorsByTransporterId(Integer transporterId) {
                 return supervisorRepo.findByTransporterId(transporterId);
         }
+
+        public List<Supervisor> getSupervisorBySupervisorId(Integer supervisorId) {
+            return supervisorRepo.findBySupervisorId(supervisorId);
+        }
 }

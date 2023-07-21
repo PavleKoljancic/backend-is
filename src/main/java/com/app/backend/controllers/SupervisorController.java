@@ -32,4 +32,10 @@ public class SupervisorController {
     {
         return supervisorService.getSupervisorsByTransporterId(transporterId);
     } 
+
+    @GetMapping("/getBySupervisorId={supervisorId}")
+    public List<Supervisor> getSupervisorBySupervisorId(@PathVariable("supervisorId") Integer supervisorId)
+    {
+        return supervisorService.getSupervisorBySupervisorId(supervisorId);
+    }
 }
