@@ -51,8 +51,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authenticationManager(authenticationManager()).cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(authEntryPoint)
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeHttpRequests()
-        .requestMatchers("/api/users/login", "/api/supervisor/register", "/api/users/register").permitAll()
-        .requestMatchers("/api/users/**").hasAnyAuthority("USER", "SUPERVISOR")
+        .requestMatchers("/api/users/login", "/api/supervisor/register", "/api/users/register", "/api/**").permitAll()
+        //.requestMatchers("/api/users/**").hasAnyAuthority("USER", "SUPERVISOR")
         .requestMatchers("/api/tickets/**").hasAnyAuthority("ADMIN")
         .requestMatchers("/api/get").hasAnyAuthority("NIKO")
         .and().httpBasic();
