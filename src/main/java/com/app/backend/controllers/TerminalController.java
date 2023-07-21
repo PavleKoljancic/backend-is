@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.backend.models.TerminalActivationRequest;
-import com.app.backend.repositories.TerminalActivationRequestRepo;
 import com.app.backend.services.TerminalService;
 
 @RestController
@@ -20,19 +19,17 @@ public class TerminalController {
     @Autowired
     TerminalService terminalService;
 
-        @Autowired
-    TerminalActivationRequestRepo terminalActivationRequestRepo;
 
     @GetMapping("/getByTransporterdId={transporterID}")
     public List<TerminalActivationRequest> findTerminalActivationRequestByTransporterId(@PathVariable("transporterID") Integer TRANSPORTER_Id) 
     {
-        return terminalActivationRequestRepo.findByTRANSPORTERIdAndProcessedFalse(TRANSPORTER_Id);
+        return terminalService.getTerminalActivationRequestByTransporterId(TRANSPORTER_Id);
     }    
 
     @GetMapping("/getAllPending")
     public List<TerminalActivationRequest> getAllPending() 
     {
-        return terminalService.getAllPending();
+        return terminalService.getAllPendingActivationRequests();
     }
 
     @PostMapping("add/activationrequest")
@@ -44,6 +41,6 @@ public class TerminalController {
     @GetMapping("/getAll")    
     public List<TerminalActivationRequest> getAll() 
     {
-        return terminalService.getAll();
+        return terminalService.getAllActivationRequests();
     }
 }

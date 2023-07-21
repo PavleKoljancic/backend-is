@@ -13,14 +13,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity(name="TERMINAL ACTIVATION REQUEST")
-public class TerminalActivationRequest {
+public class Terminal {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer Id;
-    String SerialNumber;
+    Boolean isActive;
+    @Column(name = "TERMINAL ACTIVATION REQUEST_Id")
+    Integer activationRequestID;
     @Column(name = "TRANSPORTER_Id")
     Integer transporterId;
-    @Column(name="Processed")
-    Boolean processed=false;
-    //Razmisli kako ces ih pretrazivati
 }

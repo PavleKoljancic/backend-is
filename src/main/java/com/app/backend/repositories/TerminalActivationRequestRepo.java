@@ -11,6 +11,6 @@ import com.app.backend.models.TerminalActivationRequest;
 
 
 public interface TerminalActivationRequestRepo extends JpaRepository<TerminalActivationRequest,Integer> {
-    List<TerminalActivationRequest> findByTRANSPORTERIdAndProcessedFalse(Integer TRANSPORTER_Id);
+    List<TerminalActivationRequest> findByTransporterIdAndProcessedFalse(Integer TransporterId);
     List<TerminalActivationRequest> findByProcessedFalse();  
 }
