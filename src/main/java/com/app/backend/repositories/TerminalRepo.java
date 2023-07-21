@@ -8,7 +8,7 @@ import com.app.backend.models.Terminal;
 import com.app.backend.models.TerminalActivationRequest;
 
 public interface TerminalRepo extends JpaRepository<Terminal,Integer>  {
-        List<TerminalActivationRequest> findByTransporterId(Integer TransporterId);
-        List<TerminalActivationRequest> findByTransporterIdAndIsActiveFalse(Integer TransporterId);
-        List<TerminalActivationRequest> findByTransporterIdAndIsActiveTrue(Integer TransporterId);
+        List<Terminal> findByTransporterId(Integer TransporterId);
+        List<Terminal> findByTransporterIdAndIsActiveFalse(Integer TransporterId);
+        List<Terminal> findByTransporterIdAndIsActiveTrue(Integer TransporterId);
 }

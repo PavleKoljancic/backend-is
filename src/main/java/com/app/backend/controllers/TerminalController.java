@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.backend.models.Terminal;
 import com.app.backend.models.TerminalActivationRequest;
 import com.app.backend.services.TerminalService;
 
@@ -42,5 +43,29 @@ public class TerminalController {
     public List<TerminalActivationRequest> getAll() 
     {
         return terminalService.getAllActivationRequests();
+    }
+
+    @GetMapping("/getAllTerminalByTransporterdId={transporterID}")
+    List<Terminal> getTerminalByTransporterId(@PathVariable("transporterID")Integer TransporterId) 
+    {
+        return terminalService.getTerminalByTransporterId(TransporterId);
+    }
+    @GetMapping("/getTerminalNotInUseByTransporterdId={transporterID}")
+    List<Terminal> getNotInUSeByTransporterId(@PathVariable("transporterID")Integer TransporterId) 
+    {
+        return terminalService.getNotInUSeByTransporterId(TransporterId);
+    }
+    @GetMapping("/getTerminalInUseByTransporterdId={transporterID}")
+    List<Terminal> getInUseByTransporterId(@PathVariable("transporterID")Integer TransporterId)
+    {
+
+        return terminalService.getInUseByTransporterId(TransporterId);
+    }
+
+    @GetMapping("/ProcessTerminalAR{ActivationRequestId}approval={approval}")
+    boolean processTerminalActivationRequest(@PathVariable("ActivationRequestId")Integer ARId, @PathVariable("approval") Boolean approval)
+    {
+
+        return terminalService.processTerminalActivationRequest(ARId,approval);
     }
 }
