@@ -78,7 +78,7 @@ public class UsersController {
         String token = jwtGenerator.generateToken(authentication);
         return ResponseEntity.status(HttpStatus.OK).body(token);
     }
-    @GetMapping("/getuserbyId={Id}")
+    @GetMapping("/getUserById={Id}")
     public User getUser(@PathVariable("Id")Integer Id) 
     {
         return userService.getUserById(Id);
