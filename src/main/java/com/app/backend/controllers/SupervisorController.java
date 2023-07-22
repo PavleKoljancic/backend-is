@@ -27,8 +27,7 @@ public class SupervisorController {
     }
 
     @GetMapping("/getByTransporterId={transporterId}")
-    public List<Supervisor> getSupervisorsByTransporterId(@PathVariable("transporterId") Integer transporterId) 
-     
+    public List<Supervisor> getSupervisorsByTransporterId(@PathVariable("transporterId") Integer transporterId)     
     {
         return supervisorService.getSupervisorsByTransporterId(transporterId);
     } 
