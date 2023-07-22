@@ -1,6 +1,7 @@
 package com.app.backend.controllers;
 
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,5 +85,10 @@ public class UsersController {
         return userService.getUserById(Id);
     } 
     
+    @PostMapping("/addCreditUserId={UserId}andAmount={Amount}andSupervisorId={SupervisorId}")
+    public boolean addCredit(@PathVariable("UserId") Integer UserId, @PathVariable("Amount") BigDecimal Amount, @PathVariable("SupervisorId") Integer SupervisorId){
+
+        return userService.addCredit(UserId, Amount, SupervisorId);
+    }
 
 }
