@@ -34,7 +34,7 @@ public class SupervisorService {
                 return supervisorRepo.findByTransporterId(transporterId);
         }
 
-        public List<Supervisor> getAllSupervisors(PageRequest pageRequest) {
-            return supervisorRepo.findAll(pageRequest).toList();
+        public List<Supervisor> getAllSupervisors() {
+            return supervisorRepo.findAll();
         }
 }

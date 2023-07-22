@@ -31,5 +31,10 @@ public class SupervisorController {
      
     {
         return supervisorService.getSupervisorsByTransporterId(transporterId);
-    } 
+    }
+
+    @GetMapping("/getAllSupervisors")
+    public List<Supervisor> getAllSupervisors() {
+        return supervisorService.getAllSupervisors();
+    }
 }
