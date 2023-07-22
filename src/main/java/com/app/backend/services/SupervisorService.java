@@ -12,6 +12,8 @@ import com.app.backend.models.SupervisorWithPassword;
 import com.app.backend.repositories.SupervisorRepo;
 import com.app.backend.repositories.SupervisorWithPasswordRepo;
 
+import net.bytebuddy.implementation.bind.annotation.Super;
+
 @Service
 public class SupervisorService {
 
@@ -33,6 +35,10 @@ public class SupervisorService {
 
     public List<Supervisor> getSupervisorsByTransporterId(Integer transporterId) {
         return supervisorRepo.findByTransporterId(transporterId);
+    }
+
+    public Supervisor findByEmail(String email){
+        return supervisorRepo.findByEmail(email);
     }
 
     public boolean ChangeIsActiveSupervisorId(Integer supervisorId, Boolean isActive) {
