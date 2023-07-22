@@ -1,6 +1,7 @@
 package com.app.backend.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,5 +11,5 @@ public interface SupervisorRepo extends JpaRepository<Supervisor,Integer> {
     
     public List<Supervisor>findByTransporterId(Integer TransporterID);
 
-    public List<Supervisor>findBySupervisorId(Integer SupervisorId);
+    public Optional<Supervisor> findById(Integer supervisorId);
 }

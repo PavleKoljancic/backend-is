@@ -1,6 +1,7 @@
 package com.app.backend.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,7 +33,7 @@ public class SupervisorService {
                 return supervisorRepo.findByTransporterId(transporterId);
         }
 
-        public List<Supervisor> getSupervisorBySupervisorId(Integer supervisorId) {
-            return supervisorRepo.findBySupervisorId(supervisorId);
+        public Optional<Supervisor> getSupervisorById(Integer supervisorId) {
+            return supervisorRepo.findById(supervisorId);
         }
 }
