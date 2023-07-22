@@ -1,7 +1,5 @@
 package com.app.backend.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,5 +30,11 @@ public class RoutesController {
     public ResponseEntity<?> getAllRoutesByTransporterId(@PathVariable("transporterID") Integer transporterID){
 
         return ResponseEntity.status(HttpStatus.OK).body(routeService.getRoutesByTransporterId(transporterID));
-    }   
+    }
+    
+    @PostMapping("/ChangeisActiveRouteId={RouteId}andIsActive={isActive}")
+    public boolean changeSupervisorStatus(@PathVariable("RouteId") Integer RouteId,@PathVariable("isActive") Boolean isActive) {
+
+        return routeService.ChangeIsActiveRouteId(RouteId, isActive);
+    }
 }

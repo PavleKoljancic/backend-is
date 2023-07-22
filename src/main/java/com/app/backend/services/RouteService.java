@@ -1,6 +1,7 @@
 package com.app.backend.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,5 +23,17 @@ public class RouteService {
     public List<Route> getRoutesByTransporterId(Integer transporterId){
         
         return routeRepo.findAllByTransporterId(transporterId);
+    }
+
+    public boolean ChangeIsActiveRouteId(Integer routeId, Boolean isActive) {
+        
+        Optional<Route> result = routeRepo.findById(routeId);
+        if(result.isPresent() && result.get().getIsActive() != isActive) {
+            Route temp = result.get();
+            temp.setIsActive(isActive);
+            routeRepo.save(temp);
+            return true;
+        }
+        return false;
     }
 }
