@@ -1,5 +1,7 @@
 package com.app.backend.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,5 +17,10 @@ public class RouteService {
     public Integer addNewRoute(Route route){
 
         return routeRepo.save(route).getId();
+    }
+
+    public List<Route> getRoutesByTransporterId(Integer transporterId){
+        
+        return routeRepo.findAllByTransporterId(transporterId);
     }
 }
