@@ -1,6 +1,7 @@
 package com.app.backend.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,5 +37,9 @@ public class SupervisorService {
 
         public List<Supervisor> getAllSupervisors(PageRequest pageRequest) {
             return supervisorRepo.findAll(pageRequest).toList();
+        }
+
+        public Optional<Supervisor> getSupervisorById(Integer supervisorId) {
+            return supervisorRepo.findById(supervisorId);
         }
 }

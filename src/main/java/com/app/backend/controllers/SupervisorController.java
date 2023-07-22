@@ -1,6 +1,7 @@
 package com.app.backend.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -37,5 +38,11 @@ public class SupervisorController {
     @GetMapping("/getSupervisors/pagesize={pagesize}size={size}")
     public ResponseEntity<List<Supervisor>> getAllSupervisors(@PathVariable("pagesize") int page, @PathVariable("size") int size) {
         return ResponseEntity.ok().body(supervisorService.getAllSupervisors(PageRequest.of(page, size)));
+    }
+
+    @GetMapping("/getBySupervisorId={Id}")
+    public Optional<Supervisor> getSupervisorsById(@PathVariable("Id") Integer Id)     
+    {
+        return supervisorService.getSupervisorById(Id);
     }
 }
