@@ -66,7 +66,7 @@ public class UsersController {
     }
 
 
-    @PostMapping("/login")
+     @PostMapping("/login")
     ResponseEntity<?> loginUser(@RequestBody UserWithPassword user, HttpServletRequest request) {
 
         AuthenticationManager authenticationManager = authenticationManagerResolver.resolve(request);
@@ -78,11 +78,4 @@ public class UsersController {
         String token = jwtGenerator.generateToken(authentication);
         return ResponseEntity.status(HttpStatus.OK).body(token);
     }
-    @GetMapping("/getUserById={Id}")
-    public User getUser(@PathVariable("Id")Integer Id) 
-    {
-        return userService.getUserById(Id);
-    } 
-    
-
 }

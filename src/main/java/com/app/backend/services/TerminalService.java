@@ -74,17 +74,4 @@ public class TerminalService {
         }
         return true;
     }
-
-    public boolean ChangeIsActiveTerminalId(Integer terminalId, Boolean isActive) {
-        
-        Optional<Terminal> reuslt = terminalRepo.findById(terminalId);
-        if(reuslt.isPresent()&&reuslt.get().getIsActive()!=isActive)
-        {
-            Terminal temp = reuslt.get();
-            temp.setIsActive(isActive);
-            terminalRepo.save(temp);
-            return true;
-        }
-        return false;
-    }
 }

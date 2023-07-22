@@ -1,8 +1,6 @@
 package com.app.backend.services;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,13 +51,5 @@ public class UserService{
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
         return userWithPasswordRepo.save(user).getId();
         
-    }
-
-    public User getUserById(Integer Id) 
-    {
-        Optional<User> result = userRepo.findById(Id);
-        if(result.isPresent())
-            return result.get();    
-        return null;
     }
 }

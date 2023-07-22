@@ -1,6 +1,7 @@
 package com.app.backend.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,8 +28,15 @@ public class SupervisorController {
     }
 
     @GetMapping("/getByTransporterId={transporterId}")
-    public List<Supervisor> getSupervisorsByTransporterId(@PathVariable("transporterId") Integer transporterId)     
+    public List<Supervisor> getSupervisorsByTransporterId(@PathVariable("transporterId") Integer transporterId) 
+     
     {
         return supervisorService.getSupervisorsByTransporterId(transporterId);
     } 
+
+    @GetMapping("/getBySupervisorId={Id}")
+    public Optional<Supervisor> getSupervisorBySupervisorId(@PathVariable("Id") Integer Id)
+    {
+        return supervisorService.getSupervisorById(Id);
+    }
 }

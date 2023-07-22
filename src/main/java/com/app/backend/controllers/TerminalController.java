@@ -68,12 +68,4 @@ public class TerminalController {
 
         return terminalService.processTerminalActivationRequest(ARId,approval);
     }
-
-    @GetMapping("/ChangeisActiveTerminalId={TerminalId}andIsActive={isActive}")
-    public boolean postMethodName(@PathVariable("TerminalId") Integer TerminalId,@PathVariable("isActive") Boolean isActive) 
-    {
-        return terminalService.ChangeIsActiveTerminalId(TerminalId,isActive);
-
-    }
-    
 }
