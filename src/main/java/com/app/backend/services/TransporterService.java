@@ -1,6 +1,8 @@
 package com.app.backend.services;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,4 +22,8 @@ public class TransporterService {
         return transportersRepo.save(transporter).getId();
     }
 
+    public List<Transporter> getTransporters(){
+
+        return transportersRepo.findAll();
+    }
 }

@@ -30,5 +30,12 @@ public class SupervisorController {
     public List<Supervisor> getSupervisorsByTransporterId(@PathVariable("transporterId") Integer transporterId)     
     {
         return supervisorService.getSupervisorsByTransporterId(transporterId);
-    } 
+    }
+
+    @PostMapping("/ChangeisActiveSupervisorId={SupervisorId}andIsActive={isActive}")
+    public boolean changeSupervisorStatus(@PathVariable("SupervisorId") Integer TerminalId,@PathVariable("isActive") Boolean isActive) 
+    {
+        return supervisorService.ChangeIsActiveSupervisorId(TerminalId,isActive);
+
+    }
 }

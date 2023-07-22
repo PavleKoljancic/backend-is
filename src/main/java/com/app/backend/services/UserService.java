@@ -1,5 +1,6 @@
 package com.app.backend.services;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,5 +62,16 @@ public class UserService{
         if(result.isPresent())
             return result.get();    
         return null;
+    }
+
+    public boolean addCredit(Integer userId, BigDecimal amount, Integer supervisorId){
+
+        try{
+            userRepo.addCredit(userId, amount, supervisorId);
+            return true;
+        }
+        catch(Exception e){
+            return false;
+        }
     }
 }
