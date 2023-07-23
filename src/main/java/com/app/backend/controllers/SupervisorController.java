@@ -52,13 +52,13 @@ public class SupervisorController {
         return supervisorService.getSupervisorById(Id);
     }
 
-    @GetMapping("/getByisActive")
+    @GetMapping("/getByisActiveTrue")
     public List<Supervisor>getActivSupervisors()
     {
         return supervisorService.getActiveSupervisors();
     }
 
-    @GetMapping("/getByisInactive")
+    @GetMapping("/getByisActiveFalse")
     public List<Supervisor>getInactiveSupervisors()
     {
         return supervisorService.getInactiveSupervisors();
