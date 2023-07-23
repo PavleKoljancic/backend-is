@@ -52,27 +52,29 @@ public class SupervisorController {
         return supervisorService.getSupervisorById(Id);
     }
 
-    @GetMapping("/getByisActiveTrue")
-    public List<Supervisor>getActivSupervisors()
+    @GetMapping("/getByisActiveTrue/pagesize={pagesize}size={size}")
+    public ResponseEntity<List<Supervisor>>getActivSupervisors(@PathVariable("pagesize") int page, @PathVariable("size") int size)
     {
-        return supervisorService.getActiveSupervisors();
+        return ResponseEntity.ok().body(supervisorService.getActiveSupervisors(PageRequest.of(page, size)));
     }
 
-    @GetMapping("/getByisActiveFalse")
-    public List<Supervisor>getInactiveSupervisors()
+    @GetMapping("/getByisActiveFalse/pagesize={pagesize}size={size}")
+    public ResponseEntity<List<Supervisor>>getInactiveSupervisors(@PathVariable("pagesize") int page, @PathVariable("size") int size)
     {
-        return supervisorService.getInactiveSupervisors();
+        return ResponseEntity.ok().body(supervisorService.getInactiveSupervisors(PageRequest.of(page, size)));
     }
 
-    @GetMapping("/getByTransporterActiveTrue={transporterId}")
-    public List<Supervisor>getActiveTransporterSupervisors(@PathVariable("transporterId") Integer transporterId)
+    @GetMapping("/getByTransporterSupervisorisActiveTrue={transporterId}/pagesize={pagesize}size={size}")
+    public ResponseEntity<List<Supervisor>>getActiveSupervisorsByTransporterId(@PathVariable("transporterId") Integer transporterId, 
+    @PathVariable("pagesize") int page, @PathVariable("size") int size)
     {
-        return supervisorService.getActiveTransporterSupervisors(transporterId);
+        return ResponseEntity.ok().body(supervisorService.getActiveSupervisorsByTransporter(transporterId, PageRequest.of(page, size)));
     }
 
-    @GetMapping("/getByTransporterActiveFalse={transporterId}")
-    public List<Supervisor>getInactiveTransporterSupervisors(@PathVariable("transporterId") Integer transporterId)
+    @GetMapping("/getByTransporterSupervisorisActiveFalse={transporterId}/pagesize={pagesize}size={size}")
+    public ResponseEntity<List<Supervisor>>getInactiveSupervisorsByTransporterId(@PathVariable("transporterId") Integer transporterId,
+    @PathVariable("pagesize") int page, @PathVariable("size") int size)
     {
-        return supervisorService.getInactiveTransporterSupervisors(transporterId);
+        return ResponseEntity.ok().body(supervisorService.getInactiveSupervisorsByTransporter(transporterId, PageRequest.of(page,size)));
     }
 }

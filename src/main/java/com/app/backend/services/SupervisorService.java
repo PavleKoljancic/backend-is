@@ -66,23 +66,23 @@ public class SupervisorService {
         return null;
     }
 
-    public List<Supervisor> getActiveSupervisors()
+    public List<Supervisor> getActiveSupervisors(PageRequest pageRequest)
     {
-        return supervisorRepo.findByisActive(true);
+        return supervisorRepo.findByisActive(true, pageRequest);
     }
 
-    public List<Supervisor> getInactiveSupervisors()
+    public List<Supervisor> getInactiveSupervisors(PageRequest pageRequest)
     {
-        return supervisorRepo.findByisActive(false);
+        return supervisorRepo.findByisActive(false, pageRequest);
     }
 
-    public List<Supervisor> getActiveTransporterSupervisors(Integer transporterId)
+    public List<Supervisor> getActiveSupervisorsByTransporter(Integer transporterId, PageRequest pageRequest)
     {
-        return supervisorRepo.findByTransporterIdAndIsActive(transporterId, true);
+        return supervisorRepo.findByTransporterIdAndIsActive(transporterId, true, pageRequest);
     }
 
-    public List<Supervisor> getInactiveTransporterSupervisors(Integer transporterId)
+    public List<Supervisor> getInactiveSupervisorsByTransporter(Integer transporterId, PageRequest pageRequest)
     {
-        return supervisorRepo.findByTransporterIdAndIsActive(transporterId, false);
+        return supervisorRepo.findByTransporterIdAndIsActive(transporterId, false, pageRequest);
     }
 }
