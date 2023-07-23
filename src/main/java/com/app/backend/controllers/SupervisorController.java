@@ -1,7 +1,6 @@
 package com.app.backend.controllers;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -41,7 +40,6 @@ public class SupervisorController {
         return supervisorService.ChangeIsActiveSupervisorId(TerminalId,isActive);
 
     }
-    }
 
     @GetMapping("/getSupervisors/pagesize={pagesize}size={size}")
     public ResponseEntity<List<Supervisor>> getAllSupervisors(@PathVariable("pagesize") int page, @PathVariable("size") int size) {
@@ -49,8 +47,20 @@ public class SupervisorController {
     }
 
     @GetMapping("/getBySupervisorId={Id}")
-    public Optional<Supervisor> getSupervisorsById(@PathVariable("Id") Integer Id)     
+    public Supervisor getSupervisorsById(@PathVariable("Id") Integer Id)     
     {
         return supervisorService.getSupervisorById(Id);
+    }
+
+    @GetMapping("/getByisActive")
+    public List<Supervisor>getActivSupervisors()
+    {
+        return supervisorService.getActiveSupervisors();
+    }
+
+    @GetMapping("/getByisInactive")
+    public List<Supervisor>getInactiveSupervisors()
+    {
+        return supervisorService.getInactiveSupervisors();
     }
 }

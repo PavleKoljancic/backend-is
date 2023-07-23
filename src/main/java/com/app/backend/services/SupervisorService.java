@@ -11,8 +11,11 @@ import org.springframework.data.domain.PageRequest;
 
 import com.app.backend.models.Supervisor;
 import com.app.backend.models.SupervisorWithPassword;
+import com.app.backend.models.User;
 import com.app.backend.repositories.SupervisorRepo;
 import com.app.backend.repositories.SupervisorWithPasswordRepo;
+
+import net.bytebuddy.implementation.bind.annotation.Super;
 
 @Service
 public class SupervisorService {
@@ -54,19 +57,24 @@ public class SupervisorService {
         return false;
     }
 
-        public List<Supervisor> getAllSupervisors(PageRequest pageRequestPageRequest pageRequest) {
-            return supervisorRepo.findAll(pageRequest).toList(pageRequest).toList();
-        }
-
-        public Optional<Supervisor> getSupervisorById(Integer supervisorId) {
-            return supervisorRepo.findById(supervisorId);
-        }
-
         public List<Supervisor> getAllSupervisors(PageRequest pageRequest) {
             return supervisorRepo.findAll(pageRequest).toList();
         }
 
-        public Optional<Supervisor> getSupervisorById(Integer supervisorId) {
-            return supervisorRepo.findById(supervisorId);
-        }
+        public Supervisor getSupervisorById(Integer Id) {
+        Optional<Supervisor> result = supervisorRepo.findById(Id);
+        if(result.isPresent())
+            return result.get();    
+        return null;
+    }
+
+    public List<Supervisor> getActiveSupervisors()
+    {
+        return supervisorRepo.findByisActive(true);
+    }
+
+    public List<Supervisor> getInactiveSupervisors()
+    {
+        return supervisorRepo.findByisActive(false);
+    }
 }
