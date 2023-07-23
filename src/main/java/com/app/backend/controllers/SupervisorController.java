@@ -38,4 +38,10 @@ public class SupervisorController {
         return supervisorService.ChangeIsActiveSupervisorId(TerminalId,isActive);
 
     }
+    }
+
+    @GetMapping("/getAllSupervisors")
+    public List<Supervisor> getAllSupervisors() {
+        return supervisorService.getAllSupervisors();
+    }
 }
