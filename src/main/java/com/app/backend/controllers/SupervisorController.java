@@ -63,4 +63,16 @@ public class SupervisorController {
     {
         return supervisorService.getInactiveSupervisors();
     }
+
+    @GetMapping("/getByTransporterActiveTrue={transporterId}")
+    public List<Supervisor>getActiveTransporterSupervisors(@PathVariable("transporterId") Integer transporterId)
+    {
+        return supervisorService.getActiveTransporterSupervisors(transporterId);
+    }
+
+    @GetMapping("/getByTransporterActiveFalse={transporterId}")
+    public List<Supervisor>getInactiveTransporterSupervisors(@PathVariable("transporterId") Integer transporterId)
+    {
+        return supervisorService.getInactiveTransporterSupervisors(transporterId);
+    }
 }

@@ -57,11 +57,11 @@ public class SupervisorService {
         return false;
     }
 
-        public List<Supervisor> getAllSupervisors(PageRequest pageRequest) {
-            return supervisorRepo.findAll(pageRequest).toList();
-        }
+     public List<Supervisor> getAllSupervisors(PageRequest pageRequest) {
+        return supervisorRepo.findAll(pageRequest).toList();
+    }
 
-        public Supervisor getSupervisorById(Integer Id) {
+    public Supervisor getSupervisorById(Integer Id) {
         Optional<Supervisor> result = supervisorRepo.findById(Id);
         if(result.isPresent())
             return result.get();    
@@ -76,5 +76,15 @@ public class SupervisorService {
     public List<Supervisor> getInactiveSupervisors()
     {
         return supervisorRepo.findByisActive(false);
+    }
+
+    public List<Supervisor> getActiveTransporterSupervisors(Integer transporterId)
+    {
+        return supervisorRepo.findByTransporterIdAndIsActive(transporterId, true);
+    }
+
+    public List<Supervisor> getInactiveTransporterSupervisors(Integer transporterId)
+    {
+        return supervisorRepo.findByTransporterIdAndIsActive(transporterId, false);
     }
 }

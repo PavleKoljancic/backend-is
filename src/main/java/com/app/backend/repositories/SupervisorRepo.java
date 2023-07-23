@@ -11,4 +11,5 @@ public interface SupervisorRepo extends JpaRepository<Supervisor,Integer> {
     public List<Supervisor>findByTransporterId(Integer TransporterID);
     public Supervisor findByEmail(String email);
     public List<Supervisor>findByisActive(boolean bool);
+    public List<Supervisor>findByTransporterIdAndIsActive(Integer TransporterID, Boolean boolean1);
 }
