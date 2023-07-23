@@ -54,7 +54,7 @@ public class SupervisorService {
         return false;
     }
 
-        public List<Supervisor> getAllSupervisors(PageRequest pageRequest) {
-            return supervisorRepo.findAll(pageRequest).toList();
+        public List<Supervisor> getAllSupervisors(PageRequest pageRequestPageRequest pageRequest) {
+            return supervisorRepo.findAll(pageRequest).toList(pageRequest).toList();
         }
 }
