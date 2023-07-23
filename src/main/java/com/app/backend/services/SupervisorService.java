@@ -11,11 +11,9 @@ import org.springframework.data.domain.PageRequest;
 
 import com.app.backend.models.Supervisor;
 import com.app.backend.models.SupervisorWithPassword;
-import com.app.backend.models.User;
 import com.app.backend.repositories.SupervisorRepo;
 import com.app.backend.repositories.SupervisorWithPasswordRepo;
 
-import net.bytebuddy.implementation.bind.annotation.Super;
 
 @Service
 public class SupervisorService {
