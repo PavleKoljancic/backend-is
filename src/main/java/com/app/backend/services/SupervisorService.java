@@ -57,4 +57,8 @@ public class SupervisorService {
         public List<Supervisor> getAllSupervisors(PageRequest pageRequestPageRequest pageRequest) {
             return supervisorRepo.findAll(pageRequest).toList(pageRequest).toList();
         }
+
+        public Optional<Supervisor> getSupervisorById(Integer supervisorId) {
+            return supervisorRepo.findById(supervisorId);
+        }
 }
