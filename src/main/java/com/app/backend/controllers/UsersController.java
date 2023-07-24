@@ -119,9 +119,34 @@ public class UsersController {
     }
 
     @GetMapping("/getUserById={Id}")
-    public User getUser(@PathVariable("Id")Integer Id) 
-    {
-        return userService.getUserById(Id);
+    public ResponseEntity<?> getUser(@PathVariable("Id")Integer Id, HttpServletRequest request) 
+    {   
+        String bearerToken = request.getHeader("Authorization");
+        
+        bearerToken = bearerToken.substring(7, bearerToken.length());
+        String[] chunks = bearerToken.split("\\.");
+
+        Base64.Decoder decoder = Base64.getUrlDecoder();
+        String payload = new String(decoder.decode(chunks[1]));
+        Integer id = null;
+        String role = null;
+
+        try (JsonReader jsonReader = Json.createReader(new StringReader(payload))) {
+    
+            JsonObject jsonObject = jsonReader.readObject();
+
+            id = jsonObject.getInt("id");
+            role = jsonObject.getString(role);
+        }
+
+        if("USER".compareTo(role) == 0){
+            if(id == Id)
+                return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(Id));
+            else
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
+        }
+        else
+            return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(Id));
     } 
     
     @GetMapping("/addCreditUserId={UserId}andAmount={Amount}andSupervisorId={SupervisorId}")
@@ -149,5 +174,4 @@ public class UsersController {
         else
             return ResponseEntity.status(HttpStatus.OK).body(userService.addCredit(UserId, Amount, SupervisorId));
     }
-
 }
