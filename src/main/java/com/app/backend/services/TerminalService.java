@@ -42,6 +42,10 @@ public class TerminalService {
         return terminalActivationRequestRepo.findAll();
     }
 
+    public Optional<Terminal> getById(Integer terminalId){
+        return terminalRepo.findById(terminalId);
+    }
+
    public List<Terminal> getTerminalByTransporterId(Integer TransporterId) 
     {
         return terminalRepo.findByTransporterId(TransporterId);

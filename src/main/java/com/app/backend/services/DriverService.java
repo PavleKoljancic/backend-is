@@ -2,6 +2,7 @@ package com.app.backend.services;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,5 +45,15 @@ public class DriverService implements UserDetailsService{
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         driver.setPassword(passwordEncoder.encode(driver.getPin()));
         return driverRepo.save(driver).getId();
+    }
+
+    public Optional<Driver> getById(Integer driverId){
+
+        return driverRepo.findById(driverId);
+    }
+
+    public Driver findByPin(String pin){
+
+        return driverRepo.findByPin(pin);
     }
 }

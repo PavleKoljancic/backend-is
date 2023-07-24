@@ -36,4 +36,9 @@ public class RouteService {
         }
         return false;
     }
+
+    public Optional<Route> getById(Integer routeId){
+        
+        return routeRepo.findById(routeId);
+    }
 }
