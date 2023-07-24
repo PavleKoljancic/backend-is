@@ -45,4 +45,9 @@ public class TicketControllerService implements UserDetailsService{
         ticketController.setPassword(passwordEncoder.encode(ticketController.getPin()));
         return ticketControllerRepo.save(ticketController).getId();
     }
+
+    public TicketController findByPin(String pin){
+
+        return ticketControllerRepo.findByPin(pin);
+    }
 }

@@ -10,5 +10,4 @@ public interface SupervisorRepo extends JpaRepository<Supervisor,Integer> {
     
     public List<Supervisor>findByTransporterId(Integer TransporterID);
     public Supervisor findByEmail(String email);
-
 }

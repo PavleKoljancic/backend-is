@@ -51,11 +51,4 @@ public class SupervisorService {
         }
         return false;
     }
-
-    public Integer findTransporterId(Integer SupervisorId) 
-    {   Optional<Supervisor> result = supervisorRepo.findById(SupervisorId);
-         if(result.isPresent())
-            return result.get().getTransporterId();
-        return null;
-    }
 }

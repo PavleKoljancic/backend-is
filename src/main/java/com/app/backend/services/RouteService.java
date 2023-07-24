@@ -20,9 +20,14 @@ public class RouteService {
         return routeRepo.save(route).getId();
     }
 
+    public List<Route> getAll(){
+
+        return routeRepo.findAll();
+    }
+
     public List<Route> getRoutesByTransporterId(Integer transporterId){
         
-        return routeRepo.findAllByTransporterId(transporterId);
+        return routeRepo.findAllByTransporterIdAndIsActiveTrue(transporterId);
     }
 
     public boolean ChangeIsActiveRouteId(Integer routeId, Boolean isActive) {
@@ -35,5 +40,10 @@ public class RouteService {
             return true;
         }
         return false;
+    }
+
+    public Optional<Route> getById(Integer routeId){
+        
+        return routeRepo.findById(routeId);
     }
 }
