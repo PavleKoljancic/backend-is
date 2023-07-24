@@ -94,7 +94,7 @@ public class UsersController {
         return userService.getUserById(Id);
     } 
     
-    @PostMapping("/addCreditUserId={UserId}andAmount={Amount}andSupervisorId={SupervisorId}")
+    @GetMapping("/addCreditUserId={UserId}andAmount={Amount}andSupervisorId={SupervisorId}")
     public ResponseEntity<?> addCredit(@PathVariable("UserId") Integer UserId, @PathVariable("Amount") BigDecimal Amount, @PathVariable("SupervisorId") Integer SupervisorId,
      HttpServletRequest request){
 
