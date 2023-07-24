@@ -19,10 +19,10 @@ public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer Id;
-    private String PicturePath;
-    private String DocumentPath1;
-    private String DocumentPath2;
-    private String DocumentPath3;
+    private String PictureHash;
+    private String DocumentName1;
+    private String DocumentName2;
+    private String DocumentName3;
     private String email;
     private String firstName;
     private String lastName;
