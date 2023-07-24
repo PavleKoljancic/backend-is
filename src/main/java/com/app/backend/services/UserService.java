@@ -44,6 +44,10 @@ public class UserService{
         return userRepo.findByEmailStartingWith(email);
     }
 
+    public User findExactByEmail(String email) {
+        return userRepo.findByEmail(email);
+    }
+
     public List<UserTicket> getUserTickets(User user) 
     {
      return userTicketRepo.findByUSERId(user.getId());

@@ -1,6 +1,12 @@
 package com.app.backend.controllers;
 
+import java.io.StringReader;
+import java.util.Base64;
 import java.util.List;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,16 +18,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.backend.models.Driver;
 import com.app.backend.models.Terminal;
 import com.app.backend.models.TerminalActivationRequest;
-import com.app.backend.services.DriverService;
 import com.app.backend.services.RouteHistoryService;
 import com.app.backend.services.TerminalService;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.JWTVerifier;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -34,9 +34,6 @@ public class TerminalController {
 
     @Autowired
     RouteHistoryService routeHistoryService;
-
-    @Autowired
-    private DriverService driverService;
 
     @GetMapping("/getARByTransporterdId={transporterID}")
     public List<TerminalActivationRequest> findTerminalActivationRequestByTransporterId(@PathVariable("transporterID") Integer TRANSPORTER_Id) 
@@ -98,14 +95,22 @@ public class TerminalController {
     HttpServletRequest request){
 
         String bearerToken = request.getHeader("Authorization");
+        
         bearerToken = bearerToken.substring(7, bearerToken.length());
-        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-					JWTVerifier verifier = JWT.require(algorithm).build();
-					DecodedJWT decodedJWT = verifier.verify(bearerToken);
-					String pin = decodedJWT.getSubject();
-        Driver driver = driverService.findByPin(pin);
+        String[] chunks = bearerToken.split("\\.");
 
-        if(driver.getId() != DriverId)
+        Base64.Decoder decoder = Base64.getUrlDecoder();
+        String payload = new String(decoder.decode(chunks[1]));
+        Integer id = null;
+
+        try (JsonReader jsonReader = Json.createReader(new StringReader(payload))) {
+    
+            JsonObject jsonObject = jsonReader.readObject();
+
+            id = jsonObject.getInt("id");
+        }
+
+        if(id != DriverId)
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
 
         return ResponseEntity.status(HttpStatus.OK).body(routeHistoryService.updateTerminal(TerminalId, RouteId, DriverId));

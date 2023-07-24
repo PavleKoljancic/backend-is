@@ -24,7 +24,6 @@ public class TransporterController {
     @PostMapping("addTransporter")
     public Integer postMethodName(@RequestBody Transporter transporter) {
         
-        
         return transporterService.addTransporter(transporter);
     }
     

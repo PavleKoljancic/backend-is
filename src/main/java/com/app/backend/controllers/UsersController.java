@@ -1,8 +1,15 @@
 package com.app.backend.controllers;
 
 
+import java.io.StringReader;
 import java.math.BigDecimal;
+import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +19,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,17 +28,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.backend.models.Supervisor;
 import com.app.backend.models.User;
 import com.app.backend.models.UserTicket;
 import com.app.backend.models.UserWithPassword;
 import com.app.backend.security.JwtGenerator;
+import com.app.backend.services.AdminWithPasswordService;
 import com.app.backend.services.SupervisorService;
 import com.app.backend.services.UserService;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.JWTVerifier;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -51,6 +55,9 @@ public class UsersController {
    
     @Autowired
     private SupervisorService supervisorService;
+
+    @Autowired
+    private AdminWithPasswordService adminWithPasswordService;
 
     @GetMapping("/getUsers/pagesize={pagesize}size={size}")
     public ResponseEntity<List<User>> getUsers(@PathVariable("pagesize") int page, @PathVariable("size") int size){
@@ -79,15 +86,38 @@ public class UsersController {
     @PostMapping("/login")
     ResponseEntity<?> loginUser(@RequestBody UserWithPassword user, HttpServletRequest request) {
 
-        AuthenticationManager authenticationManager = authenticationManagerResolver.resolve(request);
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        user.getEmail(),
-                        user.getPasswordHash()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtGenerator.generateToken(authentication);
+        String token = null;
+
+        try{
+            AuthenticationManager authenticationManager = authenticationManagerResolver.resolve(request);
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            user.getEmail(),
+                            user.getPasswordHash()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            String role = ((org.springframework.security.core.userdetails.User)authentication.getPrincipal()).getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()).get(0);
+
+            Integer id = null;
+
+            if("USER".compareTo(role) == 0)
+                id = userService.findExactByEmail(user.getEmail()).getId();
+            
+            if("ADMIN".compareTo(role) == 0)
+                id = adminWithPasswordService.findByEmail(user.getEmail()).getId();
+            
+            if("SUPERVISOR".compareTo(role) == 0)
+                id = supervisorService.findByEmail(user.getEmail()).getId();
+            
+            token = jwtGenerator.generateToken(authentication, id);
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(token);
     }
+
     @GetMapping("/getUserById={Id}")
     public User getUser(@PathVariable("Id")Integer Id) 
     {
@@ -99,14 +129,22 @@ public class UsersController {
      HttpServletRequest request){
 
         String bearerToken = request.getHeader("Authorization");
+        
         bearerToken = bearerToken.substring(7, bearerToken.length());
-        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-					JWTVerifier verifier = JWT.require(algorithm).build();
-					DecodedJWT decodedJWT = verifier.verify(bearerToken);
-					String username = decodedJWT.getSubject();
-        Supervisor supervisor = supervisorService.findByEmail(username);
+        String[] chunks = bearerToken.split("\\.");
 
-        if(supervisor.getId().compareTo(SupervisorId) != 0)
+        Base64.Decoder decoder = Base64.getUrlDecoder();
+        String payload = new String(decoder.decode(chunks[1]));
+        Integer id = null;
+
+        try (JsonReader jsonReader = Json.createReader(new StringReader(payload))) {
+    
+            JsonObject jsonObject = jsonReader.readObject();
+
+            id = jsonObject.getInt("id");
+        }
+
+        if(id != SupervisorId)
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
         else
             return ResponseEntity.status(HttpStatus.OK).body(userService.addCredit(UserId, Amount, SupervisorId));

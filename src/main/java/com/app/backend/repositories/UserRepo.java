@@ -13,6 +13,7 @@ public interface UserRepo extends JpaRepository<User,Integer>  {
 
     List<User> findByFirstNameStartingWithAndLastNameStartingWith(String firstName,String lastName);
     List<User> findByEmailStartingWith(String email);
+    User findByEmail(String email);
     @Procedure(name = "eticket.add_credit")
     void addCredit(Integer userId, BigDecimal amount, Integer supervisorId);
 }
