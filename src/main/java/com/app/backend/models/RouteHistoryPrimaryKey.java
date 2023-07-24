@@ -1,7 +1,7 @@
 package com.app.backend.models;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -18,7 +18,7 @@ import lombok.Setter;
 public class RouteHistoryPrimaryKey implements Serializable {
 
     @Column(name="FromDateTime")
-    Date fromDateTime;
+    Timestamp fromDateTime;
 
     @Column(name="ROUTE_Id")
     Integer routeId;

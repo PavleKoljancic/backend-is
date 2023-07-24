@@ -8,5 +8,5 @@ import com.app.backend.models.Route;
 
 public interface RouteRepo extends JpaRepository<Route,Integer>{
     
-    public List<Route> findAllByTransporterId(Integer transporterId);
+    public List<Route> findAllByTransporterIdAndIsActiveTrue(Integer transporterId);
 }

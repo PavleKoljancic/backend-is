@@ -1,5 +1,7 @@
 package com.app.backend.models;
 
+import java.sql.Timestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -19,4 +21,6 @@ public class RouteHistory {
 
     @Column(name = "DRIVER_PIN_USER_Id")
     Integer driverId;
+
+    Timestamp toDateTime;
 }
