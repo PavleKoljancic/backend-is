@@ -2,6 +2,7 @@ package com.app.backend.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -63,6 +64,14 @@ public class TicketTypeService {
          acceptedRepo.saveAll(acceptedList);
          return true;
 
+    }
+
+    public TicketType getTicketTypeById(Integer TicketTypeId) 
+    {
+        Optional<TicketType> result = ticketTypeRepo.findById(TicketTypeId);
+        if(result.isPresent())
+            return result.get();
+        return null;
     }
 
 }

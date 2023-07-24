@@ -22,7 +22,7 @@ public class TransporterController {
     TransporterService transporterService;
 
     @PostMapping("addTransporter")
-    public Integer postMethodName(@RequestBody Transporter transporter) {
+    public Integer addTransporter(@RequestBody Transporter transporter) {
         
         
         return transporterService.addTransporter(transporter);
