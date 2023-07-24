@@ -1,5 +1,7 @@
 package com.app.backend.controllers;
 
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,6 +41,7 @@ public class PinUsersController {
     @Autowired
     private JwtGenerator jwtGenerator;
 
+
     @PostMapping("/register/driver")
     public Integer register(@RequestBody Driver driver){
         return driverService.registerDriver(driver);
@@ -51,13 +55,30 @@ public class PinUsersController {
     @PostMapping("/login")
     ResponseEntity<?> loginUser(@RequestBody PinUser user, HttpServletRequest request) {
 
-        AuthenticationManager authenticationManager = authenticationManagerResolver.resolve(request);
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        user.getPin(),
-                        user.getPin()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtGenerator.generateToken(authentication);
+        String token = null;
+        try{
+            AuthenticationManager authenticationManager = authenticationManagerResolver.resolve(request);
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            user.getPin(),
+                            user.getPin()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            String role = ((org.springframework.security.core.userdetails.User)authentication.getPrincipal()).getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()).get(0);
+            
+            Integer id = null;
+            if("DRIVER".compareTo(role) == 0)
+                id = driverService.findByPin(user.getPin()).getId();
+            
+            if("CONTROLLER".compareTo(role) == 0)
+                id = ticketControllerService.findByPin(user.getPin()).getId();
+            
+            token = jwtGenerator.generateToken(authentication, id);
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(token);
     }
 }
