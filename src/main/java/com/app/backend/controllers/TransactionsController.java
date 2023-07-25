@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,9 +19,20 @@ public class TransactionsController {
     @Autowired
     TransactionService transactionService;
 
-    @GetMapping("/getTransactionsAfter{TimeStamp}")
+    @GetMapping("/getTransactionsAfterAll{TimeStamp}")
     public List<Transaction> getTransactionsAfter(@PathVariable("TimeStamp") Timestamp timestamp) 
     {
         return transactionService.findAllWithDateTimeAfter(timestamp);
+    }
+
+    @GetMapping("/getTransactionsAfterPaged{TimeStamp}page={page}size={size}")
+    public List<Transaction> getTransactionsAfter(@PathVariable("TimeStamp") Timestamp timestamp,@PathVariable("page") Integer page , @PathVariable("size") Integer size) 
+    {
+        return transactionService.findAllWithDateTimeAfter(timestamp,PageRequest.of(page,size));
+    }
+     @GetMapping("/getTransactionsInBetweenStart={start}End={end}page={page}size={size}")
+    public List<Transaction> getTransactionsAfter(@PathVariable("start") Timestamp start, @PathVariable("end") Timestamp end,@PathVariable("page") Integer page , @PathVariable("size") Integer size) 
+    {
+        return transactionService.findInBetween(start,end,PageRequest.of(page, size));
     }
 }

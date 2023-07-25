@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import com.app.backend.models.Transaction;
@@ -23,5 +21,15 @@ public class TransactionService {
     public List<Transaction> findAllWithDateTimeAfter(Timestamp dateTime) 
     {
         return transactionRepo.findByTimestampGreaterThan(dateTime);
+    }
+        public List<Transaction> findAllWithDateTimeAfter(Timestamp dateTime,PageRequest pageRequest) 
+    {
+        return transactionRepo.findByTimestampGreaterThan(dateTime,pageRequest);
+    }
+    public List<Transaction> findInBetween(Timestamp start, Timestamp end, PageRequest pageRequest) 
+    {
+        if(start.after(end))
+        return null;
+        return transactionRepo.findByTimestampGreaterThanEqualAndTimestampLessThanEqual(start, end,pageRequest);
     }
 }
