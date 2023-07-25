@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,12 +19,13 @@ import lombok.Setter;
 @Embeddable
 public class RouteHistoryPrimaryKey implements Serializable {
 
-    @Column(name="FromDateTime")
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "FromDateTime")
     Timestamp fromDateTime;
 
-    @Column(name="ROUTE_Id")
+    @Column(name = "ROUTE_Id")
     Integer routeId;
 
-    @Column(name="TERMINAL_Id")
+    @Column(name = "TERMINAL_Id")
     Integer terminalId;
 }
