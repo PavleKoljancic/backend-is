@@ -35,10 +35,9 @@ public class TicketTypeController {
         return ResponseEntity.ok().body(ticketTypeService.getAvailableTickets(PageRequest.of(page, size)));
     }
 
-    @GetMapping("/getInUseTicketsForTransporter{TransporterId}/pagesize={pagesize}size={size}")
-    public ResponseEntity<List<TicketType>> getTicketsInUseForTransporter(@PathVariable("pagesize") int page,
-            @PathVariable("size") int size, @PathVariable("TransporterId") Integer TransporterId) {
-        return ResponseEntity.ok().body(ticketTypeService.getAvailableTicketsForTransporter(TransporterId,PageRequest.of(page, size)));
+    @GetMapping("/getInUseTicketsForTransporter/{TransporterId}")
+    public ResponseEntity<List<TicketType>> getTicketsInUseForTransporter( @PathVariable("TransporterId") Integer TransporterId) {
+        return ResponseEntity.ok().body(ticketTypeService.getAvailableTicketsForTransporter(TransporterId));
     }
 
 
