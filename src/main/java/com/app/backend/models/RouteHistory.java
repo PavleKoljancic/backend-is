@@ -23,6 +23,6 @@ public class RouteHistory {
 
     @Column(name = "DRIVER_PIN_USER_Id")
     Integer driverId;
-    @Temporal(TemporalType.TIMESTAMP)
+
     Timestamp toDateTime;
 }

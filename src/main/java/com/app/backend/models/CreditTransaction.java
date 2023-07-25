@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="SCAN_TRANSACTION")
+@Table(name="CREDIT_TRANSACTION")
 @PrimaryKeyJoinColumn(name = "TRANSACTION_Id", referencedColumnName="Id")
 public class CreditTransaction extends Transaction {
 

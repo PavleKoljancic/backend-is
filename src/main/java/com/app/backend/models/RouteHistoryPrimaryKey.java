@@ -19,7 +19,7 @@ import lombok.Setter;
 @Embeddable
 public class RouteHistoryPrimaryKey implements Serializable {
 
-    @Temporal(TemporalType.TIMESTAMP)
+
     @Column(name = "FromDateTime")
     Timestamp fromDateTime;
 

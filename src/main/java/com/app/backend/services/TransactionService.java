@@ -20,8 +20,8 @@ public class TransactionService {
     @Autowired
     TransactionRepo transactionRepo;
 
-    public List<Transaction>findAllWithDateTimeAfter(Timestamp dateTime) 
+    public List<Transaction> findAllWithDateTimeAfter(Timestamp dateTime) 
     {
-        return transactionRepo.findAllWithDateTimeAfter(dateTime);
+        return transactionRepo.findByTimestampGreaterThan(dateTime);
     }
 }

@@ -10,8 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,9 +23,10 @@ public  class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
+    @Column(name="Amount")
     private BigDecimal amount;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp dateAndTime;
+    @Column(name="DateAndTime")
+    private Timestamp timestamp;
     @Column(name = "USER_Id")
     private Integer userId;
 }
