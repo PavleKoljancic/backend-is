@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.app.backend.models.CreditTransaction;
 import com.app.backend.models.Transaction;
+import com.app.backend.repositories.CreditTransactionRepo;
 import com.app.backend.repositories.TransactionRepo;
 
 
@@ -17,6 +19,8 @@ import com.app.backend.repositories.TransactionRepo;
 public class TransactionService {
     @Autowired
     TransactionRepo transactionRepo;
+    @Autowired
+    CreditTransactionRepo creditTransactionRepo;
 
     public List<Transaction> findAllWithDateTimeAfter(Timestamp dateTime) 
     {
@@ -36,5 +40,8 @@ public class TransactionService {
     public List<Transaction> findUserTransactions(Integer UserId,PageRequest pageRequest) 
     {
         return transactionRepo.findByUserId(UserId, pageRequest);
+    }
+    public List<CreditTransaction> findSupervisorTransactions(Integer supervisorId, PageRequest of) {
+        return creditTransactionRepo.findBySupervisorId(supervisorId, of);
     }
 }
