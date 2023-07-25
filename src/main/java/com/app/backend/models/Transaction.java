@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity(name = "TICKET_TYPE")
+@Entity(name = "TRANSACTION")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Transaction {
     @Id
