@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.backend.models.CreditTransaction;
+import com.app.backend.models.ScanTransaction;
 import com.app.backend.models.Transaction;
 import com.app.backend.services.TransactionService;
 
@@ -49,4 +50,12 @@ public class TransactionsController {
             @PathVariable("page") Integer page, @PathVariable("size") Integer size) {
         return transactionService.findSupervisorTransactions(SupervisorId, PageRequest.of(page, size));
     }
+
+    @GetMapping("/getScanTransactionsByTerminalId={TerminalId}page={page}size={size}")
+    public List<ScanTransaction> geTransactionsByTerminal(@PathVariable("TerminalId") Integer TerminalId,
+            @PathVariable("page") Integer page, @PathVariable("size") Integer size) {
+        return transactionService.findTransactionsByTerminalId(TerminalId, PageRequest.of(page, size));
+    }
+
+
 }
