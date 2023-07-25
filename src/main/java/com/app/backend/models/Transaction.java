@@ -21,7 +21,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity(name = "TRANSACTION")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Transaction {
+public  class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
