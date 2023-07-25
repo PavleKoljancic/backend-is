@@ -2,6 +2,7 @@ package com.app.backend.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -22,24 +23,32 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class TicketTypeService {
+
     @Autowired
     TicketTypeRepo ticketTypeRepo;
+
     @Autowired
     AmountTicketRepo amountTicketRepo;
+
     @Autowired
     PeriodicTicketRepo periodicTicketRepo;
+
     @Autowired
     TransportersRepo transportersRepo; 
+
     @Autowired
     AcceptedRepo acceptedRepo;
+
     public List<TicketType> getTickets(PageRequest pageRequest) 
     {
         return ticketTypeRepo.findAll(pageRequest).toList();
     }
+
     public List<TicketType> getAvailableTickets(PageRequest pageRequest) 
     {
         return ticketTypeRepo.findByInUseTrue(pageRequest);
     }
+
     @Transactional
     public boolean addTicketType(TicketType ticketType, Integer[] validForTransportersId) 
     {
@@ -64,5 +73,12 @@ public class TicketTypeService {
          return true;
 
     }
-
+    
+    public TicketType getTicketTypeById(Integer TicketTypeId) 
+    {
+        Optional<TicketType> result = ticketTypeRepo.findById(TicketTypeId);
+        if(result.isPresent())
+            return result.get();
+        return null;
+    }
 }
