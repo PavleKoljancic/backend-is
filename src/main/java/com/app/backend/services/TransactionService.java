@@ -32,4 +32,9 @@ public class TransactionService {
         return null;
         return transactionRepo.findByTimestampGreaterThanEqualAndTimestampLessThanEqual(start, end,pageRequest);
     }
+
+    public List<Transaction> findUserTransactions(Integer UserId,PageRequest pageRequest) 
+    {
+        return transactionRepo.findByUserId(UserId, pageRequest);
+    }
 }

@@ -19,4 +19,5 @@ public interface TransactionRepo extends JpaRepository<Transaction,Integer>
     List<Transaction> findByTimestampGreaterThan(Timestamp dateAndTime);
     List<Transaction> findByTimestampGreaterThan(Timestamp dateAndTime, PageRequest pageRequest);
     List<Transaction> findByTimestampGreaterThanEqualAndTimestampLessThanEqual(Timestamp start, Timestamp end,PageRequest page);
+    List<Transaction> findByUserId(Integer userId,PageRequest pageRequest);
 }
