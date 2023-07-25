@@ -14,13 +14,13 @@ import lombok.Setter;
 @Embeddable
 public class AcceptedPrimaryKey implements Serializable {
     @Column(name="TRANSPORTER_Id")
-    Integer TransporterId;
+    public Integer transporterId;
     @Column (name="TICKET_TYPE_Id")
-    Integer TicketTypeId;
+    public Integer ticketTypeId;
 
     public AcceptedPrimaryKey(Integer TransporterId, Integer TicketTypeId) 
     {
-        this.TicketTypeId = TicketTypeId;
-        this.TransporterId = TransporterId;
+        this.ticketTypeId = TicketTypeId;
+        this.transporterId = TransporterId;
     }
 }
