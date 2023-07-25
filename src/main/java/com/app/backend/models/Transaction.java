@@ -1,4 +1,5 @@
 package com.app.backend.models;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -9,6 +10,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,7 +26,8 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
     private BigDecimal amount;
+    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp dateAndTime;
-    @Column(name="USER_Id")
+    @Column(name = "USER_Id")
     private Integer userId;
 }
