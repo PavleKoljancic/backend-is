@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.app.backend.models.CreditTransaction;
 import com.app.backend.models.ScanTransaction;
+import com.app.backend.models.TicketTransaction;
 import com.app.backend.models.Transaction;
 import com.app.backend.repositories.CreditTransactionRepo;
 import com.app.backend.repositories.ScanTransactionRepo;
@@ -52,5 +53,10 @@ public class TransactionService {
     public List<ScanTransaction> findTransactionsByTerminalId(Integer terminalId,PageRequest request) 
     {
         return scanTransactionRepo.findByTerminalId(terminalId,request);
+    }
+
+    public List<TicketTransaction> nesto() 
+    {
+        return transactionRepo.nesto();
     }
 }

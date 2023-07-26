@@ -1,6 +1,8 @@
 package com.app.backend.models;
 
-import java.sql.Date;
+
+
+import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +21,7 @@ public class TicketRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer Id;
-    Date DateTime;
+    Timestamp DateTime;
     @Column(name="USER_Id")
     Integer userId ;
     @Column(name="TICKET_TYPE_Id")
