@@ -20,8 +20,7 @@ public class TerminalService {
     TerminalActivationRequestRepo terminalActivationRequestRepo;
     @Autowired
     TerminalRepo terminalRepo;
-
-
+    
     public List<TerminalActivationRequest> getTerminalActivationRequestByTransporterId(Integer TRANSPORTER_Id) 
     {
         return terminalActivationRequestRepo.findByTransporterIdAndProcessedFalse(TRANSPORTER_Id);
@@ -91,4 +90,6 @@ public class TerminalService {
         }
         return false;
     }
+
+
 }

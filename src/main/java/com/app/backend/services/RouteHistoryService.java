@@ -1,6 +1,7 @@
 package com.app.backend.services;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import com.app.backend.models.Driver;
 import com.app.backend.models.Route;
 import com.app.backend.models.RouteHistory;
 import com.app.backend.models.RouteHistoryPrimaryKey;
+import com.app.backend.models.ScanInterraction;
 import com.app.backend.models.Terminal;
 import com.app.backend.repositories.RouteHistoryRepo;
 
@@ -27,6 +29,9 @@ public class RouteHistoryService {
 
     @Autowired
     private DriverService driverService;
+
+    @Autowired
+    private ScanInterractionService scanInterractionService;
 
     public String updateTerminal(Integer terminalId, Integer RouteId, Integer DriverId){
         
@@ -81,5 +86,15 @@ public class RouteHistoryService {
             routeHistoryRepo.save(checkedRouteHistory);
             return true;
         }
+    }
+
+    public List<ScanInterraction> getScanInterractionsByTerminalId(Integer terminalId, Long minutes){
+
+        RouteHistory routeHistory = checkTerminalRouteHistory(terminalId);
+
+        if(routeHistory == null)
+            return null;
+        
+        return scanInterractionService.getScanInterractionsByRouteHistory(routeHistory, minutes);
     }
 }

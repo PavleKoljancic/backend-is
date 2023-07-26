@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.backend.models.RouteHistory;
+import com.app.backend.models.ScanInterraction;
 import com.app.backend.models.Terminal;
 import com.app.backend.models.TerminalActivationRequest;
+import com.app.backend.repositories.ScanInterractionRepo;
 import com.app.backend.services.RouteHistoryService;
 import com.app.backend.services.TerminalService;
 
@@ -36,6 +38,8 @@ public class TerminalController {
     @Autowired
     RouteHistoryService routeHistoryService;
 
+    @Autowired
+    private ScanInterractionRepo scanInterractionRepo;
     @GetMapping("/admin/getARByTransporterdId={transporterID}")
     public List<TerminalActivationRequest> findTerminalActivationRequestByTransporterId(@PathVariable("transporterID") Integer TRANSPORTER_Id) 
     {
@@ -127,4 +131,13 @@ public class TerminalController {
 
     }
     
+    @GetMapping("/getScanInterractionsByTerminalId={TerminalId}andNotOlderThan={Minutes}")
+    public ResponseEntity<?> getScanInterractionsByTerminalId(@PathVariable("TerminalId") Integer TerminalId, @PathVariable("Minutes") Long Minutes){
+
+        List<ScanInterraction> scanInterractions = routeHistoryService.getScanInterractionsByTerminalId(TerminalId, Minutes);
+        if(scanInterractions == null)
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Terminal is not opened!");
+        else
+            return ResponseEntity.status(HttpStatus.OK).body(scanInterractions);
+    }
 }
