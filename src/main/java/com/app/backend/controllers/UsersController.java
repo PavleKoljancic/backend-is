@@ -1,15 +1,8 @@
 package com.app.backend.controllers;
 
-
-import java.io.StringReader;
 import java.math.BigDecimal;
-import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +25,7 @@ import com.app.backend.models.User;
 import com.app.backend.models.UserTicket;
 import com.app.backend.models.UserWithPassword;
 import com.app.backend.security.JwtGenerator;
+import com.app.backend.security.SecurityUtil;
 import com.app.backend.services.AdminWithPasswordService;
 import com.app.backend.services.SupervisorService;
 import com.app.backend.services.UserService;
@@ -119,25 +113,10 @@ public class UsersController {
     }
 
     @GetMapping("/getUserById={Id}")
-    public ResponseEntity<?> getUser(@PathVariable("Id")Integer Id, HttpServletRequest request) 
-    {   
-        String bearerToken = request.getHeader("Authorization");
+    public ResponseEntity<?> getUser(@PathVariable("Id")Integer Id, HttpServletRequest request) {   
         
-        bearerToken = bearerToken.substring(7, bearerToken.length());
-        String[] chunks = bearerToken.split("\\.");
-
-        Base64.Decoder decoder = Base64.getUrlDecoder();
-        String payload = new String(decoder.decode(chunks[1]));
-        Integer id = null;
-        String role = null;
-
-        try (JsonReader jsonReader = Json.createReader(new StringReader(payload))) {
-    
-            JsonObject jsonObject = jsonReader.readObject();
-
-            id = jsonObject.getInt("id");
-            role = jsonObject.getString(role);
-        }
+        String role = SecurityUtil.getRoleFromAuthToken(request);
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
 
         if("USER".compareTo(role) == 0){
             if(id == Id)
@@ -153,21 +132,7 @@ public class UsersController {
     public ResponseEntity<?> addCredit(@PathVariable("UserId") Integer UserId, @PathVariable("Amount") BigDecimal Amount, @PathVariable("SupervisorId") Integer SupervisorId,
      HttpServletRequest request){
 
-        String bearerToken = request.getHeader("Authorization");
-        
-        bearerToken = bearerToken.substring(7, bearerToken.length());
-        String[] chunks = bearerToken.split("\\.");
-
-        Base64.Decoder decoder = Base64.getUrlDecoder();
-        String payload = new String(decoder.decode(chunks[1]));
-        Integer id = null;
-
-        try (JsonReader jsonReader = Json.createReader(new StringReader(payload))) {
-    
-            JsonObject jsonObject = jsonReader.readObject();
-
-            id = jsonObject.getInt("id");
-        }
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
 
         if(id != SupervisorId)
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);

@@ -19,7 +19,7 @@ import com.app.backend.services.SupervisorService;
 public class SupervisorController {
     
     @Autowired
-    SupervisorService supervisorService;
+    private SupervisorService supervisorService;
 
     @PostMapping("/register")
     public Integer register(@RequestBody SupervisorWithPassword supervisor){

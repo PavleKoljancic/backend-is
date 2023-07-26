@@ -1,13 +1,7 @@
 package com.app.backend.controllers;
 
-import java.io.StringReader;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +17,7 @@ import com.app.backend.models.RouteHistory;
 import com.app.backend.models.ScanInterraction;
 import com.app.backend.models.Terminal;
 import com.app.backend.models.TerminalActivationRequest;
+import com.app.backend.security.SecurityUtil;
 import com.app.backend.services.RouteHistoryService;
 import com.app.backend.services.ScanInterractionService;
 import com.app.backend.services.TerminalService;
@@ -34,10 +29,10 @@ import jakarta.servlet.http.HttpServletRequest;
 public class TerminalController {
 
     @Autowired
-    TerminalService terminalService;
+    private TerminalService terminalService;
 
     @Autowired
-    RouteHistoryService routeHistoryService;
+    private RouteHistoryService routeHistoryService;
 
     @Autowired
     private ScanInterractionService scanInterractionService;
@@ -101,21 +96,7 @@ public class TerminalController {
     public ResponseEntity<?> updateTerminal(@PathVariable("TerminalId") Integer TerminalId, @PathVariable("RouteId") Integer RouteId, @PathVariable("DriverId") Integer DriverId,
     HttpServletRequest request){
 
-        String bearerToken = request.getHeader("Authorization");
-        
-        bearerToken = bearerToken.substring(7, bearerToken.length());
-        String[] chunks = bearerToken.split("\\.");
-
-        Base64.Decoder decoder = Base64.getUrlDecoder();
-        String payload = new String(decoder.decode(chunks[1]));
-        Integer id = null;
-
-        try (JsonReader jsonReader = Json.createReader(new StringReader(payload))) {
-    
-            JsonObject jsonObject = jsonReader.readObject();
-
-            id = jsonObject.getInt("id");
-        }
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
 
         if(id != DriverId)
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
