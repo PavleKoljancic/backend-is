@@ -24,6 +24,7 @@ import com.app.backend.models.Driver;
 import com.app.backend.models.PinUser;
 import com.app.backend.models.TicketController;
 import com.app.backend.security.JwtGenerator;
+import com.app.backend.security.SecurityUtil;
 import com.app.backend.services.DriverService;
 import com.app.backend.services.SupervisorService;
 import com.app.backend.services.TicketControllerService;
@@ -93,25 +94,11 @@ public class PinUsersController {
     public ResponseEntity<List<Driver>> getAllDriversBySupervisorId(@PathVariable("SupervisorId") Integer SupervisorId, @PathVariable("pagesize") int page, 
     @PathVariable("size") int size, HttpServletRequest request){
         
-        /*String bearerToken = request.getHeader("Authorization");
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
         
-        bearerToken = bearerToken.substring(7, bearerToken.length());
-        String[] chunks = bearerToken.split("\\.");
-
-        Base64.Decoder decoder = Base64.getUrlDecoder();
-        String payload = new String(decoder.decode(chunks[1]));
-        Integer id = null;
-
-        try (JsonReader jsonReader = Json.createReader(new StringReader(payload))) {
-    
-            JsonObject jsonObject = jsonReader.readObject();
-
-            id = jsonObject.getInt("id");
-        }
-
         if(id != SupervisorId)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);*/
-        
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+
         Integer transporterId = supervisorService.findTransporterId(SupervisorId);
         return ResponseEntity.ok().body(driverService.getDriversByTransporterId(transporterId, PageRequest.of(page, size)));
     }
@@ -119,6 +106,11 @@ public class PinUsersController {
     @GetMapping("/getActiveDriversBySupervisorId={SupervisorId}/pagesize={pagesize}size={size}")
     public ResponseEntity<List<Driver>> getActiveDriversBySupervisorId(@PathVariable("SupervisorId")Integer SupervisorId, @PathVariable("pagesize") int page, 
     @PathVariable("size") int size, HttpServletRequest request) {
+
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
+        
+        if(id != SupervisorId)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 
         Integer transporterId = supervisorService.findTransporterId(SupervisorId);
         return ResponseEntity.ok().body(driverService.getActiveDrivers(transporterId, PageRequest.of(page, size)));
@@ -128,14 +120,31 @@ public class PinUsersController {
     public ResponseEntity<List<Driver>> getInactiveDriversBySupervisorId(@PathVariable("SupervisorId")Integer SupervisorId, @PathVariable("pagesize") int page, 
     @PathVariable("size") int size, HttpServletRequest request){
 
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
+        
+        if(id != SupervisorId)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+
         Integer transporterId = supervisorService.findTransporterId(SupervisorId);
         return ResponseEntity.ok().body(driverService.getInactiveDrivers(transporterId, PageRequest.of(page, size)));
     }
 
-    @PostMapping("/ChangeisActiveDriverId={DriverId}andIsActive={isActive}")
-    public boolean changeDriverStatus(@PathVariable("DriverId") Integer DriverId,@PathVariable("isActive") Boolean isActive) {
+    @PostMapping("/ChangeisActiveDriverId={DriverId}andIsActive={isActive}andSupervisorId={SupervisorId}")
+    public ResponseEntity<?> changeDriverStatus(@PathVariable("DriverId") Integer DriverId, @PathVariable("isActive") Boolean isActive,
+    @PathVariable("SupervisorId") Integer SupervisorId, HttpServletRequest request) {
 
-        return driverService.ChangeIsActiveDriverId(DriverId, isActive);
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
+
+        if(id != SupervisorId)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+
+        Integer transporterId = supervisorService.findTransporterId(SupervisorId);
+        if(transporterId != null && transporterId == driverService.getTransporterId(DriverId).get().getTransporterId()){
+
+            return ResponseEntity.status(HttpStatus.OK).body(driverService.ChangeIsActiveDriverId(DriverId, isActive));
+        }
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
     }
 
     @GetMapping("/getControllers/pagesize={pagesize}size={size}")

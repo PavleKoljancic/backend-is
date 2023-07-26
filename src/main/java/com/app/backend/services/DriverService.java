@@ -94,4 +94,9 @@ public class DriverService implements UserDetailsService{
         }
         return false;
     }
+
+    public Optional<Driver> getTransporterId(Integer driverId){
+
+        return driverRepo.findById(driverId);
+    }
 }
