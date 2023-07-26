@@ -137,4 +137,28 @@ public class PinUsersController {
 
         return driverService.ChangeIsActiveDriverId(DriverId, isActive);
     }
+
+    @GetMapping("/getControllers/pagesize={pagesize}size={size}")
+    public ResponseEntity<List<TicketController>> getAllTicketControllers(@PathVariable("pagesize") int page, @PathVariable("size") int size){
+        
+        return ResponseEntity.ok().body(ticketControllerService.getAllTicketControllers(PageRequest.of(page, size)));
+    }
+
+    @GetMapping("/getActiveControllers/pagesize={pagesize}size={size}")
+    public ResponseEntity<List<TicketController>> getActiveTicketControllers(@PathVariable("pagesize") int page, @PathVariable("size") int size) {
+
+        return ResponseEntity.ok().body(ticketControllerService.getActiveTicketControllers(PageRequest.of(page, size)));
+    }
+
+    @GetMapping("/getInactiveControllers/pagesize={pagesize}size={size}")
+    public ResponseEntity<List<TicketController>> getInactiveTicketControllers(@PathVariable("pagesize") int page, @PathVariable("size") int size){
+
+        return ResponseEntity.ok().body(ticketControllerService.getInactiveTicketControllers(PageRequest.of(page, size)));
+    }
+
+    @PostMapping("/ChangeisActiveControllerId={ControllerId}andIsActive={isActive}")
+    public boolean changeControllerStatus(@PathVariable("ControllerId") Integer ControllerId,@PathVariable("isActive") Boolean isActive) {
+
+        return ticketControllerService.ChangeIsActiveControllerId(ControllerId, isActive);
+    }
 }
