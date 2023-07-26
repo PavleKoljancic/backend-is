@@ -88,13 +88,18 @@ public class RouteHistoryService {
         }
     }
 
-    public List<ScanInterraction> getScanInterractionsByTerminalId(Integer terminalId, Long minutes){
+    public List<ScanInterraction> getScanInterractionsForSameRouteByTerminalId(Integer terminalId, Long minutes){
 
         RouteHistory routeHistory = checkTerminalRouteHistory(terminalId);
 
         if(routeHistory == null)
             return null;
         
-        return scanInterractionService.getScanInterractionsByRouteHistory(routeHistory, minutes);
+        return scanInterractionService.getScanInterractionsForSameRouteByTerminalId(routeHistory, minutes);
+    }
+
+    public List<RouteHistory> getRouteHistoriesByTerminalId(Integer terminalId){
+
+        return routeHistoryRepo.findByTerminalId(terminalId);
     }
 }

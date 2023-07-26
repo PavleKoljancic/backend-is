@@ -16,12 +16,19 @@ public class ScanInterractionService {
     @Autowired
     private ScanInterractionRepo scanInterractionRepo;
 
-    public List<ScanInterraction> getScanInterractionsByRouteHistory(RouteHistory routeHistory, Long minutes){
+    public List<ScanInterraction> getScanInterractionsForSameRouteByTerminalId(RouteHistory routeHistory, Long minutes){
 
         Timestamp scanTimeOffset = new Timestamp(System.currentTimeMillis() - minutes * 60 * 1000);
 
-        System.out.println(scanTimeOffset);
         return scanInterractionRepo.findByIdRouteHistoryTerminalIdEqualsAndIdRouteHistoryRouteIdEqualsAndIdTimeGreaterThanEqual(routeHistory.getPrimaryKey().getTerminalId(), 
         routeHistory.getPrimaryKey().getRouteId(), scanTimeOffset);
     }
+
+    public List<ScanInterraction> getScanInterractionsByTerminalId(Integer terminalId, Long minutes){
+
+        Timestamp scanTimeOffset = new Timestamp(System.currentTimeMillis() - minutes * 60 * 1000);
+
+        return scanInterractionRepo.findByIdRouteHistoryTerminalIdEqualsAndIdTimeGreaterThanEqual(terminalId, scanTimeOffset);
+    }
+    
 }

@@ -3,6 +3,7 @@ package com.app.backend.controllers;
 import java.io.StringReader;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -22,8 +23,8 @@ import com.app.backend.models.RouteHistory;
 import com.app.backend.models.ScanInterraction;
 import com.app.backend.models.Terminal;
 import com.app.backend.models.TerminalActivationRequest;
-import com.app.backend.repositories.ScanInterractionRepo;
 import com.app.backend.services.RouteHistoryService;
+import com.app.backend.services.ScanInterractionService;
 import com.app.backend.services.TerminalService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,7 +40,8 @@ public class TerminalController {
     RouteHistoryService routeHistoryService;
 
     @Autowired
-    private ScanInterractionRepo scanInterractionRepo;
+    private ScanInterractionService scanInterractionService;
+    
     @GetMapping("/admin/getARByTransporterdId={transporterID}")
     public List<TerminalActivationRequest> findTerminalActivationRequestByTransporterId(@PathVariable("transporterID") Integer TRANSPORTER_Id) 
     {
@@ -131,13 +133,23 @@ public class TerminalController {
 
     }
     
-    @GetMapping("/getScanInterractionsByTerminalId={TerminalId}andNotOlderThan={Minutes}")
-    public ResponseEntity<?> getScanInterractionsByTerminalId(@PathVariable("TerminalId") Integer TerminalId, @PathVariable("Minutes") Long Minutes){
+    @GetMapping("/getScanInterractionsForSameRouteByTerminalId={TerminalId}andNotOlderThan={Minutes}")
+    public ResponseEntity<?> getScanInterractionsForSameRouteByTerminalId(@PathVariable("TerminalId") Integer TerminalId, @PathVariable("Minutes") Long Minutes){
 
-        List<ScanInterraction> scanInterractions = routeHistoryService.getScanInterractionsByTerminalId(TerminalId, Minutes);
+        List<ScanInterraction> scanInterractions = routeHistoryService.getScanInterractionsForSameRouteByTerminalId(TerminalId, Minutes);
         if(scanInterractions == null)
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Terminal is not opened!");
         else
             return ResponseEntity.status(HttpStatus.OK).body(scanInterractions);
+    }
+
+    @GetMapping("/getScanInterractionsByTerminalId={TerminalId}andNotOlderThan={Minutes}")
+    public ResponseEntity<?> getScanInterractionsByTerminalId(@PathVariable("TerminalId") Integer TerminalId, @PathVariable("Minutes") Long Minutes){
+
+        Optional<Terminal> result = terminalService.getById(TerminalId);
+        if(!result.isPresent())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        else
+            return ResponseEntity.status(HttpStatus.OK).body(scanInterractionService.getScanInterractionsByTerminalId(TerminalId, Minutes));
     }
 }
