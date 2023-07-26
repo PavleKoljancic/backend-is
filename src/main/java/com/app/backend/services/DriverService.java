@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -55,5 +56,42 @@ public class DriverService implements UserDetailsService{
     public Driver findByPin(String pin){
 
         return driverRepo.findByPin(pin);
+    }
+
+    public List<Driver> getDriversByTransporterId(Integer transporterId, PageRequest pageRequest ){
+
+        if(transporterId != null)
+            return driverRepo.findAllByTransporterId(transporterId, pageRequest);
+        else
+            return null;
+    }
+
+    public List<Driver> getActiveDrivers(Integer transporterId, PageRequest pageRequest ){
+
+        if(transporterId != null)
+            return driverRepo.findAllByTransporterIdAndIsActiveTrue(transporterId, pageRequest);
+        else
+            return null;
+    }
+
+    public List<Driver> getInactiveDrivers(Integer transporterId, PageRequest pageRequest ){
+
+        if(transporterId != null)
+            return driverRepo.findAllByTransporterIdAndIsActiveFalse(transporterId, pageRequest);
+        else
+            return null;
+    }
+
+    public boolean ChangeIsActiveDriverId(Integer driverId, Boolean isActive) {
+        
+        Optional<Driver> result = driverRepo.findById(driverId);
+        if(result.isPresent() && result.get().getIsActive() != isActive)
+        {
+            Driver temp = result.get();
+            temp.setIsActive(isActive);
+            driverRepo.save(temp);
+            return true;
+        }
+        return false;
     }
 }

@@ -1,8 +1,10 @@
 package com.app.backend.controllers;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +13,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +25,7 @@ import com.app.backend.models.PinUser;
 import com.app.backend.models.TicketController;
 import com.app.backend.security.JwtGenerator;
 import com.app.backend.services.DriverService;
+import com.app.backend.services.SupervisorService;
 import com.app.backend.services.TicketControllerService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,6 +46,8 @@ public class PinUsersController {
     @Autowired
     private JwtGenerator jwtGenerator;
 
+    @Autowired
+    private SupervisorService supervisorService;
 
     @PostMapping("/register/driver")
     public Integer register(@RequestBody Driver driver){
@@ -80,5 +87,54 @@ public class PinUsersController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(token);
+    }
+
+    @GetMapping("/getDriversBySupervisorId={SupervisorId}/pagesize={pagesize}size={size}")
+    public ResponseEntity<List<Driver>> getAllDriversBySupervisorId(@PathVariable("SupervisorId") Integer SupervisorId, @PathVariable("pagesize") int page, 
+    @PathVariable("size") int size, HttpServletRequest request){
+        
+        /*String bearerToken = request.getHeader("Authorization");
+        
+        bearerToken = bearerToken.substring(7, bearerToken.length());
+        String[] chunks = bearerToken.split("\\.");
+
+        Base64.Decoder decoder = Base64.getUrlDecoder();
+        String payload = new String(decoder.decode(chunks[1]));
+        Integer id = null;
+
+        try (JsonReader jsonReader = Json.createReader(new StringReader(payload))) {
+    
+            JsonObject jsonObject = jsonReader.readObject();
+
+            id = jsonObject.getInt("id");
+        }
+
+        if(id != SupervisorId)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);*/
+        
+        Integer transporterId = supervisorService.findTransporterId(SupervisorId);
+        return ResponseEntity.ok().body(driverService.getDriversByTransporterId(transporterId, PageRequest.of(page, size)));
+    }
+
+    @GetMapping("/getActiveDriversBySupervisorId={SupervisorId}/pagesize={pagesize}size={size}")
+    public ResponseEntity<List<Driver>> getActiveDriversBySupervisorId(@PathVariable("SupervisorId")Integer SupervisorId, @PathVariable("pagesize") int page, 
+    @PathVariable("size") int size, HttpServletRequest request) {
+
+        Integer transporterId = supervisorService.findTransporterId(SupervisorId);
+        return ResponseEntity.ok().body(driverService.getActiveDrivers(transporterId, PageRequest.of(page, size)));
+    }
+
+    @GetMapping("/getInactiveDriversBySupervisorId={SupervisorId}/pagesize={pagesize}size={size}")
+    public ResponseEntity<List<Driver>> getInactiveDriversBySupervisorId(@PathVariable("SupervisorId")Integer SupervisorId, @PathVariable("pagesize") int page, 
+    @PathVariable("size") int size, HttpServletRequest request){
+
+        Integer transporterId = supervisorService.findTransporterId(SupervisorId);
+        return ResponseEntity.ok().body(driverService.getInactiveDrivers(transporterId, PageRequest.of(page, size)));
+    }
+
+    @PostMapping("/ChangeisActiveDriverId={DriverId}andIsActive={isActive}")
+    public boolean changeDriverStatus(@PathVariable("DriverId") Integer DriverId,@PathVariable("isActive") Boolean isActive) {
+
+        return driverService.ChangeIsActiveDriverId(DriverId, isActive);
     }
 }
