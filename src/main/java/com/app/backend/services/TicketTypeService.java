@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.app.backend.models.Accepted;
 import com.app.backend.models.AcceptedPrimaryKey;
-import com.app.backend.models.AmountTicket;
-import com.app.backend.models.PeriodicTicket;
 import com.app.backend.models.TicketType;
 import com.app.backend.repositories.AcceptedRepo;
 import com.app.backend.repositories.TicketTypeRepo;
