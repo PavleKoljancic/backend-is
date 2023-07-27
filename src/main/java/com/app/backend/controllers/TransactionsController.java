@@ -59,7 +59,8 @@ public class TransactionsController {
     }
 
     @GetMapping("/getTransactionsByTransporterId{transporterId}/page={page}size={size}")
-    public List<Transaction> geTransactionsByTransporterId( @PathVariable("transporterId") Integer transporterId,@PathVariable("page") Integer page, @PathVariable("size") Integer size) 
+    public List<Transaction> geTransactionsByTransporterId( @PathVariable("transporterId") Integer transporterId,@PathVariable("page") Integer page, 
+    @PathVariable("size") Integer size) 
     {
         return transactionService.getTransactionsTransporterIdPaged(transporterId, PageRequest.of(page, size, Sort.Direction.DESC, "Id"));
     }

@@ -43,10 +43,16 @@ public class TicketRequestController {
     }
 
     @GetMapping("getTicketRequests&SupervisorId={SupervisorId}")
-    public ResponseEntity<List<TicketRequest>> getTicketRequests(@PathVariable("SupervisorId") Integer SupervisorId) {
+    public ResponseEntity<List<TicketRequest>> getTicketRequests(@PathVariable("SupervisorId") Integer SupervisorId, @PathVariable("pagesize") Integer page,
+            @PathVariable("size") Integer size, HttpServletRequest request) {
 
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
+
+        if(id != SupervisorId)
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+                
         return ResponseEntity.ok(ticketRequestService.getTicketRequestByTransporterId(
-                supervisorService.findTransporterId(SupervisorId), PageRequest.of(0, 50)));
+                supervisorService.findTransporterId(SupervisorId), PageRequest.of(page, size)));
 
     }
 
