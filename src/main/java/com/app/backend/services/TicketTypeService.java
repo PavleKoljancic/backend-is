@@ -10,12 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.app.backend.models.Accepted;
 import com.app.backend.models.AcceptedPrimaryKey;
-import com.app.backend.models.AmountTicket;
-import com.app.backend.models.PeriodicTicket;
 import com.app.backend.models.TicketType;
 import com.app.backend.repositories.AcceptedRepo;
-import com.app.backend.repositories.AmountTicketRepo;
-import com.app.backend.repositories.PeriodicTicketRepo;
 import com.app.backend.repositories.TicketTypeRepo;
 import com.app.backend.repositories.TransportersRepo;
 
@@ -27,11 +23,7 @@ public class TicketTypeService {
     @Autowired
     TicketTypeRepo ticketTypeRepo;
 
-    @Autowired
-    AmountTicketRepo amountTicketRepo;
 
-    @Autowired
-    PeriodicTicketRepo periodicTicketRepo;
 
     @Autowired
     TransportersRepo transportersRepo; 
@@ -55,18 +47,14 @@ public class TicketTypeService {
         for(Integer id : validForTransportersId)
             if(!transportersRepo.existsById(id))
                 return false;
-        Integer TicketTypeId =null;
         
-        if(ticketType instanceof AmountTicket)
-            TicketTypeId = amountTicketRepo.save((AmountTicket)ticketType).getId();
-        if(ticketType instanceof PeriodicTicket)
-            TicketTypeId = periodicTicketRepo.save((PeriodicTicket)ticketType).getId();
-        if(TicketTypeId ==null)
+        TicketType saveResult = ticketTypeRepo.save(ticketType);
+        if(saveResult==null)
          return false;
         ArrayList<Accepted> acceptedList = new ArrayList<>(validForTransportersId.length);
         for(Integer id : validForTransportersId)
         {   Accepted temp = new Accepted();
-            temp.setPrimaryKey(new AcceptedPrimaryKey(id,TicketTypeId));
+            temp.setId(new AcceptedPrimaryKey(id,saveResult.getId()));
             acceptedList.add(temp);
         }
          acceptedRepo.saveAll(acceptedList);
@@ -80,5 +68,11 @@ public class TicketTypeService {
         if(result.isPresent())
             return result.get();
         return null;
+    }
+
+    public List<TicketType> getAvailableTicketsForTransporter(Integer transporterId) {
+        List<Accepted> acceptedBy = acceptedRepo.findByIdTransporterId(transporterId);
+        List<TicketType> result = ticketTypeRepo.findAllById(acceptedBy.stream().map(a->a.getId().getTicketTypeId()).toList());
+         return result.stream().filter(t -> t.getInUse()).toList();
     }
 }

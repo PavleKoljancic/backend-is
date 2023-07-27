@@ -35,6 +35,12 @@ public class TicketTypeController {
         return ResponseEntity.ok().body(ticketTypeService.getAvailableTickets(PageRequest.of(page, size)));
     }
 
+    @GetMapping("/getInUseTicketsForTransporter/{TransporterId}")
+    public ResponseEntity<List<TicketType>> getTicketsInUseForTransporter( @PathVariable("TransporterId") Integer TransporterId) {
+        return ResponseEntity.ok().body(ticketTypeService.getAvailableTicketsForTransporter(TransporterId));
+    }
+
+
     @PostMapping("/addTicketType")
     public Boolean addTicketType(@RequestBody AddTicketTypeRequest request) {
 

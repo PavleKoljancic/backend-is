@@ -13,5 +13,6 @@ import lombok.Setter;
 @Entity
 @Table(name="ACCEPTED")
 public class Accepted {
-    @EmbeddedId AcceptedPrimaryKey primaryKey;
+    @EmbeddedId 
+    AcceptedPrimaryKey Id;
 }
