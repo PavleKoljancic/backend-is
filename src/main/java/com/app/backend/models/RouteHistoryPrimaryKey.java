@@ -17,12 +17,13 @@ import lombok.Setter;
 @Embeddable
 public class RouteHistoryPrimaryKey implements Serializable {
 
-    @Column(name="FromDateTime")
+
+    @Column(name = "FromDateTime")
     Timestamp fromDateTime;
 
-    @Column(name="ROUTE_Id")
+    @Column(name = "ROUTE_Id")
     Integer routeId;
 
-    @Column(name="TERMINAL_Id")
+    @Column(name = "TERMINAL_Id")
     Integer terminalId;
 }
