@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class TransporterController {
  
     @Autowired
-    TransporterService transporterService;
+    private TransporterService transporterService;
 
     @PostMapping("addTransporter")
     public Integer addTransporter(@RequestBody Transporter transporter) {

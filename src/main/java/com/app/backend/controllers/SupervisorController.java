@@ -19,7 +19,7 @@ import com.app.backend.services.SupervisorService;
 public class SupervisorController {
     
     @Autowired
-    SupervisorService supervisorService;
+    private SupervisorService supervisorService;
 
     @PostMapping("/register")
     public Integer register(@RequestBody SupervisorWithPassword supervisor){
@@ -33,9 +33,9 @@ public class SupervisorController {
     }
 
     @PostMapping("/ChangeisActiveSupervisorId={SupervisorId}andIsActive={isActive}")
-    public boolean changeSupervisorStatus(@PathVariable("SupervisorId") Integer TerminalId,@PathVariable("isActive") Boolean isActive) 
+    public boolean changeSupervisorStatus(@PathVariable("SupervisorId") Integer supervisorId,@PathVariable("isActive") Boolean isActive) 
     {
-        return supervisorService.ChangeIsActiveSupervisorId(TerminalId,isActive);
+        return supervisorService.ChangeIsActiveSupervisorId(supervisorId, isActive);
 
     }
 }

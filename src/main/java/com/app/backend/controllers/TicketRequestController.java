@@ -1,12 +1,6 @@
 package com.app.backend.controllers;
 
-import java.io.StringReader;
-import java.util.Base64;
 import java.util.List;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.backend.models.TicketRequest;
 import com.app.backend.models.TicketRequestResponse;
+import com.app.backend.security.SecurityUtil;
 import com.app.backend.services.SupervisorService;
 import com.app.backend.services.TicketRequestService;
 
@@ -29,30 +24,17 @@ import jakarta.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/api/ticketRequests")
 public class TicketRequestController {
-    @Autowired
-    TicketRequestService ticketRequestService;
 
     @Autowired
-    SupervisorService supervisorService;
+    private TicketRequestService ticketRequestService;
+
+    @Autowired
+    private SupervisorService supervisorService;
 
     @GetMapping("addTicketRequest={ticketTypeId}&UserId={UserID}")
-    public ResponseEntity<String> addTicketRequest(@PathVariable("ticketTypeId") Integer ticketTypeId,
-            @PathVariable("UserID") Integer userId, HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-
-        bearerToken = bearerToken.substring(7, bearerToken.length());
-        String[] chunks = bearerToken.split("\\.");
-
-        Base64.Decoder decoder = Base64.getUrlDecoder();
-        String payload = new String(decoder.decode(chunks[1]));
-        Integer id = null;
-
-        try (JsonReader jsonReader = Json.createReader(new StringReader(payload))) {
-
-            JsonObject jsonObject = jsonReader.readObject();
-
-            id = jsonObject.getInt("id");
-        }
+    public ResponseEntity<String> addTicketRequest(@PathVariable("ticketTypeId") Integer ticketTypeId, @PathVariable("UserID") Integer userId, HttpServletRequest request) 
+    {
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
 
         if (id == userId)
             return ResponseEntity.ok(ticketRequestService.addTicketRequest(ticketTypeId, userId));
@@ -71,23 +53,12 @@ public class TicketRequestController {
     @PostMapping("/addTicketResponse")
     public ResponseEntity<String> addTicketResponse(@RequestBody TicketRequestResponse response,
             HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
+        
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
 
-        bearerToken = bearerToken.substring(7, bearerToken.length());
-        String[] chunks = bearerToken.split("\\.");
-
-        Base64.Decoder decoder = Base64.getUrlDecoder();
-        String payload = new String(decoder.decode(chunks[1]));
-        Integer id = null;
-
-        try (JsonReader jsonReader = Json.createReader(new StringReader(payload))) {
-
-            JsonObject jsonObject = jsonReader.readObject();
-
-            id = jsonObject.getInt("id");
-        }
         if (id == null || response.getSupervisorId() != id)
-            return ResponseEntity.ok(null); // Ovo nije bas najbolje da se fino izrazim;
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+
         return ResponseEntity.ok(ticketRequestService.addTicketResponse(response));
 
     }
@@ -96,23 +67,12 @@ public class TicketRequestController {
     public ResponseEntity<List<TicketRequestResponse>> getTicketResponse(
             @PathVariable("supervisorId") Integer supervisorId, @PathVariable("pagesize") Integer page,
             @PathVariable("size") Integer size, HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
+        
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
 
-        bearerToken = bearerToken.substring(7, bearerToken.length());
-        String[] chunks = bearerToken.split("\\.");
-
-        Base64.Decoder decoder = Base64.getUrlDecoder();
-        String payload = new String(decoder.decode(chunks[1]));
-        Integer id = null;
-
-        try (JsonReader jsonReader = Json.createReader(new StringReader(payload))) {
-
-            JsonObject jsonObject = jsonReader.readObject();
-
-            id = jsonObject.getInt("id");
-        }
         if (id == null || supervisorId != id)
-            return ResponseEntity.ok(null); // Ovo nije bas najbolje da se fino izrazim;
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+            
         return ResponseEntity.ok(ticketRequestService.getTicketResponses(supervisorId,PageRequest.of(page, size)));
 
     }

@@ -1,12 +1,7 @@
 package com.app.backend.controllers;
 
-import java.io.StringReader;
-import java.util.Base64;
 import java.util.List;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,9 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.backend.models.RouteHistory;
+import com.app.backend.models.ScanInterraction;
 import com.app.backend.models.Terminal;
 import com.app.backend.models.TerminalActivationRequest;
+import com.app.backend.security.SecurityUtil;
 import com.app.backend.services.RouteHistoryService;
+import com.app.backend.services.ScanInterractionService;
 import com.app.backend.services.TerminalService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,11 +29,14 @@ import jakarta.servlet.http.HttpServletRequest;
 public class TerminalController {
 
     @Autowired
-    TerminalService terminalService;
+    private TerminalService terminalService;
 
     @Autowired
-    RouteHistoryService routeHistoryService;
+    private RouteHistoryService routeHistoryService;
 
+    @Autowired
+    private ScanInterractionService scanInterractionService;
+    
     @GetMapping("/admin/getARByTransporterdId={transporterID}")
     public List<TerminalActivationRequest> findTerminalActivationRequestByTransporterId(@PathVariable("transporterID") Integer TRANSPORTER_Id) 
     {
@@ -95,21 +96,7 @@ public class TerminalController {
     public ResponseEntity<?> updateTerminal(@PathVariable("TerminalId") Integer TerminalId, @PathVariable("RouteId") Integer RouteId, @PathVariable("DriverId") Integer DriverId,
     HttpServletRequest request){
 
-        String bearerToken = request.getHeader("Authorization");
-        
-        bearerToken = bearerToken.substring(7, bearerToken.length());
-        String[] chunks = bearerToken.split("\\.");
-
-        Base64.Decoder decoder = Base64.getUrlDecoder();
-        String payload = new String(decoder.decode(chunks[1]));
-        Integer id = null;
-
-        try (JsonReader jsonReader = Json.createReader(new StringReader(payload))) {
-    
-            JsonObject jsonObject = jsonReader.readObject();
-
-            id = jsonObject.getInt("id");
-        }
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
 
         if(id != DriverId)
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
@@ -127,4 +114,23 @@ public class TerminalController {
 
     }
     
+    @GetMapping("/getScanInterractionsForSameRouteByTerminalId={TerminalId}andNotOlderThan={Minutes}")
+    public ResponseEntity<?> getScanInterractionsForSameRouteByTerminalId(@PathVariable("TerminalId") Integer TerminalId, @PathVariable("Minutes") Long Minutes){
+
+        List<ScanInterraction> scanInterractions = routeHistoryService.getScanInterractionsForSameRouteByTerminalId(TerminalId, Minutes);
+        if(scanInterractions == null)
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Terminal is not opened!");
+        else
+            return ResponseEntity.status(HttpStatus.OK).body(scanInterractions);
+    }
+
+    @GetMapping("/admin/getScanInterractionsByTerminalId={TerminalId}andNotOlderThan={Minutes}")
+    public ResponseEntity<?> getScanInterractionsByTerminalId(@PathVariable("TerminalId") Integer TerminalId, @PathVariable("Minutes") Long Minutes){
+
+        Optional<Terminal> result = terminalService.getById(TerminalId);
+        if(!result.isPresent())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        else
+            return ResponseEntity.status(HttpStatus.OK).body(scanInterractionService.getScanInterractionsByTerminalId(TerminalId, Minutes));
+    }
 }

@@ -5,13 +5,11 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.app.backend.models.CreditTransaction;
 import com.app.backend.models.ScanTransaction;
-import com.app.backend.models.TicketTransaction;
 import com.app.backend.models.Transaction;
 import com.app.backend.repositories.CreditTransactionRepo;
 import com.app.backend.repositories.ScanTransactionRepo;

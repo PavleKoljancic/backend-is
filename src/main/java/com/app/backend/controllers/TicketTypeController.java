@@ -21,7 +21,7 @@ import com.app.backend.services.TicketTypeService;
 public class TicketTypeController {
 
     @Autowired
-    TicketTypeService ticketTypeService;
+    private TicketTypeService ticketTypeService;
 
     @GetMapping("/getAllTickets/pagesize={pagesize}size={size}")
     public ResponseEntity<List<TicketType>> getTickets(@PathVariable("pagesize") int page,

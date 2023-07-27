@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.backend.models.CreditTransaction;
 import com.app.backend.models.ScanTransaction;
-import com.app.backend.models.TicketTransaction;
 import com.app.backend.models.Transaction;
 import com.app.backend.services.TransactionService;
 

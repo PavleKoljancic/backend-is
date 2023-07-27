@@ -53,11 +53,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authenticationManager(authenticationManager()).cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(authEntryPoint)
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeHttpRequests()
-        .requestMatchers("/api/**", "/api/pinusers/login", "/api/users/login", "/api/pinusers/register/**", "/api/supervisors/register", "/api/users/register").permitAll()
-        .requestMatchers("/api/routes/**", "/api/supervisors/**", "/api/terminals/admin/**").hasAnyAuthority("ADMIN")
-        .requestMatchers("/api/routes/getAllRoutesByTransporterdId={transporterID}", "/api/terminals/add/activationrequest",
-         "/updateTerminalId={TerminalId}andRouteId={RouteId}andDriverId={DriverId}").hasAnyAuthority("DRIVER")
-        .requestMatchers("/api/tickets/**").hasAnyAuthority("CONTROLLER", "ADMIN")
+        .requestMatchers("/api/pinusers/login").permitAll()
+        .requestMatchers("/api/pinusers/register/controller", "/api/pinusers/controllers/**", "/api/routes/**", "/api/supervisors/**",
+        "/api/terminals/admin/**").hasAnyAuthority("ADMIN")
+        .requestMatchers("/api/pinusers/register/driverBySupervisorId={SupervisorId}", "/api/pinusers/drivers/**").hasAnyAuthority("SUPERVISOR")
+        .requestMatchers("/api/routes/getAllRoutesByTransporterdId={transporterID}", "/api/routes/checkRouteHistoryByTerminalId={TerminalId}",
+        "/api/terminals/updateTerminalId={TerminalId}andRouteId={RouteId}andDriverId={DriverId}", "/api/terminals/CloseTerminalRouteHistory").hasAnyAuthority("DRIVER")
+        .requestMatchers("/api/terminals/getScanInterractions**").hasAnyAuthority("CONTROLLER")
         .and().httpBasic();
         
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

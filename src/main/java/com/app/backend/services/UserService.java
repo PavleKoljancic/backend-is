@@ -36,7 +36,6 @@ public class UserService{
         return  userRepo.findAll(pageRequest).toList();
     }
 
-
     public List<User> findByFirstNameAndLastName(String firstName, String lastName) {
         return userRepo.findByFirstNameStartingWithAndLastNameStartingWith(firstName, lastName);
     }
