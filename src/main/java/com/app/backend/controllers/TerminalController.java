@@ -124,7 +124,7 @@ public class TerminalController {
             return ResponseEntity.status(HttpStatus.OK).body(scanInterractions);
     }
 
-    @GetMapping("/getScanInterractionsByTerminalId={TerminalId}andNotOlderThan={Minutes}")
+    @GetMapping("/admin/getScanInterractionsByTerminalId={TerminalId}andNotOlderThan={Minutes}")
     public ResponseEntity<?> getScanInterractionsByTerminalId(@PathVariable("TerminalId") Integer TerminalId, @PathVariable("Minutes") Long Minutes){
 
         Optional<Terminal> result = terminalService.getById(TerminalId);

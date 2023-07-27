@@ -50,13 +50,22 @@ public class PinUsersController {
     @Autowired
     private SupervisorService supervisorService;
 
-    @PostMapping("/register/driver")
-    public Integer register(@RequestBody Driver driver){
-        return driverService.registerDriver(driver);
+    @PostMapping("/register/driverBySupervisorId={SupervisorId}")
+    public ResponseEntity<Integer> register(@RequestBody Driver driver, @PathVariable("SupervisorId") Integer SupervisorId, HttpServletRequest request){
+
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
+        if(id != SupervisorId)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+
+        if(supervisorService.findTransporterId(SupervisorId) != driver.getTransporterId())
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+
+        return ResponseEntity.status(HttpStatus.OK).body(driverService.registerDriver(driver));
     }
 
     @PostMapping("/register/controller")
     public Integer register(@RequestBody TicketController ticketController){
+
         return ticketControllerService.registerController(ticketController);
     }
     
@@ -75,13 +84,22 @@ public class PinUsersController {
             String role = ((org.springframework.security.core.userdetails.User)authentication.getPrincipal()).getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()).get(0);
             
             Integer id = null;
-            if("DRIVER".compareTo(role) == 0)
+            boolean isActive = false;
+
+            if("DRIVER".compareTo(role) == 0){
                 id = driverService.findByPin(user.getPin()).getId();
+                isActive = driverService.findByPin(user.getPin()).getIsActive();
+            }
             
-            if("CONTROLLER".compareTo(role) == 0)
+            if("CONTROLLER".compareTo(role) == 0){
                 id = ticketControllerService.findByPin(user.getPin()).getId();
+                isActive = ticketControllerService.findByPin(user.getPin()).getIsActive();
+            }
             
-            token = jwtGenerator.generateToken(authentication, id);
+            if(isActive)
+                token = jwtGenerator.generateToken(authentication, id);
+            else
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
         catch(Exception e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
@@ -90,7 +108,7 @@ public class PinUsersController {
         return ResponseEntity.status(HttpStatus.OK).body(token);
     }
 
-    @GetMapping("/getDriversBySupervisorId={SupervisorId}/pagesize={pagesize}size={size}")
+    @GetMapping("/drivers/getDriversBySupervisorId={SupervisorId}/pagesize={pagesize}size={size}")
     public ResponseEntity<List<Driver>> getAllDriversBySupervisorId(@PathVariable("SupervisorId") Integer SupervisorId, @PathVariable("pagesize") int page, 
     @PathVariable("size") int size, HttpServletRequest request){
         
@@ -103,7 +121,7 @@ public class PinUsersController {
         return ResponseEntity.ok().body(driverService.getDriversByTransporterId(transporterId, PageRequest.of(page, size)));
     }
 
-    @GetMapping("/getActiveDriversBySupervisorId={SupervisorId}/pagesize={pagesize}size={size}")
+    @GetMapping("/drivers/getActiveDriversBySupervisorId={SupervisorId}/pagesize={pagesize}size={size}")
     public ResponseEntity<List<Driver>> getActiveDriversBySupervisorId(@PathVariable("SupervisorId")Integer SupervisorId, @PathVariable("pagesize") int page, 
     @PathVariable("size") int size, HttpServletRequest request) {
 
@@ -116,7 +134,7 @@ public class PinUsersController {
         return ResponseEntity.ok().body(driverService.getActiveDrivers(transporterId, PageRequest.of(page, size)));
     }
 
-    @GetMapping("/getInactiveDriversBySupervisorId={SupervisorId}/pagesize={pagesize}size={size}")
+    @GetMapping("/drivers/getInactiveDriversBySupervisorId={SupervisorId}/pagesize={pagesize}size={size}")
     public ResponseEntity<List<Driver>> getInactiveDriversBySupervisorId(@PathVariable("SupervisorId")Integer SupervisorId, @PathVariable("pagesize") int page, 
     @PathVariable("size") int size, HttpServletRequest request){
 
@@ -129,7 +147,7 @@ public class PinUsersController {
         return ResponseEntity.ok().body(driverService.getInactiveDrivers(transporterId, PageRequest.of(page, size)));
     }
 
-    @PostMapping("/ChangeisActiveDriverId={DriverId}andIsActive={isActive}andSupervisorId={SupervisorId}")
+    @PostMapping("/drivers/ChangeisActiveDriverId={DriverId}andIsActive={isActive}andSupervisorId={SupervisorId}")
     public ResponseEntity<?> changeDriverStatus(@PathVariable("DriverId") Integer DriverId, @PathVariable("isActive") Boolean isActive,
     @PathVariable("SupervisorId") Integer SupervisorId, HttpServletRequest request) {
 
@@ -147,25 +165,25 @@ public class PinUsersController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
     }
 
-    @GetMapping("/getControllers/pagesize={pagesize}size={size}")
+    @GetMapping("/controllers/getControllers/pagesize={pagesize}size={size}")
     public ResponseEntity<List<TicketController>> getAllTicketControllers(@PathVariable("pagesize") int page, @PathVariable("size") int size){
         
         return ResponseEntity.ok().body(ticketControllerService.getAllTicketControllers(PageRequest.of(page, size)));
     }
 
-    @GetMapping("/getActiveControllers/pagesize={pagesize}size={size}")
+    @GetMapping("/controllers/getActiveControllers/pagesize={pagesize}size={size}")
     public ResponseEntity<List<TicketController>> getActiveTicketControllers(@PathVariable("pagesize") int page, @PathVariable("size") int size) {
 
         return ResponseEntity.ok().body(ticketControllerService.getActiveTicketControllers(PageRequest.of(page, size)));
     }
 
-    @GetMapping("/getInactiveControllers/pagesize={pagesize}size={size}")
+    @GetMapping("/controllers/getInactiveControllers/pagesize={pagesize}size={size}")
     public ResponseEntity<List<TicketController>> getInactiveTicketControllers(@PathVariable("pagesize") int page, @PathVariable("size") int size){
 
         return ResponseEntity.ok().body(ticketControllerService.getInactiveTicketControllers(PageRequest.of(page, size)));
     }
 
-    @PostMapping("/ChangeisActiveControllerId={ControllerId}andIsActive={isActive}")
+    @PostMapping("/controllers/ChangeisActiveControllerId={ControllerId}andIsActive={isActive}")
     public boolean changeControllerStatus(@PathVariable("ControllerId") Integer ControllerId,@PathVariable("isActive") Boolean isActive) {
 
         return ticketControllerService.ChangeIsActiveControllerId(ControllerId, isActive);
