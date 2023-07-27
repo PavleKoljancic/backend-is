@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -55,8 +56,8 @@ public class TransactionService {
         return scanTransactionRepo.findByTerminalId(terminalId,request);
     }
 
-    public List<TicketTransaction> nesto() 
+    public List<Transaction> getTransactionsTransporterIdPaged(Integer transporterId, PageRequest pageRequest) 
     {
-        return transactionRepo.nesto();
+        return transactionRepo.findTransactionsByTransporterId(transporterId, pageRequest);
     }
 }
