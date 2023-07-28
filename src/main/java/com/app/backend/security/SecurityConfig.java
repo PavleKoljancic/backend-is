@@ -61,7 +61,8 @@ public class SecurityConfig {
         .requestMatchers("/api/routes/getAllRoutes**", "/api/routes/checkRouteHistory**",
         "/api/terminals/updateTerminalId**", "/api/terminals/CloseTerminalRouteHistory").hasAnyAuthority("DRIVER")
         .requestMatchers("/api/terminals/getScanInterractions**").hasAnyAuthority("CONTROLLER")
-        .requestMatchers("/api/ticketRequests/addTicketRequest**", "/api/tickets/getAllTickets**").hasAnyAuthority("USER")
+        .requestMatchers("/api/ticketRequests/addTicketRequest**", "/api/tickets/getAllTickets**", "/api/ticketRequests/getTicketResponseByUserId**", 
+        "/api/ticketRequests/getTicketRequestByUserId**").hasAnyAuthority("USER")
         .requestMatchers("/api/transactions/**", "/api/users/getUsers/**", "/api/users/find/**").hasAnyAuthority("ADMIN", "SUPERVISOR")
         .requestMatchers("/api/users/getUserById={Id}", "/api/users/getUserTickets").hasAnyAuthority("ADMIN", "SUPERVISOR", "USER")
         .requestMatchers("/api/routes/**", "/api/tickets/**").hasAnyAuthority("ADMIN")
