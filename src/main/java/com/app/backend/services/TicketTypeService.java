@@ -23,8 +23,6 @@ public class TicketTypeService {
     @Autowired
     TicketTypeRepo ticketTypeRepo;
 
-
-
     @Autowired
     TransportersRepo transportersRepo; 
 
@@ -74,5 +72,18 @@ public class TicketTypeService {
         List<Accepted> acceptedBy = acceptedRepo.findByIdTransporterId(transporterId);
         List<TicketType> result = ticketTypeRepo.findAllById(acceptedBy.stream().map(a->a.getId().getTicketTypeId()).toList());
          return result.stream().filter(t -> t.getInUse()).toList();
+    }
+
+    public boolean ChangeIsActiveTicketTypeId(Integer TicketTypeId, boolean isActive){
+
+        Optional<TicketType> result = ticketTypeRepo.findById(TicketTypeId);
+        if(result.isPresent() && result.get().getInUse() != isActive)
+        {
+            TicketType temp = result.get();
+            temp.setInUse(isActive);
+            ticketTypeRepo.save(temp);
+            return true;
+        }
+        return false;
     }
 }

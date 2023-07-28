@@ -47,4 +47,10 @@ public class TicketTypeController {
         return ticketTypeService.addTicketType(request.getTicketType(),request.getTransporterIds());
 
     }
+
+    @PostMapping("/ChangeisActiveTicketTypeId={TicketTypeId}andIsActive={isActive}")
+    public boolean changeTicketTypeStatus(@PathVariable("TicketTypeId") Integer TicketTypeId, @PathVariable("isActive") Boolean isActive){
+
+        return ticketTypeService.ChangeIsActiveTicketTypeId(TicketTypeId, isActive);
+    }
 }
