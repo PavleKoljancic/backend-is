@@ -37,7 +37,7 @@ public class TerminalController {
     @Autowired
     private ScanInterractionService scanInterractionService;
     
-    @GetMapping("/admin/getARByTransporterdId={transporterID}")
+    @GetMapping("/admin/getARByTransporterId={transporterID}")
     public List<TerminalActivationRequest> findTerminalActivationRequestByTransporterId(@PathVariable("transporterID") Integer TRANSPORTER_Id) 
     {
         return terminalService.getTerminalActivationRequestByTransporterId(TRANSPORTER_Id);
