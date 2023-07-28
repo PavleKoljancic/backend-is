@@ -66,9 +66,21 @@ public class UsersController {
     public List<User> findByEmail(@RequestBody User user){
         return userService.findByEmail(user.getEmail());
     }
-    @PostMapping("/getUserTickets")
-    public List<UserTicket> getUserTickets(@RequestBody User user){
-        return userService.getUserTickets(user);
+    @GetMapping("/getUserTickets")
+    public ResponseEntity<List<UserTicket>> getUserTickets(@RequestBody User user, HttpServletRequest request){
+
+        String role = SecurityUtil.getRoleFromAuthToken(request);
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
+
+        if("USER".compareTo(role) == 0){
+            if(id == user.getId())
+                return ResponseEntity.status(HttpStatus.OK).body(userService.getUserTickets(user));
+            else
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserTickets(user));
+
     }
 
     @PostMapping("/register")

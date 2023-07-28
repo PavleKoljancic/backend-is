@@ -43,10 +43,16 @@ public class TicketRequestController {
     }
 
     @GetMapping("getTicketRequests&SupervisorId={SupervisorId}")
-    public ResponseEntity<List<TicketRequest>> getTicketRequests(@PathVariable("SupervisorId") Integer SupervisorId) {
+    public ResponseEntity<List<TicketRequest>> getTicketRequests(@PathVariable("SupervisorId") Integer SupervisorId, @PathVariable("pagesize") Integer page,
+            @PathVariable("size") Integer size, HttpServletRequest request) {
 
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
+
+        if(id != SupervisorId)
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+                
         return ResponseEntity.ok(ticketRequestService.getTicketRequestByTransporterId(
-                supervisorService.findTransporterId(SupervisorId), PageRequest.of(0, 50)));
+                supervisorService.findTransporterId(SupervisorId), PageRequest.of(page, size)));
 
     }
 
@@ -81,25 +87,31 @@ public class TicketRequestController {
             @PathVariable("userId") Integer userId, @PathVariable("pagesize") Integer page,
             @PathVariable("size") Integer size, HttpServletRequest request) {
         
-        Integer id = SecurityUtil.getIdFromAuthToken(request);
+        String role = SecurityUtil.getRoleFromAuthToken(request);
 
-        if (id == null || userId != id)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        if("USER".compareTo(role) == 0){
+            Integer id = SecurityUtil.getIdFromAuthToken(request);
+            if (id == null || userId != id)
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+            }
             
         return ResponseEntity.ok(ticketRequestService.getTicketResponsesByUserId(userId,PageRequest.of(page, size)));
 
     }
 
-        @GetMapping("/getTicketRequestByUserId={userId}/pagesize={pagesize}size={size}")
+    @GetMapping("/getTicketRequestByUserId={userId}/pagesize={pagesize}size={size}")
     public ResponseEntity<List<TicketRequest>> getTicketRequestByUserId(
             @PathVariable("userId") Integer userId, @PathVariable("pagesize") Integer page,
             @PathVariable("size") Integer size, HttpServletRequest request) {
         
-        Integer id = SecurityUtil.getIdFromAuthToken(request);
+        String role = SecurityUtil.getRoleFromAuthToken(request);
 
-        if (id == null || userId != id)
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-            
+        if("USER".compareTo(role) == 0){
+            Integer id = SecurityUtil.getIdFromAuthToken(request);
+            if (id == null || userId != id)
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+            }
+        
         return ResponseEntity.ok(ticketRequestService.getTicketRequestByUserId(userId,PageRequest.of(page, size)));
 
     }
