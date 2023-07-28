@@ -1,7 +1,6 @@
 package com.app.backend.services;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +8,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.app.backend.models.Accepted;
 import com.app.backend.models.Driver;
 import com.app.backend.models.Route;
 import com.app.backend.models.RouteHistory;
