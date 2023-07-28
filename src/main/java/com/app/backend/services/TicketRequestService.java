@@ -74,4 +74,12 @@ public class TicketRequestService {
     public List<TicketRequestResponse> getTicketResponses(Integer supervisorId, PageRequest pageRequest) {
         return ticketRequestResponseRepo.findBySupervisorId(supervisorId,pageRequest);
     }
+
+    public List<TicketRequestResponse> getTicketResponsesByUserId(Integer userId, PageRequest of) {
+        return ticketRequestResponseRepo.findByUserId(userId,of);
+    }
+
+    public List<TicketRequest> getTicketRequestByUserId(Integer userId, PageRequest of) {
+        return ticketRequestRepo.findByUserId(userId,of);
+    }
 }
