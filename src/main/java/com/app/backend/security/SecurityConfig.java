@@ -18,11 +18,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.app.backend.services.AdminWithPasswordService;
-import com.app.backend.services.DriverService;
-import com.app.backend.services.SupervisorWithPasswordService;
-import com.app.backend.services.TicketControllerService;
-import com.app.backend.services.UserWithPasswordService;
+import com.app.backend.services.users.AdminWithPasswordService;
+import com.app.backend.services.users.DriverService;
+import com.app.backend.services.users.SupervisorWithPasswordService;
+import com.app.backend.services.users.TicketControllerService;
+import com.app.backend.services.users.UserWithPasswordService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -59,10 +59,10 @@ public class SecurityConfig {
         "/api/terminals/admin/**", "/api/transporters/**", "/api/routesHistory/GetRouteHistoriesByTerminalId**").hasAnyAuthority("ADMIN")
         .requestMatchers("/api/pinusers/register/driver**", "/api/pinusers/drivers/**", "/api/users/addCredit**").hasAnyAuthority("SUPERVISOR")
         .requestMatchers("/api/routes/getAllRoutes**", "/api/routesHistory/checkRouteHistory**",
-        "/api/terminals/updateTerminalId**", "/api/terminals/CloseTerminalRouteHistory", "/api/routesHistory/scanInteractionTerminalId**").hasAnyAuthority("DRIVER")
+        "/api/terminals/updateTerminalId**", "/api/terminals/CloseTerminalRouteHistory", "/api/routesHistory/scanInteractionTerminalId={TerminalId}&UserId={UserId}").hasAnyAuthority("DRIVER")
         .requestMatchers("/api/terminals/getScanInterractions**").hasAnyAuthority("CONTROLLER")
-        .requestMatchers("/api/ticketRequests/addTicketRequest**", "/api/tickets/getAllTickets**", "/api/ticketRequests/getTicketResponseByUserId**", 
-        "/api/ticketRequests/getTicketRequestByUserId**").hasAnyAuthority("USER")
+        .requestMatchers("/api/ticketRequests/addTicketRequest**", "/api/tickets/getInUseTickets/**", "/api/ticketRequests/getTicketResponseByUserId={userId}/**", 
+        "/api/ticketRequests/getTicketRequestByUserId={userId}/**").hasAnyAuthority("USER")
         .requestMatchers("/api/transactions/**", "/api/users/getUsers/**", "/api/users/find/**").hasAnyAuthority("ADMIN", "SUPERVISOR")
         .requestMatchers("/api/users/getUserById={Id}", "/api/users/getUserTickets").hasAnyAuthority("ADMIN", "SUPERVISOR", "USER")
         .requestMatchers("/api/routes/**", "/api/tickets/**").hasAnyAuthority("ADMIN")
