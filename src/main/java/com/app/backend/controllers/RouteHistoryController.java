@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.backend.models.RouteHistory;
+import com.app.backend.models.ScanInterraction;
 import com.app.backend.models.Terminal;
 import com.app.backend.services.RouteHistoryService;
 import com.app.backend.services.TerminalService;
@@ -41,9 +42,10 @@ public class RouteHistoryController {
     }
 
     @GetMapping("/scanInteractionTerminalId={TerminalId}&UserId={UserId}")
-    public ResponseEntity<Boolean> scandInteraction(@PathVariable("TerminalId") Integer terminalId,
+    public ScanInterraction scandInteraction(@PathVariable("TerminalId") Integer terminalId,
             @PathVariable("UserId") Integer userId) 
     {
-        return ResponseEntity.ok(false);
+        return routeHistoryService.tryScan(terminalId,userId);
+       
     }       
 }

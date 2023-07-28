@@ -31,4 +31,8 @@ public class ScanInterractionService {
         return scanInterractionRepo.findByIdRouteHistoryTerminalIdEqualsAndIdTimeGreaterThanEqual(terminalId, scanTimeOffset);
     }
     
+    public ScanInterraction addScanInterraction(ScanInterraction scanInterraction) 
+    {
+        return scanInterractionRepo.save(scanInterraction);
+    } 
 }

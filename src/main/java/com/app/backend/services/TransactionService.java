@@ -1,6 +1,7 @@
 package com.app.backend.services;
 
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -57,5 +58,9 @@ public class TransactionService {
     public List<Transaction> getTransactionsTransporterIdPaged(Integer transporterId, PageRequest pageRequest) 
     {
         return transactionRepo.findTransactionsByTransporterId(transporterId, pageRequest);
+    }
+    public Integer addScanTransaction(BigDecimal pAmount, Integer pUserId,Integer pTerminalId) 
+    {
+        return scanTransactionRepo.addScanTransaction(pAmount, pUserId, pTerminalId);
     }
 }
