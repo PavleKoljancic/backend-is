@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.app.backend.security.SecurityUtil;
 import com.app.backend.services.users.UserFileService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,20 +34,28 @@ public class UserFilesController {
     public ResponseEntity<Boolean> uploadProfilePicture(@RequestParam("profile_pic") MultipartFile file,
             @PathVariable("UserId") Integer userId, HttpServletRequest request) {
 
-        if (!userFileService.checkSuppliedImageProperties(file))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
+        if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId == SecurityUtil.getIdFromAuthToken(request)){
 
-        if (!userFileService.isProfilePictureChangePossible(userId))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
+            if (!userFileService.checkSuppliedImageProperties(file))
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
 
-        if (!userFileService.saveUserProfilePicture(userId, file))
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
-        return ResponseEntity.ok().body(true);
+            if (!userFileService.isProfilePictureChangePossible(userId))
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
+
+            if (!userFileService.saveUserProfilePicture(userId, file))
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+            return ResponseEntity.ok().body(true);
+        }
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
     }
 
     @GetMapping(value = "get/profilepicture&userId={UserId}", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<byte[]> getProfilePicture(@PathVariable("UserId") Integer userId,
             HttpServletRequest request) {
+
+        if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId != SecurityUtil.getIdFromAuthToken(request))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 
         File userFile = userFileService.getProfilePictureFile(userId);
         if (userFile.exists())
@@ -66,6 +76,7 @@ public class UserFilesController {
 
     @GetMapping(value = "get/getNextPossibleChangeDate&userId={UserId}")
     public Date canUserChangeProfilePicture(@PathVariable("UserId") Integer userId) {
+
         return userFileService.getNextPossibleChangeDate(userId);
     }
 
@@ -73,8 +84,11 @@ public class UserFilesController {
     public ResponseEntity<Boolean> uploadDocument(@RequestParam("document") MultipartFile file,
             @PathVariable("UserId") Integer userId, @PathVariable("DocumentName") String DocumentName,
             HttpServletRequest request) {
-        
-        return ResponseEntity.ok().body(userFileService.saveUserDocument(userId, DocumentName, file));
+
+        if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId == SecurityUtil.getIdFromAuthToken(request))
+            return ResponseEntity.ok().body(userFileService.saveUserDocument(userId, DocumentName, file));
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
     }
 
     @GetMapping(value = "get/document&userId={UserId}&DocumentName={DocumentName}", produces = MediaType.APPLICATION_PDF_VALUE)
@@ -82,6 +96,9 @@ public class UserFilesController {
             @PathVariable("DocumentName") String DocumentName,
             HttpServletRequest request) {
 
+        if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId != SecurityUtil.getIdFromAuthToken(request))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+    
         File doc = userFileService.getDocument(userId, DocumentName);
         if (doc.exists() && doc.isFile())
             try {
@@ -103,6 +120,9 @@ public class UserFilesController {
             @PathVariable("DocumentName") String DocumentName,
             HttpServletRequest request) {
 
-       return ResponseEntity.ok().body(userFileService.removeDocument(userId,DocumentName)); 
+        if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId == SecurityUtil.getIdFromAuthToken(request))
+            return ResponseEntity.ok().body(userFileService.removeDocument(userId,DocumentName));
+            
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false); 
     }
 }
