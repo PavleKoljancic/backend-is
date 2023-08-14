@@ -129,7 +129,7 @@ public class RouteHistoryService {
     }
 
     @Transactional
-    public ScanInterraction tryScan(Integer terminalId, Integer userId) {
+    public String tryScan(Integer terminalId, Integer userId) {
         RouteHistory routeHistory = routeHistoryRepo.findByTerminalIdAndToDateTimeIsNull(terminalId);
         if (routeHistory == null)
             return null;
@@ -154,9 +154,10 @@ public class RouteHistoryService {
             if (user.getCredit().compareTo(new BigDecimal(2.8)) < 0)
                 return null;
             if (transactionService.addScanTransaction(new BigDecimal(2.8), userId, terminalId) == 1) 
-         
-                return scanInterractionService.addScanInterraction(scanInterraction);
-
+            
+                 if(scanInterractionService.addScanInterraction(scanInterraction)!=null)
+                return "Jednokratna karta";
+            
             return null;
 
         }
@@ -172,16 +173,18 @@ public class RouteHistoryService {
                 
                 amount.get(0).setUsage(amount.get(0).getUsage() - 1);
                 userTicketRepo.save(amount.get(0));
-                return scanInterractionService.addScanInterraction(scanInterraction);
+                if(scanInterractionService.addScanInterraction(scanInterraction)!=null)
+                return amount.get(0).getType().getName();
             }
             else 
             {
-                return scanInterractionService.addScanInterraction(scanInterraction);
+                if(scanInterractionService.addScanInterraction(scanInterraction)!=null)
+                    return periodic.get(0).getType().getName();
             }
 
         }
 
 
-
+        return null;
     }
 }
