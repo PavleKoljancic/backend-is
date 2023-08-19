@@ -189,17 +189,19 @@ public class PinUsersController {
 
         return ticketControllerService.ChangeIsActiveControllerId(ControllerId, isActive);
     }
-    @GetMapping("/getDriverById={Id}")
-     public ResponseEntity<Driver> getUser(@PathVariable("Id")Integer Id, HttpServletRequest request) {   
+    @GetMapping("/getDriverByPIN={PIN}")
+     public ResponseEntity<Driver> getUser(@PathVariable("PIN")String PIN, HttpServletRequest request) {   
         
         String role = SecurityUtil.getRoleFromAuthToken(request);
         Integer id = SecurityUtil.getIdFromAuthToken(request);
 
-        if("DRIVER".compareTo(role) == 0&&id == Id)
-   
-                return ResponseEntity.status(HttpStatus.OK).body(driverService.getDriverById(Id));
+        if("DRIVER".compareTo(role) == 0)
+        {       
+                Driver driver = driverService.findByPin(PIN);
+                if(driver.getId()==id)
+                    return ResponseEntity.status(HttpStatus.OK).body(driver);
            
-                
+        }       
         
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
     } 
