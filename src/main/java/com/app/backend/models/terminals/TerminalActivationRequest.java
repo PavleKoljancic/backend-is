@@ -17,7 +17,8 @@ public class TerminalActivationRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer Id;
-    String SerialNumber;
+    @Column(name = "SerialNumber")
+    String serialNumber;
     @Column(name = "TRANSPORTER_Id")
     Integer transporterId;
     @Column(name="Processed")

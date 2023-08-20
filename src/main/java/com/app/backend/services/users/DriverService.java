@@ -99,4 +99,11 @@ public class DriverService implements UserDetailsService{
 
         return driverRepo.findById(driverId);
     }
+
+    public Driver getDriverById(Integer id) {
+        Optional<Driver> result = driverRepo.findById(id);
+        if(result.isPresent())
+            return result.get();
+        return null;
+    }
 }

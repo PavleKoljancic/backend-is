@@ -10,4 +10,5 @@ public interface TerminalRepo extends JpaRepository<Terminal,Integer>  {
         List<Terminal> findByTransporterId(Integer TransporterId);
         List<Terminal> findByTransporterIdAndIsActiveFalse(Integer TransporterId);
         List<Terminal> findByTransporterIdAndIsActiveTrue(Integer TransporterId);
+        Terminal findByActivationRequestID(Integer ActivationRequestID);
 }
