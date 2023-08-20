@@ -54,18 +54,21 @@ public class SecurityConfig {
         http.authenticationManager(authenticationManager()).cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(authEntryPoint)
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeHttpRequests()
         .requestMatchers("/api/pinusers/login", "/api/terminals/add/activationrequest", "/api/transporters/getTransporters", "/api/users/register", 
-        "/api/users/login").permitAll()
+        "/api/users/login", "/api/terminals/getTerminalBySerialNumber={SerialNumber}").permitAll()
+        .requestMatchers("/api/supervisors/getBySupervisorId={Id}", "/api/tickets/getInUseTicketsForTransporter/{TransporterId}").hasAnyAuthority("SUPERVISOR")
         .requestMatchers("/api/pinusers/register/controller", "/api/pinusers/controllers/**", "/api/supervisors/**",
         "/api/terminals/admin/**", "/api/transporters/**", "/api/routesHistory/GetRouteHistoriesByTerminalId**").hasAnyAuthority("ADMIN")
         .requestMatchers("/api/pinusers/register/driver**", "/api/pinusers/drivers/**", "/api/users/addCredit**").hasAnyAuthority("SUPERVISOR")
-        .requestMatchers("/api/routes/getAllRoutes**", "/api/routesHistory/checkRouteHistory**",
-        "/api/terminals/updateTerminalId**", "/api/terminals/CloseTerminalRouteHistory", "/api/routesHistory/scanInteractionTerminalId={TerminalId}&UserId={UserId}").hasAnyAuthority("DRIVER")
+        .requestMatchers("/api/terminals/updateTerminalId**", "/api/terminals/CloseTerminalRouteHistory", 
+        "/api/routesHistory/scanInteractionTerminalId={TerminalId}&UserId={UserId}", "/api/pinusers/getDriverByPIN={PIN}").hasAnyAuthority("DRIVER")
         .requestMatchers("/api/terminals/getScanInterractions**").hasAnyAuthority("CONTROLLER")
         .requestMatchers("/api/ticketRequests/addTicketRequest**", "/api/tickets/getInUseTickets/**", "/api/ticketRequests/getTicketResponseByUserId={userId}/**", 
         "/api/ticketRequests/getTicketRequestByUserId={userId}/**").hasAnyAuthority("USER")
+        .requestMatchers("/api/routesHistory/checkRouteHistory**").hasAnyAuthority("CONTROLLER", "DRIVER")
         .requestMatchers("/api/transactions/**", "/api/users/getUsers/**", "/api/users/find/**").hasAnyAuthority("ADMIN", "SUPERVISOR")
-        .requestMatchers("/api/users/getUserById={Id}", "/api/users/getUserTickets").hasAnyAuthority("ADMIN", "SUPERVISOR", "USER")
-        .requestMatchers("/api/user/files/**").hasAnyAuthority("SUPERVISOR", "USER", "ADMIN")
+        .requestMatchers("/api/users/getUserById={Id}", "/api/users/getUserTickets").hasAnyAuthority("ADMIN", "SUPERVISOR", "USER", "CONTROLLER")
+        .requestMatchers("/api/user/files/**").hasAnyAuthority("SUPERVISOR", "USER", "ADMIN", "CONTROLLER")
+        .requestMatchers("/api/routes/getAllRoutes**").hasAnyAuthority("ADMIN", "DRIVER")
         .requestMatchers("/api/routes/**", "/api/tickets/**").hasAnyAuthority("ADMIN")
         .requestMatchers("/api/ticketRequests/**").hasAnyAuthority("SUPERVISOR")
         .and().httpBasic();

@@ -66,7 +66,7 @@ public class UsersController {
     public List<User> findByEmail(@RequestBody User user){
         return userService.findByEmail(user.getEmail());
     }
-    @GetMapping("/getUserTickets")
+    @PostMapping("/getUserTickets")
     public ResponseEntity<List<UserTicket>> getUserTickets(@RequestBody User user, HttpServletRequest request){
 
         String role = SecurityUtil.getRoleFromAuthToken(request);

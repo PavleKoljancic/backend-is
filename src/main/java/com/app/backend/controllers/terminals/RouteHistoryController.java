@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.backend.models.terminals.RouteHistory;
-import com.app.backend.models.terminals.ScanInterraction;
 import com.app.backend.models.terminals.Terminal;
 import com.app.backend.services.terminals.RouteHistoryService;
 import com.app.backend.services.terminals.TerminalService;

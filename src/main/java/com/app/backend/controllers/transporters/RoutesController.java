@@ -27,7 +27,7 @@ public class RoutesController {
         return ResponseEntity.status(HttpStatus.OK).body(routeService.addNewRoute(route));
     }
 
-    @GetMapping("/getAllRoutesByTransporterdId={transporterID}")
+    @GetMapping("/getAllRoutesByTransporterId={transporterID}")
     public ResponseEntity<?> getAllRoutesByTransporterId(@PathVariable("transporterID") Integer transporterID){
 
         return ResponseEntity.status(HttpStatus.OK).body(routeService.getRoutesByTransporterId(transporterID));
@@ -39,7 +39,7 @@ public class RoutesController {
         return routeService.getAll();
     }
 
-    @PostMapping("/ChangeisActiveRouteId={RouteId}andIsActive={isActive}")
+    @GetMapping("/ChangeisActiveRouteId={RouteId}andIsActive={isActive}")
     public boolean changeSupervisorStatus(@PathVariable("RouteId") Integer RouteId,@PathVariable("isActive") Boolean isActive) {
 
         return routeService.ChangeIsActiveRouteId(RouteId, isActive);
