@@ -42,7 +42,7 @@ public class RouteHistoryController {
     }
 
     @GetMapping("/scanInteractionTerminalId={TerminalId}&UserId={UserId}")
-    public ScanInterraction scandInteraction(@PathVariable("TerminalId") Integer terminalId,
+    public String scandInteraction(@PathVariable("TerminalId") Integer terminalId,
             @PathVariable("UserId") Integer userId) 
     {
         return routeHistoryService.tryScan(terminalId,userId);

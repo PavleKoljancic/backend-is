@@ -1,5 +1,6 @@
 package com.app.backend.controllers.users;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -188,4 +189,22 @@ public class PinUsersController {
 
         return ticketControllerService.ChangeIsActiveControllerId(ControllerId, isActive);
     }
+    @GetMapping("/getDriverByPIN={PIN}")
+     public ResponseEntity<Driver> getUser(@PathVariable("PIN")String PIN, HttpServletRequest request) {   
+        
+        String role = SecurityUtil.getRoleFromAuthToken(request);
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
+
+        if("DRIVER".compareTo(role) == 0)
+        {       
+                Driver driver = driverService.findByPin(PIN);
+                if(driver.getId()==id)
+                    return ResponseEntity.status(HttpStatus.OK).body(driver);
+           
+        }       
+        
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+    } 
+    
+
 }

@@ -133,4 +133,10 @@ public class TerminalController {
         else
             return ResponseEntity.status(HttpStatus.OK).body(scanInterractionService.getScanInterractionsByTerminalId(TerminalId, Minutes));
     }
+
+    @GetMapping("/getTerminalBySerialNumber={SerialNumber}")   
+    public Terminal getTerminalBySerialNumber(@PathVariable("SerialNumber") String serialNumber) 
+    {
+        return terminalService.findBySerialNumber(serialNumber);
+    }
 }

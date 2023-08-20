@@ -91,5 +91,16 @@ public class TerminalService {
         return false;
     }
 
+    public Terminal findBySerialNumber(String serialNumber) {
+        List<TerminalActivationRequest> tars = terminalActivationRequestRepo.findBySerialNumberAndProcessedTrue(serialNumber);
+        for( TerminalActivationRequest tar : tars)
+        {
+            Terminal res = terminalRepo.findByActivationRequestID(tar.getId());
+            if(res!=null)
+                return res;
+        
+        }
+        return null;
+    }
 
 }
