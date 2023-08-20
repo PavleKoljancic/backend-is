@@ -100,7 +100,7 @@ public class TerminalService {
                 return res;
         
         }
-        return null;
+        return new Terminal();
     }
 
 }
