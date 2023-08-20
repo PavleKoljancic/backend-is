@@ -1,6 +1,9 @@
 package com.app.backend.controllers.transactions;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,21 +27,44 @@ public class TransactionsController {
     private TransactionService transactionService;
 
     @GetMapping("/getTransactionsAfterAll{TimeStamp}")
-    public List<Transaction> getTransactionsAfter(@PathVariable("TimeStamp") Timestamp timestamp) {
-        return transactionService.findAllWithDateTimeAfter(timestamp);
+    public List<Transaction> getTransactionsAfter(@PathVariable("TimeStamp") String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd+HH:mm:ss");
+        try {
+            Date date = dateFormat.parse(dateString);
+            Timestamp timestamp = new Timestamp(date.getTime());
+            return transactionService.findAllWithDateTimeAfter(timestamp);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 
     @GetMapping("/getTransactionsAfterPaged{TimeStamp}page={page}size={size}")
-    public List<Transaction> getTransactionsAfterPaged(@PathVariable("TimeStamp") Timestamp timestamp,
+    public List<Transaction> getTransactionsAfterPaged(@PathVariable("TimeStamp") String dateString,
             @PathVariable("page") Integer page, @PathVariable("size") Integer size) {
-        return transactionService.findAllWithDateTimeAfter(timestamp, PageRequest.of(page, size));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd+HH:mm:ss");
+        try {
+            Date date = dateFormat.parse(dateString);
+            Timestamp timestamp = new Timestamp(date.getTime());
+            return transactionService.findAllWithDateTimeAfter(timestamp, PageRequest.of(page, size));
+        } catch (ParseException e) {
+            return null;
+        }
     }
 
     @GetMapping("/getTransactionsInBetweenStart={start}End={end}page={page}size={size}")
-    public List<Transaction> getTransactionsBetween(@PathVariable("start") Timestamp start,
-            @PathVariable("end") Timestamp end, @PathVariable("page") Integer page,
+    public List<Transaction> getTransactionsBetween(@PathVariable("start") String start,
+            @PathVariable("end") String end, @PathVariable("page") Integer page,
             @PathVariable("size") Integer size) {
-        return transactionService.findInBetween(start, end, PageRequest.of(page, size));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd+HH:mm:ss");
+        try {
+            Date dateStart = dateFormat.parse(start);
+            Timestamp timestampStart = new Timestamp(dateStart.getTime());
+            Date dateEnd = dateFormat.parse(end);
+            Timestamp timestampEnd = new Timestamp(dateEnd.getTime());
+            return transactionService.findInBetween(timestampStart, timestampEnd, PageRequest.of(page, size));
+        } catch (ParseException e) {
+            return null;
+        }
     }
 
     @GetMapping("/getTransactionsForUser={UserId}page={page}size={size}")
@@ -59,7 +85,7 @@ public class TransactionsController {
         return transactionService.findTransactionsByTerminalId(TerminalId, PageRequest.of(page, size));
     }
 
-    @GetMapping("/getTransactionsByTransporterId{transporterId}/page={page}size={size}")
+    @GetMapping("/getTransactionsByTransporterId={transporterId}page={page}size={size}")
     public List<Transaction> geTransactionsByTransporterId( @PathVariable("transporterId") Integer transporterId,@PathVariable("page") Integer page, 
     @PathVariable("size") Integer size) 
     {

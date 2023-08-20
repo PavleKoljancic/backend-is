@@ -48,7 +48,7 @@ public class TicketTypeController {
 
     }
 
-    @PostMapping("/ChangeisActiveTicketTypeId={TicketTypeId}andIsActive={isActive}")
+    @GetMapping("/ChangeisActiveTicketTypeId={TicketTypeId}andIsActive={isActive}")
     public boolean changeTicketTypeStatus(@PathVariable("TicketTypeId") Integer TicketTypeId, @PathVariable("isActive") Boolean isActive){
 
         return ticketTypeService.ChangeIsActiveTicketTypeId(TicketTypeId, isActive);

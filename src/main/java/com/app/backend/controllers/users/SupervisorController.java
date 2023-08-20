@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.backend.models.users.Supervisor;
 import com.app.backend.models.users.SupervisorWithPassword;
+import com.app.backend.security.SecurityUtil;
 import com.app.backend.services.users.SupervisorService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/supervisors")
@@ -47,9 +51,12 @@ public class SupervisorController {
     }
 
     @GetMapping("/getBySupervisorId={Id}")
-    public Supervisor getSupervisorsById(@PathVariable("Id") Integer Id)     
+    public ResponseEntity<Supervisor> getSupervisorsById(@PathVariable("Id") Integer Id, HttpServletRequest request)     
     {
-        return supervisorService.getSupervisorById(Id);
+        if(SecurityUtil.getIdFromAuthToken(request) == Id)
+            return ResponseEntity.ok().body(supervisorService.getSupervisorById(Id));
+        else
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
     }
 
     @GetMapping("/getByisActiveTrue/pagesize={pagesize}size={size}")
