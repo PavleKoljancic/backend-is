@@ -64,11 +64,12 @@ public class SecurityConfig {
         .requestMatchers("/api/terminals/getScanInterractions**").hasAnyAuthority("CONTROLLER")
         .requestMatchers("/api/ticketRequests/addTicketRequest**", "/api/tickets/getInUseTickets/**", "/api/ticketRequests/getTicketResponseByUserId={userId}/**", 
         "/api/ticketRequests/getTicketRequestByUserId={userId}/**").hasAnyAuthority("USER")
+        .requestMatchers("/api/routes/getAll").hasAnyAuthority("CONTROLLER", "ADMIN")
         .requestMatchers("/api/routesHistory/checkRouteHistory**").hasAnyAuthority("CONTROLLER", "DRIVER")
         .requestMatchers("/api/transactions/**", "/api/users/getUsers/**", "/api/users/find/**").hasAnyAuthority("ADMIN", "SUPERVISOR")
         .requestMatchers("/api/users/getUserById={Id}", "/api/users/getUserTickets").hasAnyAuthority("ADMIN", "SUPERVISOR", "USER", "CONTROLLER", "DRIVER")
         .requestMatchers("/api/user/files/**").hasAnyAuthority("SUPERVISOR", "USER", "ADMIN", "CONTROLLER", "DRIVER")
-        .requestMatchers("/api/routes/getAllRoutes**").hasAnyAuthority("ADMIN", "DRIVER", "CONTROLLER")
+        .requestMatchers("/api/routes/getAllRoutes**").hasAnyAuthority("ADMIN", "DRIVER")
         .requestMatchers("/api/routes/**", "/api/tickets/**").hasAnyAuthority("ADMIN")
         .requestMatchers("/api/ticketRequests/**").hasAnyAuthority("SUPERVISOR")
         .and().httpBasic();
