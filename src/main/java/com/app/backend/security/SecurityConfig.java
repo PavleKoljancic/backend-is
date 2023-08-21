@@ -68,7 +68,7 @@ public class SecurityConfig {
         .requestMatchers("/api/transactions/**", "/api/users/getUsers/**", "/api/users/find/**").hasAnyAuthority("ADMIN", "SUPERVISOR")
         .requestMatchers("/api/users/getUserById={Id}", "/api/users/getUserTickets").hasAnyAuthority("ADMIN", "SUPERVISOR", "USER", "CONTROLLER", "DRIVER")
         .requestMatchers("/api/user/files/**").hasAnyAuthority("SUPERVISOR", "USER", "ADMIN", "CONTROLLER", "DRIVER")
-        .requestMatchers("/api/routes/getAllRoutes**").hasAnyAuthority("ADMIN", "DRIVER")
+        .requestMatchers("/api/routes/getAllRoutes**").hasAnyAuthority("ADMIN", "DRIVER", "CONTROLLER")
         .requestMatchers("/api/routes/**", "/api/tickets/**").hasAnyAuthority("ADMIN")
         .requestMatchers("/api/ticketRequests/**").hasAnyAuthority("SUPERVISOR")
         .and().httpBasic();
