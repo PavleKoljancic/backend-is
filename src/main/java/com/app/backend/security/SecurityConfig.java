@@ -55,7 +55,7 @@ public class SecurityConfig {
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeHttpRequests()
         .requestMatchers("/api/pinusers/login", "/api/terminals/add/activationrequest", "/api/transporters/getTransporters", "/api/users/register", 
         "/api/users/login", "/api/terminals/getTerminalBySerialNumber={SerialNumber}").permitAll()
-        .requestMatchers("/api/supervisors/getBySupervisorId={Id}", "/api/tickets/getInUseTicketsForTransporter/{TransporterId}").hasAnyAuthority("SUPERVISOR")
+        .requestMatchers("/api/supervisors/getBySupervisorId={Id}").hasAnyAuthority("SUPERVISOR")
         .requestMatchers("/api/pinusers/register/controller", "/api/pinusers/controllers/**", "/api/supervisors/**",
         "/api/terminals/admin/**", "/api/transporters/**", "/api/routesHistory/GetRouteHistoriesByTerminalId**").hasAnyAuthority("ADMIN")
         .requestMatchers("/api/pinusers/register/driver**", "/api/pinusers/drivers/**", "/api/users/addCredit**").hasAnyAuthority("SUPERVISOR")
@@ -70,6 +70,7 @@ public class SecurityConfig {
         .requestMatchers("/api/users/getUserById={Id}", "/api/users/getUserTickets").hasAnyAuthority("ADMIN", "SUPERVISOR", "USER", "CONTROLLER", "DRIVER")
         .requestMatchers("/api/user/files/**").hasAnyAuthority("SUPERVISOR", "USER", "ADMIN", "CONTROLLER", "DRIVER")
         .requestMatchers("/api/routes/getAllRoutes**").hasAnyAuthority("ADMIN", "DRIVER")
+        .requestMatchers("/api/tickets/getAllTickets/**").hasAnyAuthority("SUPERVISOR", "USER", "ADMIN")
         .requestMatchers("/api/routes/**", "/api/tickets/**").hasAnyAuthority("ADMIN")
         .requestMatchers("/api/ticketRequests/**").hasAnyAuthority("SUPERVISOR")
         .and().httpBasic();
