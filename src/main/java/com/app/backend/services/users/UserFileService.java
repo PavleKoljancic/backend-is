@@ -56,7 +56,7 @@ public class UserFileService {
         try {
             image = ImageIO.read(file.getInputStream());
 
-            if (image.getHeight() != image.getWidth() || image.getHeight() > 800 || image.getHeight() < 400)
+            if (image.getHeight() != image.getWidth())
                 return false;
         } catch (IOException e) {
 
