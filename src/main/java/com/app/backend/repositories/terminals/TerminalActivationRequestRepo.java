@@ -14,4 +14,5 @@ public interface TerminalActivationRequestRepo extends JpaRepository<TerminalAct
     List<TerminalActivationRequest> findByTransporterIdAndProcessedFalse(Integer TransporterId);
     List<TerminalActivationRequest> findByProcessedFalse();
     List<TerminalActivationRequest>  findBySerialNumberAndProcessedTrue(String serialNumber);  
+    List<TerminalActivationRequest>  findBySerialNumberAndProcessedFalse(String serialNumber); 
 }

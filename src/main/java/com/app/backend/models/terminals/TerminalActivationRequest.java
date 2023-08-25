@@ -23,5 +23,4 @@ public class TerminalActivationRequest {
     Integer transporterId;
     @Column(name="Processed")
     Boolean processed=false;
-    //Razmisli kako ces ih pretrazivati
 }
