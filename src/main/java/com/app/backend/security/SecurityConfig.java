@@ -54,7 +54,7 @@ public class SecurityConfig {
         http.authenticationManager(authenticationManager()).cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(authEntryPoint)
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeHttpRequests()
         .requestMatchers("/api/pinusers/login", "/api/terminals/add/activationrequest", "/api/transporters/getTransporters", "/api/users/register", 
-        "/api/users/login", "/api/terminals/getTerminalBySerialNumber={SerialNumber}").permitAll()
+        "/api/users/login", "/api/terminals/getTerminalBySerialNumber={SerialNumber}", "/api/terminals/getIsTerminalActivationProcessed/{SerialNumber}").permitAll()
         .requestMatchers("/api/supervisors/getBySupervisorId={Id}").hasAnyAuthority("SUPERVISOR")
         .requestMatchers("/api/pinusers/register/controller", "/api/pinusers/controllers/**", "/api/supervisors/**",
         "/api/terminals/admin/**", "/api/transporters/**", "/api/routesHistory/GetRouteHistoriesByTerminalId**").hasAnyAuthority("ADMIN")
