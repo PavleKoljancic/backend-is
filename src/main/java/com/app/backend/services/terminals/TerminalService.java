@@ -103,4 +103,12 @@ public class TerminalService {
         return new Terminal();
     }
 
+    public boolean isTerminalActivationProcessed(String serialNumber){
+
+        List<TerminalActivationRequest> tars = terminalActivationRequestRepo.findBySerialNumberAndProcessedFalse(serialNumber);
+        if(tars.size() > 0)
+            return true;
+        else
+            return false;
+    }
 }

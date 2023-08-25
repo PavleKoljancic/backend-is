@@ -48,7 +48,7 @@ public class TicketRequestService {
         
         TicketRequestResponse response = new TicketRequestResponse();
         response.setApproved(true);
-        response.setComment("Automatska obrada");
+        response.setComment("Automatska obrada " + ticketType.getName());
         response.setTicketRequestId(resultId);
         
         return addTicketResponse(response);

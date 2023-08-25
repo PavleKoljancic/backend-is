@@ -139,4 +139,9 @@ public class TerminalController {
     {
         return terminalService.findBySerialNumber(serialNumber);
     }
+    @GetMapping("/getIsTerminalActivationProcessed/{SerialNumber}")
+    public boolean getIsTerminalActivationProcessed(@PathVariable("SerialNumber") String serialNumber){
+
+        return terminalService.isTerminalActivationProcessed(serialNumber);
+    }
 }

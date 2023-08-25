@@ -30,7 +30,7 @@ public class JWTFilter extends OncePerRequestFilter {
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)throws ServletException, IOException {
     if (request.getServletPath().contains("login") ||  request.getServletPath().contains("/api/terminals/add/activationrequest") || 
     request.getServletPath().contains("/api/transporters/getTransporters") || request.getServletPath().contains("/api/users/register") || 
-    request.getServletPath().contains("/api/terminals/getTerminalBySerialNumber")) {
+    request.getServletPath().contains("/api/terminals/getTerminalBySerialNumber") || request.getServletPath().contains("/api/terminals/getIsTerminalActivationProcessed")) {
 			filterChain.doFilter(request, response);
 	} else {
         String token = getJWTFromRequest(request);
