@@ -151,30 +151,25 @@ public class UsersController {
             return ResponseEntity.status(HttpStatus.OK).body(userService.addCredit(UserId, Amount, SupervisorId));
     }
 
-    @PostMapping("/user/edit/getUserById={Id}andemail={email}andfirstName={firstName}andlastName={lastName}andPasswordHash={PasswordHash}")
+    @PostMapping("/user/edit/getUserById={Id}andemail={email}andfirstName={firstName}andlastName={lastName}andoldPasswordHash={oldPasswordHash}andnewPasswordHash={newPasswordHash}")
     public ResponseEntity<?> editUser(@PathVariable("Id") Integer userId, @PathVariable("email") String email,
             @PathVariable("firstName") String firstName,
-            @PathVariable("lastName") String lastName, @PathVariable("PasswordHash") String passwordHash,
+            @PathVariable("lastName") String lastName,
+            @PathVariable("oldPasswordHash") String oldPasswordHash,
+            @PathVariable("newPasswordHash") String newPasswordHash,
             HttpServletRequest request) {
 
         String role = SecurityUtil.getRoleFromAuthToken(request);
         Integer id = SecurityUtil.getIdFromAuthToken(request);
 
         if ("USER".compareTo(role) == 0) {
-            if (id == userId)
-            {
-                UserWithPassword user = UserWithPasswordService.getUserById(userId);
-                user.setEmail(email);
-                user.setFirstName(firstName);
-                user.setLastName(lastName);
-                user.setPasswordHash(passwordHash);
-                userWithPasswordService.updateUserAccount(user);
-                return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(Id));
-             }
-                    else
-                        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
-                } else
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false));
+            if (id == userId) {
+                if (userService.updateUserAccount(userId, oldPasswordHash, email, firstName, lastName,
+                        newPasswordHash.length() == 0 ? null : newPasswordHash)) {
+                    return ResponseEntity.status(HttpStatus.OK).body(false);
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
     }
 }
-

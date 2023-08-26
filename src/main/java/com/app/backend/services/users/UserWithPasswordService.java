@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.app.backend.models.users.UserWithPassword;
 import com.app.backend.repositories.users.UserWithPasswordRepo;
@@ -35,10 +36,4 @@ public class UserWithPasswordService implements UserDetailsService {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
     }
 
-    public UserWithPassword getUserById(Integer id) {
-        if (userWithPasswordRepo.existsById(id)) {
-            return userWithPasswordRepo.findById(id).get();
-        } else
-            return null;
-    }
 }
