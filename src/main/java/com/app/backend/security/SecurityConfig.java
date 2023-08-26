@@ -73,6 +73,7 @@ public class SecurityConfig {
         .requestMatchers("/api/tickets/getAllTickets/**").hasAnyAuthority("SUPERVISOR", "USER", "ADMIN")
         .requestMatchers("/api/routes/**", "/api/tickets/**").hasAnyAuthority("ADMIN")
         .requestMatchers("/api/ticketRequests/**").hasAnyAuthority("SUPERVISOR")
+        .requestMatchers("/api/user/edit/**").hasAnyAuthority("USER")
         .and().httpBasic();
         
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
