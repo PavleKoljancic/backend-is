@@ -32,12 +32,10 @@ import com.app.backend.services.users.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-
-
 @RestController
 @RequestMapping("/api/users")
 public class UsersController {
-    
+
     @Autowired
     private UserService userService;
 
@@ -46,7 +44,7 @@ public class UsersController {
 
     @Autowired
     private AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver;
-   
+
     @Autowired
     private SupervisorService supervisorService;
 
@@ -54,26 +52,28 @@ public class UsersController {
     private AdminWithPasswordService adminWithPasswordService;
 
     @GetMapping("/getUsers/pagesize={pagesize}size={size}")
-    public ResponseEntity<List<User>> getUsers(@PathVariable("pagesize") int page, @PathVariable("size") int size){
+    public ResponseEntity<List<User>> getUsers(@PathVariable("pagesize") int page, @PathVariable("size") int size) {
         return ResponseEntity.ok().body(userService.getUsers(PageRequest.of(page, size)));
     }
 
     @PostMapping("/find/name")
-    public List<User> findByNameAndLastName(@RequestBody User user){
-        return userService.findByFirstNameAndLastName(user.getFirstName(),user.getLastName());
+    public List<User> findByNameAndLastName(@RequestBody User user) {
+        return userService.findByFirstNameAndLastName(user.getFirstName(), user.getLastName());
     }
+
     @PostMapping("/find/email")
-    public List<User> findByEmail(@RequestBody User user){
+    public List<User> findByEmail(@RequestBody User user) {
         return userService.findByEmail(user.getEmail());
     }
+
     @PostMapping("/getUserTickets")
-    public ResponseEntity<List<UserTicket>> getUserTickets(@RequestBody User user, HttpServletRequest request){
+    public ResponseEntity<List<UserTicket>> getUserTickets(@RequestBody User user, HttpServletRequest request) {
 
         String role = SecurityUtil.getRoleFromAuthToken(request);
         Integer id = SecurityUtil.getIdFromAuthToken(request);
 
-        if("USER".compareTo(role) == 0){
-            if(id == user.getId())
+        if ("USER".compareTo(role) == 0) {
+            if (id == user.getId())
                 return ResponseEntity.status(HttpStatus.OK).body(userService.getUserTickets(user));
             else
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
@@ -84,17 +84,16 @@ public class UsersController {
     }
 
     @PostMapping("/register")
-    public Integer register(@RequestBody UserWithPassword user){
+    public Integer register(@RequestBody UserWithPassword user) {
         return userService.registerUser(user);
     }
-
 
     @PostMapping("/login")
     ResponseEntity<?> loginUser(@RequestBody UserWithPassword user, HttpServletRequest request) {
 
         String token = null;
 
-        try{
+        try {
             AuthenticationManager authenticationManager = authenticationManagerResolver.resolve(request);
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -102,22 +101,22 @@ public class UsersController {
                             user.getPasswordHash()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            String role = ((org.springframework.security.core.userdetails.User)authentication.getPrincipal()).getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()).get(0);
+            String role = ((org.springframework.security.core.userdetails.User) authentication.getPrincipal())
+                    .getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()).get(0);
 
             Integer id = null;
 
-            if("USER".compareTo(role) == 0)
+            if ("USER".compareTo(role) == 0)
                 id = userService.findExactByEmail(user.getEmail()).getId();
-            
-            if("ADMIN".compareTo(role) == 0)
+
+            if ("ADMIN".compareTo(role) == 0)
                 id = adminWithPasswordService.findByEmail(user.getEmail()).getId();
-            
-            if("SUPERVISOR".compareTo(role) == 0)
+
+            if ("SUPERVISOR".compareTo(role) == 0)
                 id = supervisorService.findByEmail(user.getEmail()).getId();
-            
+
             token = jwtGenerator.generateToken(authentication, id);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
@@ -125,30 +124,57 @@ public class UsersController {
     }
 
     @GetMapping("/getUserById={Id}")
-    public ResponseEntity<?> getUser(@PathVariable("Id")Integer Id, HttpServletRequest request) {   
-        
+    public ResponseEntity<?> getUser(@PathVariable("Id") Integer Id, HttpServletRequest request) {
+
         String role = SecurityUtil.getRoleFromAuthToken(request);
         Integer id = SecurityUtil.getIdFromAuthToken(request);
 
-        if("USER".compareTo(role) == 0){
-            if(id == Id)
+        if ("USER".compareTo(role) == 0) {
+            if (id == Id)
                 return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(Id));
             else
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(Id));
-    } 
-    
+    }
+
     @GetMapping("/addCreditUserId={UserId}andAmount={Amount}andSupervisorId={SupervisorId}")
-    public ResponseEntity<?> addCredit(@PathVariable("UserId") Integer UserId, @PathVariable("Amount") BigDecimal Amount, @PathVariable("SupervisorId") Integer SupervisorId,
-     HttpServletRequest request){
+    public ResponseEntity<?> addCredit(@PathVariable("UserId") Integer UserId,
+            @PathVariable("Amount") BigDecimal Amount, @PathVariable("SupervisorId") Integer SupervisorId,
+            HttpServletRequest request) {
 
         Integer id = SecurityUtil.getIdFromAuthToken(request);
 
-        if(id != SupervisorId)
+        if (id != SupervisorId)
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
         else
             return ResponseEntity.status(HttpStatus.OK).body(userService.addCredit(UserId, Amount, SupervisorId));
     }
+
+    @PostMapping("/user/edit/getUserById={Id}andemail={email}andfirstName={firstName}andlastName={lastName}andPasswordHash={PasswordHash}")
+    public ResponseEntity<?> editUser(@PathVariable("Id") Integer userId, @PathVariable("email") String email,
+            @PathVariable("firstName") String firstName,
+            @PathVariable("lastName") String lastName, @PathVariable("PasswordHash") String passwordHash,
+            HttpServletRequest request) {
+
+        String role = SecurityUtil.getRoleFromAuthToken(request);
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
+
+        if ("USER".compareTo(role) == 0) {
+            if (id == userId)
+            {
+                UserWithPassword user = UserWithPasswordService.getUserById(userId);
+                user.setEmail(email);
+                user.setFirstName(firstName);
+                user.setLastName(lastName);
+                user.setPasswordHash(passwordHash);
+                userWithPasswordService.updateUserAccount(user);
+                return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(Id));
+             }
+                    else
+                        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
+                } else
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false));
+    }
 }
+
