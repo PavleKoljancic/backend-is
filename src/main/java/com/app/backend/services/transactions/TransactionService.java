@@ -1,7 +1,11 @@
 package com.app.backend.services.transactions;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -62,5 +66,37 @@ public class TransactionService {
     public Integer addScanTransaction(BigDecimal pAmount, Integer pUserId,Integer pTerminalId) 
     {
         return scanTransactionRepo.addScanTransaction(pAmount, pUserId, pTerminalId);
+    }
+
+    public Boolean setScanTransactionAmount(BigDecimal newAmount){
+        
+        File scanTicketFile = new File("configs" + File.separator + "ScanTicket.txt");
+        if(scanTicketFile.exists() && scanTicketFile.isFile()){
+            try {
+                String newCostString = "cost=" + newAmount.toString();
+                Files.write(scanTicketFile.toPath(), newCostString.getBytes(), StandardOpenOption.WRITE);
+                return true;
+            } catch (IOException e) {
+                return false;
+            }
+        }
+        else 
+            return false;
+    }
+
+    public BigDecimal getScanTransactionAmount(){
+
+        File scanTicketFile = new File("configs" + File.separator + "ScanTicket.txt");
+        if(scanTicketFile.exists() && scanTicketFile.isFile()){
+            try {
+                String costString = Files.readAllLines(scanTicketFile.toPath()).get(0).split("=")[1];
+                BigDecimal cost = new BigDecimal(costString);
+                return cost;
+            } catch (IOException e) {
+                return null;
+            }
+        }
+        else 
+            return null;
     }
 }

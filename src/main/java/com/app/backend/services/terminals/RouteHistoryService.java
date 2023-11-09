@@ -151,9 +151,11 @@ public class RouteHistoryService {
                                 routeHistory.getPrimaryKey().getTerminalId(),
                                 userId, new Timestamp(System.currentTimeMillis())));        
         if (acceptedUserTickets.isEmpty()) {
-            if (user.getCredit().compareTo(new BigDecimal(2.8)) < 0)
+
+            BigDecimal scanTicketCost = transactionService.getScanTransactionAmount();
+            if (user.getCredit().compareTo(scanTicketCost) < 0)
                 return null;
-            if (transactionService.addScanTransaction(new BigDecimal(2.8), userId, terminalId) == 1) 
+            if (transactionService.addScanTransaction(scanTicketCost, userId, terminalId) == 1) 
             
                  if(scanInterractionService.addScanInterraction(scanInterraction)!=null)
                 return "Jednokratna karta";
