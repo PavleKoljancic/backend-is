@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.app.backend.BackendApplication;
 import com.app.backend.models.transactions.CreditTransaction;
 import com.app.backend.models.transactions.ScanTransaction;
 import com.app.backend.models.transactions.Transaction;
@@ -75,6 +76,7 @@ public class TransactionService {
             try {
                 String newCostString = "cost=" + newAmount.toString();
                 Files.write(scanTicketFile.toPath(), newCostString.getBytes(), StandardOpenOption.WRITE);
+                BackendApplication.scanTicketCost = getScanTransactionAmount();
                 return true;
             } catch (IOException e) {
                 return false;
@@ -84,7 +86,7 @@ public class TransactionService {
             return false;
     }
 
-    public BigDecimal getScanTransactionAmount(){
+    public static BigDecimal getScanTransactionAmount(){
 
         File scanTicketFile = new File("configs" + File.separator + "ScanTicket.txt");
         if(scanTicketFile.exists() && scanTicketFile.isFile()){

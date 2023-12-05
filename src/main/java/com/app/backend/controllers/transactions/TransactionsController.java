@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.backend.BackendApplication;
 import com.app.backend.models.transactions.CreditTransaction;
 import com.app.backend.models.transactions.ScanTransaction;
 import com.app.backend.models.transactions.Transaction;
@@ -108,7 +109,7 @@ public class TransactionsController {
     @GetMapping("/getScanTransactionAmount")
     public ResponseEntity<?> getScanTransactionAmount(){
 
-        BigDecimal amount = transactionService.getScanTransactionAmount();
+        BigDecimal amount = BackendApplication.scanTicketCost;
         if(amount != null)
             return ResponseEntity.status(HttpStatus.OK).body(amount);
         else

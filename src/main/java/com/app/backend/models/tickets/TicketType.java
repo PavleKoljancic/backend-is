@@ -29,7 +29,6 @@ public class TicketType {
     private Integer Id;
     private String Name;
     private BigDecimal Cost;
-    private String DocumentaionName;
     private Boolean NeedsDocumentaion;
     private Boolean inUse;
 }

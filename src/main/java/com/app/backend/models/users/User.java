@@ -19,9 +19,6 @@ public class User {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer Id;
     private byte [] PictureHash;
-    private String DocumentName1;
-    private String DocumentName2;
-    private String DocumentName3;
     private String email;
     private String firstName;
     private String lastName;

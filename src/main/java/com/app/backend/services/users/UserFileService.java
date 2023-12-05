@@ -22,7 +22,7 @@ import com.app.backend.repositories.users.UserRepo;
 
 @Service
 public class UserFileService {
-    final public String USER_FILES_PATH = "userData" + File.separator + "user";
+    /*final public String USER_FILES_PATH = "userData" + File.separator + "user";
     final public String PROFILE_PICTURE_DIR = "profile_pic";
     final public String DOC_DIR = "docs";
 
@@ -168,4 +168,5 @@ public class UserFileService {
             }
             return false;
     }
+    */
 }

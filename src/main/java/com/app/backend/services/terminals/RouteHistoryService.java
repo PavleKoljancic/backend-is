@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.app.backend.BackendApplication;
 import com.app.backend.models.terminals.RouteHistory;
 import com.app.backend.models.terminals.RouteHistoryPrimaryKey;
 import com.app.backend.models.terminals.ScanInterraction;
@@ -151,14 +152,15 @@ public class RouteHistoryService {
                                 routeHistory.getPrimaryKey().getTerminalId(),
                                 userId, new Timestamp(System.currentTimeMillis())));        
         if (acceptedUserTickets.isEmpty()) {
-
-            BigDecimal scanTicketCost = transactionService.getScanTransactionAmount();
+            
+            BigDecimal scanTicketCost = BackendApplication.scanTicketCost;
             if (user.getCredit().compareTo(scanTicketCost) < 0)
                 return null;
-            if (transactionService.addScanTransaction(scanTicketCost, userId, terminalId) == 1) 
-            
-                 if(scanInterractionService.addScanInterraction(scanInterraction)!=null)
-                return "Jednokratna karta";
+            scanInterraction.setTransactionId(transactionService.addScanTransaction(scanTicketCost, userId, terminalId));
+            if (scanInterraction.getTransactionId() == 1) 
+
+                if(scanInterractionService.addScanInterraction(scanInterraction) != null)
+                    return "Jednokratna karta";
             
             return null;
 
@@ -175,18 +177,18 @@ public class RouteHistoryService {
                 
                 amount.get(0).setUsage(amount.get(0).getUsage() - 1);
                 userTicketRepo.save(amount.get(0));
-                if(scanInterractionService.addScanInterraction(scanInterraction)!=null)
-                return amount.get(0).getType().getName();
+                scanInterraction.setTransactionId(amount.get(0).getTRANSACTION_Id());
+
+                if(scanInterractionService.addScanInterraction(scanInterraction) != null)
+                    return amount.get(0).getType().getName();
             }
-            else 
-            {
+            else {
+                scanInterraction.setTransactionId(periodic.get(0).getTRANSACTION_Id());
+
                 if(scanInterractionService.addScanInterraction(scanInterraction)!=null)
                     return periodic.get(0).getType().getName();
             }
-
         }
-
-
         return null;
     }
 }
