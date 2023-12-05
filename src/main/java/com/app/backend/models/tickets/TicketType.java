@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.annotations.DialectOverride.JoinFormula;
+import org.hibernate.annotations.WhereJoinTable;
+
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -40,5 +43,7 @@ public class TicketType {
     @OneToMany
     @JoinTable(name = "TICKET_TYPE_ACCEPTS_DOCUMENT_TYPE" ,joinColumns = {@JoinColumn(name="TICKET_TYPE_Id",referencedColumnName = "Id")}
     , inverseJoinColumns = {@JoinColumn(name="DOCUMENT_TYPE_Id", referencedColumnName = "Id")})
+    @WhereJoinTable(clause = "d1_1.ValidFromDate <= CURRENT_DATE and CURRENT_DATE  <= d1_1.ValidUntilDate ")
+    
     private List<DocumentType> documents ;
 }
