@@ -13,6 +13,8 @@ import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
+import org.hibernate.NotImplementedYetException;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -104,40 +106,7 @@ public class UserFileService {
     }
 
     public boolean saveUserDocument(Integer userId, String DocumentName, MultipartFile file) {
-        Optional<User> userOptional = userRepo.findById(userId);
-        if (!userOptional.isPresent())
-            return false;
-        User user = userOptional.get();
-        if (user.getDocumentName1() != null && user.getDocumentName2() != null && user.getDocumentName3() != null)
-            return false;
-        if(DocumentName==null||DocumentName.isEmpty())
-                return false;
-        if(DocumentName.equals(user.getDocumentName1())||DocumentName.equals(user.getDocumentName2())||DocumentName.equals(user.getDocumentName3()))
-            return false;
-        File userDir = getUserDocsDir(userId);
-        if (!userDir.isDirectory())
-            userDir.mkdirs();
-
-        try {
-            File destFile = new File(userDir, DocumentName + ".pdf");
-
-            destFile.createNewFile();
-
-            Files.copy(file.getInputStream(), Paths.get(destFile.getAbsolutePath()),
-                    StandardCopyOption.REPLACE_EXISTING);
-            if (user.getDocumentName1() == null)
-                user.setDocumentName1(DocumentName);
-            else if (user.getDocumentName2() == null)
-                user.setDocumentName2(DocumentName);
-            else
-                user.setDocumentName3(DocumentName);
-            userRepo.save(user);
-        } catch (IOException e) {
-
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        throw new NotYetImplementedException();
     }
 
     public File getDocument(Integer userId, String DocumentName) {
@@ -147,26 +116,7 @@ public class UserFileService {
     }
 
     public boolean removeDocument(Integer userId, String documentName) {
-        File result =getDocument(userId, documentName);
-
-        if(result.isFile())
-        {    Optional<User> userOp = userRepo.findById(userId);
-            if(userOp.isPresent())
-            {   User user = userOp.get();
-                if(documentName.equals(user.getDocumentName1()))
-                    user.setDocumentName1(null);
-                
-                if(documentName.equals(user.getDocumentName2()))
-                    user.setDocumentName2(null);
-                if(documentName.equals(user.getDocumentName3()))
-                    user.setDocumentName3(null);
-
-                result.delete();
-                userRepo.save(user);
-                return true;
-            }
-            }
-            return false;
+       throw new NotYetImplementedException();
     }
     */
 }

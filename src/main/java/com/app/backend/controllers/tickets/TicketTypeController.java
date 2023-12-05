@@ -25,7 +25,8 @@ public class TicketTypeController {
 
     @GetMapping("/getAllTickets/pagesize={pagesize}size={size}")
     public ResponseEntity<List<TicketType>> getTickets(@PathVariable("pagesize") int page,
-            @PathVariable("size") int size) {
+            @PathVariable("size") int size) 
+            {
         return ResponseEntity.ok().body(ticketTypeService.getTickets(PageRequest.of(page, size)));
     }
 
