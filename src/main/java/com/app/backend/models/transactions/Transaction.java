@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "TRANSACTION")
 @Inheritance(strategy = InheritanceType.JOINED)
 public  class Transaction {
@@ -29,4 +31,10 @@ public  class Transaction {
     private Timestamp timestamp;
     @Column(name = "USER_Id")
     private Integer userId;
+
+    public Transaction(BigDecimal amount, Timestamp timestamp, Integer userId){
+        this.amount = amount;
+        this.timestamp = timestamp;
+        this.userId = userId;
+    }
 }

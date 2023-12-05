@@ -57,7 +57,8 @@ public class SecurityConfig {
         "/api/users/login", "/api/terminals/getTerminalBySerialNumber={SerialNumber}", "/api/terminals/getIsTerminalActivationProcessed/{SerialNumber}").permitAll()
         .requestMatchers("/api/supervisors/getBySupervisorId={Id}").hasAnyAuthority("SUPERVISOR")
         .requestMatchers("/api/pinusers/register/controller", "/api/pinusers/controllers/**", "/api/supervisors/**",
-        "/api/terminals/admin/**", "/api/transporters/**", "/api/routesHistory/GetRouteHistoriesByTerminalId**").hasAnyAuthority("ADMIN")
+        "/api/terminals/admin/**", "/api/transporters/**", "/api/routesHistory/GetRouteHistoriesByTerminalId**", "/api/transactions/setScanTransactionAmount**"
+        , "/api/transactions/getScanTransactionAmount").hasAnyAuthority("ADMIN")
         .requestMatchers("/api/pinusers/register/driver**", "/api/pinusers/drivers/**", "/api/users/addCredit**").hasAnyAuthority("SUPERVISOR")
         .requestMatchers("/api/terminals/updateTerminalId**", "/api/terminals/CloseTerminalRouteHistory", 
         "/api/routesHistory/scanInteractionTerminalId={TerminalId}&UserId={UserId}", "/api/pinusers/getDriverByPIN={PIN}").hasAnyAuthority("DRIVER")

@@ -27,7 +27,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping("/api/user/files")
 public class UserFilesController {
 
-    @Autowired
+    /*@Autowired
     private UserFileService userFileService;
 
     @PostMapping("upload/profilepicture&userId={UserId}")
@@ -124,5 +124,5 @@ public class UserFilesController {
             return ResponseEntity.ok().body(userFileService.removeDocument(userId,DocumentName));
             
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false); 
-    }
+    }*/
 }

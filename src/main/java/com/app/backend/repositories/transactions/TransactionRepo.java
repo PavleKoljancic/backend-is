@@ -36,6 +36,5 @@ public interface TransactionRepo extends JpaRepository<Transaction, Integer> {
             + "  inner join TERMINAL ter on ter.Id=sTrans.terminalId"
             +" where :transId=ter.transporterId)"
             )
-    List<Transaction> findTransactionsByTransporterId(@Param("transId") Integer transId, PageRequest pageRequest);
-
+    List<Transaction> findTransactionsByTransporterId(@Param("transId") Integer transId, PageRequest pageRequest);    
 }

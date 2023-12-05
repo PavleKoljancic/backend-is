@@ -1,5 +1,6 @@
 package com.app.backend.controllers.transactions;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,11 +10,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.backend.BackendApplication;
 import com.app.backend.models.transactions.CreditTransaction;
 import com.app.backend.models.transactions.ScanTransaction;
 import com.app.backend.models.transactions.Transaction;
@@ -90,5 +95,24 @@ public class TransactionsController {
     @PathVariable("size") Integer size) 
     {
         return transactionService.getTransactionsTransporterIdPaged(transporterId, PageRequest.of(page, size, Sort.Direction.DESC, "Id"));
+    }
+
+    @PostMapping("/setScanTransactionAmount={amount}")
+    public ResponseEntity<?> setScanTransactionAmount(@PathVariable("amount") BigDecimal newAmount){
+        
+        if(transactionService.setScanTransactionAmount(newAmount))
+            return ResponseEntity.status(HttpStatus.OK).body(true);
+        else
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+    }
+
+    @GetMapping("/getScanTransactionAmount")
+    public ResponseEntity<?> getScanTransactionAmount(){
+
+        BigDecimal amount = BackendApplication.scanTicketCost;
+        if(amount != null)
+            return ResponseEntity.status(HttpStatus.OK).body(amount);
+        else
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 }

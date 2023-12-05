@@ -15,4 +15,9 @@ import lombok.Setter;
 public class ScanInterraction {
     
     @EmbeddedId ScanInterractionPrimaryKey id;
+    private Integer transactionId;
+    
+    public ScanInterraction(ScanInterractionPrimaryKey id) {
+        this.id = id;
+    }
 }
