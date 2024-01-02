@@ -24,7 +24,7 @@ import com.app.backend.repositories.users.UserRepo;
 
 @Service
 public class UserFileService {
-    /*final public String USER_FILES_PATH = "userData" + File.separator + "user";
+    final public String USER_FILES_PATH = "userData" + File.separator + "user";
     final public String PROFILE_PICTURE_DIR = "profile_pic";
     final public String DOC_DIR = "docs";
 
@@ -36,10 +36,7 @@ public class UserFileService {
         return userDir;
     }
 
-    public File getUserDocsDir(Integer userId) {
-        File userDir = new File(USER_FILES_PATH + File.separator + userId + File.separator + DOC_DIR);
-        return userDir;
-    }
+  
 
     public Date getNextPossibleChangeDate(Integer userId) {
         if (getProfilePictureFile(userId).exists())
@@ -105,6 +102,10 @@ public class UserFileService {
         return true;
     }
 
+      public File getUserDocsDir(Integer userId) {
+        File userDir = new File(USER_FILES_PATH + File.separator + userId + File.separator + DOC_DIR);
+        return userDir;
+    }
     public boolean saveUserDocument(Integer userId, String DocumentName, MultipartFile file) {
         throw new NotYetImplementedException();
     }
@@ -115,8 +116,5 @@ public class UserFileService {
 
     }
 
-    public boolean removeDocument(Integer userId, String documentName) {
-       throw new NotYetImplementedException();
-    }
-    */
+
 }

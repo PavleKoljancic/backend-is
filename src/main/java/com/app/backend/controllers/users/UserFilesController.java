@@ -27,7 +27,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping("/api/user/files")
 public class UserFilesController {
 
-    /*@Autowired
+    @Autowired
     private UserFileService userFileService;
 
     @PostMapping("upload/profilepicture&userId={UserId}")
@@ -115,14 +115,5 @@ public class UserFilesController {
             }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
-    @GetMapping(value = "remove/document&userId={UserId}&DocumentName={DocumentName}")
-    public ResponseEntity<Boolean> removeDocument(@PathVariable("UserId") Integer userId,
-            @PathVariable("DocumentName") String DocumentName,
-            HttpServletRequest request) {
-
-        if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId == SecurityUtil.getIdFromAuthToken(request))
-            return ResponseEntity.ok().body(userFileService.removeDocument(userId,DocumentName));
-            
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false); 
-    }*/
+    
 }
