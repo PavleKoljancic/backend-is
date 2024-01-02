@@ -170,6 +170,8 @@ public class RouteHistoryService {
             tempScan.setTimestamp(new Timestamp(System.currentTimeMillis()));
 
             transactionId = scanTransactionRepo.save(tempScan).getId();
+            user.setCredit(user.getCredit().subtract(scanTicketCost));
+            userRepo.save(user);
 
             response = "Jednokratna karta";
 

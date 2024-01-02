@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.bytebuddy.implementation.bytecode.constant.IntegerConstant;
 
 @Getter
 @Setter
@@ -28,6 +29,8 @@ public class TicketRequest {
     Integer ticketTypeId ;
     @Column(name="DOCUMENT_Id")
     Integer documentId;
+    @Column(name="TICKET_REQUEST_Id")
+    Integer ticketRequestId;
 
     public TicketRequest(Timestamp timestamp, Integer userId, Integer ticketTypeId,Integer documentId){
         this.DateTime = timestamp;
