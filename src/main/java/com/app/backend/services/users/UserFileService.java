@@ -121,8 +121,11 @@ public class UserFileService {
         doc.setApproved(false);
         doc.setUserId(userId);
         DocumentType docType = documentTypeRepo.findById(documentTypeId).get();
-        if(docType.getValidUntilDate().after(new Date()))
+        if(docType.getValidUntilDate().before(new Date()))
         return false;
+
+        if (!getUserDocsDir(userId).isDirectory())
+            getUserDocsDir(userId).mkdirs();
         
         doc.setDocumentType(docType);
         Document dbResponse = documentRepo.save(doc);
@@ -133,6 +136,7 @@ public class UserFileService {
                 destFile.createNewFile();
                 Files.copy(file.getInputStream(), Paths.get(destFile.getAbsolutePath()),
                     StandardCopyOption.REPLACE_EXISTING);
+                return true;
             } catch (IOException e) {
                 return false;
             }
