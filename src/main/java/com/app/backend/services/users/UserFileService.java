@@ -13,14 +13,18 @@ import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
-import org.hibernate.NotImplementedYetException;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.app.backend.models.tickets.Document;
+import com.app.backend.models.tickets.DocumentType;
 import com.app.backend.models.users.User;
+import com.app.backend.repositories.tickets.DocumentRepo;
+import com.app.backend.repositories.tickets.DocumentTypeRepo;
 import com.app.backend.repositories.users.UserRepo;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserFileService {
@@ -30,6 +34,10 @@ public class UserFileService {
 
     @Autowired
     UserRepo userRepo;
+    @Autowired
+    DocumentTypeRepo documentTypeRepo;
+    @Autowired
+    DocumentRepo documentRepo;
 
     public File getUserProfilePicDir(Integer userId) {
         File userDir = new File(USER_FILES_PATH + File.separator + userId + File.separator + PROFILE_PICTURE_DIR);
@@ -106,13 +114,36 @@ public class UserFileService {
         File userDir = new File(USER_FILES_PATH + File.separator + userId + File.separator + DOC_DIR);
         return userDir;
     }
-    public boolean saveUserDocument(Integer userId, String DocumentName, MultipartFile file) {
-        throw new NotYetImplementedException();
+    
+    @Transactional
+    public boolean saveUserDocument(Integer userId, Integer documentTypeId, MultipartFile file) {
+        Document doc = new Document();
+        doc.setApproved(false);
+        doc.setUserId(userId);
+        DocumentType docType = documentTypeRepo.findById(documentTypeId).get();
+        if(docType.getValidUntilDate().after(new Date()))
+        return false;
+        
+        doc.setDocumentType(docType);
+        Document dbResponse = documentRepo.save(doc);
+        if(dbResponse!=null) 
+        {
+            File  destFile  = new   File(getUserDocsDir(userId), dbResponse.getId() + ".pdf");
+            try {
+                destFile.createNewFile();
+                Files.copy(file.getInputStream(), Paths.get(destFile.getAbsolutePath()),
+                    StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                return false;
+            }
+            
+        }
+        return false;
     }
 
-    public File getDocument(Integer userId, String DocumentName) {
+    public File getDocument(Integer userId, Integer documentId) {
         
-        return new   File(getUserDocsDir(userId), DocumentName + ".pdf");
+        return new   File(getUserDocsDir(userId), documentId + ".pdf");
 
     }
 

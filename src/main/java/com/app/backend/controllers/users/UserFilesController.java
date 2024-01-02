@@ -80,26 +80,26 @@ public class UserFilesController {
         return userFileService.getNextPossibleChangeDate(userId);
     }
 
-    @PostMapping("upload/document&userId={UserId}&DocumentName={DocumentName}")
+    @PostMapping("upload/document&userId={UserId}&DocumentTypeId={DocumentTypeId}")
     public ResponseEntity<Boolean> uploadDocument(@RequestParam("document") MultipartFile file,
-            @PathVariable("UserId") Integer userId, @PathVariable("DocumentName") String DocumentName,
+            @PathVariable("UserId") Integer userId, @PathVariable("DocumentTypeId") Integer documentTypeId,
             HttpServletRequest request) {
 
         if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId == SecurityUtil.getIdFromAuthToken(request))
-            return ResponseEntity.ok().body(userFileService.saveUserDocument(userId, DocumentName, file));
+            return ResponseEntity.ok().body(userFileService.saveUserDocument(userId, documentTypeId, file));
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
     }
 
-    @GetMapping(value = "get/document&userId={UserId}&DocumentName={DocumentName}", produces = MediaType.APPLICATION_PDF_VALUE)
+    @GetMapping(value = "get/document&userId={UserId}&DocumentTypeId={DocumentTypeId}", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> getDocument(@PathVariable("UserId") Integer userId,
-            @PathVariable("DocumentName") String DocumentName,
+            @PathVariable("DocumentTypeId") Integer DocumentTypeId,
             HttpServletRequest request) {
 
         if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId != SecurityUtil.getIdFromAuthToken(request))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
     
-        File doc = userFileService.getDocument(userId, DocumentName);
+        File doc = userFileService.getDocument(userId, DocumentTypeId);
         if (doc.exists() && doc.isFile())
             try {
 

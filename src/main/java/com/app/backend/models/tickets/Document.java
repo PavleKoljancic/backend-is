@@ -30,4 +30,5 @@ public class Document {
     @Column(name = "Approved")
     Boolean approved;
     
+    
 }
