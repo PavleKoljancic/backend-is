@@ -38,7 +38,7 @@ public class TicketRequestController {
         Integer id = SecurityUtil.getIdFromAuthToken(request);
 
         if (id == userId)
-            return ResponseEntity.ok(ticketRequestService.addTicketRequest(ticketTypeId, userId));
+            return ResponseEntity.ok(ticketRequestService.addTicketRequest(ticketTypeId, userId,null));
         else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
     }

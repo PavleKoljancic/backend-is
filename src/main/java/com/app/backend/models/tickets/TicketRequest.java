@@ -29,9 +29,10 @@ public class TicketRequest {
     @Column(name="DOCUMENT_Id")
     Integer documentId;
 
-    public TicketRequest(Timestamp timestamp, Integer userId, Integer ticketTypeId){
+    public TicketRequest(Timestamp timestamp, Integer userId, Integer ticketTypeId,Integer documentId){
         this.DateTime = timestamp;
         this.userId = userId;
         this.ticketTypeId = ticketTypeId;
+        this.documentId = documentId;
     }
 }
