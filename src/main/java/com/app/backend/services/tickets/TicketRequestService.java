@@ -73,7 +73,7 @@ public class TicketRequestService {
     @Transactional
     public String addTicketResponse(TicketRequestResponse ticketRequestResponse) {
 
-        if (ticketRequestResponseRepo.findByTicketRequestId(ticketRequestResponse.getTicketRequestId()).size() > 0) {
+        if (ticketRequestResponseRepo.findByTicketRequestId(ticketRequestResponse.getTicketRequestId()).size() == 0) {
             // TicketRequest nije Ranije processiran
             String responseString = null;
             TicketRequestResponse dbResponse = ticketRequestResponseRepo.save(ticketRequestResponse);
