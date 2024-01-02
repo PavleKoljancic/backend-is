@@ -44,8 +44,6 @@ public class UserFileService {
         return userDir;
     }
 
-  
-
     public Date getNextPossibleChangeDate(Integer userId) {
         if (getProfilePictureFile(userId).exists())
             return new Date(getProfilePictureFile(userId).lastModified() + (1000l * 60l * 60l * 24l * 365));
@@ -110,46 +108,41 @@ public class UserFileService {
         return true;
     }
 
-      public File getUserDocsDir(Integer userId) {
+    public File getUserDocsDir(Integer userId) {
         File userDir = new File(USER_FILES_PATH + File.separator + userId + File.separator + DOC_DIR);
         return userDir;
     }
-    
+
     @Transactional
-    public boolean saveUserDocument(Integer userId, Integer documentTypeId, MultipartFile file) {
+    public boolean saveUserDocument(Integer userId, Integer documentTypeId, MultipartFile file) throws IOException {
         Document doc = new Document();
         doc.setApproved(false);
         doc.setUserId(userId);
         DocumentType docType = documentTypeRepo.findById(documentTypeId).get();
-        if(docType.getValidUntilDate().before(new Date()))
-        return false;
+        if (docType.getValidUntilDate().before(new Date()))
+            return false;
 
         if (!getUserDocsDir(userId).isDirectory())
             getUserDocsDir(userId).mkdirs();
-        
+
         doc.setDocumentType(docType);
         Document dbResponse = documentRepo.save(doc);
-        if(dbResponse!=null) 
-        {
-            File  destFile  = new   File(getUserDocsDir(userId), dbResponse.getId() + ".pdf");
-            try {
-                destFile.createNewFile();
-                Files.copy(file.getInputStream(), Paths.get(destFile.getAbsolutePath()),
+        if (dbResponse != null) {
+            File destFile = new File(getUserDocsDir(userId), dbResponse.getId() + ".pdf");
+
+            destFile.createNewFile();
+            Files.copy(file.getInputStream(), Paths.get(destFile.getAbsolutePath()),
                     StandardCopyOption.REPLACE_EXISTING);
-                return true;
-            } catch (IOException e) {
-                return false;
-            }
-            
+            return true;
+
         }
         return false;
     }
 
     public File getDocument(Integer userId, Integer documentId) {
-        
-        return new   File(getUserDocsDir(userId), documentId + ".pdf");
+
+        return new File(getUserDocsDir(userId), documentId + ".pdf");
 
     }
-
 
 }
