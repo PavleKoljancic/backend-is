@@ -27,4 +27,6 @@ public interface TicketRequestRepo extends JpaRepository<TicketRequest,Integer> 
       public List<TicketRequest> getTicketRequestByTransporterId(@Param("transporterId")Integer transporterId, PageRequest pageRequest);
 
       public TicketRequest getById(Integer id);
+
+  
 }

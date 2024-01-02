@@ -1,5 +1,6 @@
 package com.app.backend.services.tickets;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,30 +27,32 @@ public class TicketRequestService {
     TicketTypeRepo ticketTypeRepo;
     @Autowired
     TicketRequestRepo ticketRequestRepo;
-    @Autowired 
+    @Autowired
     TicketRequestResponseRepo ticketRequestResponseRepo;
-    
+
     @Transactional
-    public String addTicketRequest(Integer ticketTypeId, Integer userId) {
+    public String addTicketRequest(Integer ticketTypeId, Integer userId,Integer documentId) {
         Optional<User> userOptional = userRepo.findById(userId);
         Optional<TicketType> tickTypeOptional = ticketTypeRepo.findById(ticketTypeId);
         if (!userOptional.isPresent()||!tickTypeOptional.isPresent())
-            return "UserId or TicketTypeId inccorect";
+            return "UserId or TicketTypeId incorrect";
         TicketType ticketType = tickTypeOptional.get();
         if(!ticketType.getInUse())
             return "Requested Ticket not inUse";
         User user = userOptional.get();
         if(user.getCredit().compareTo(ticketType.getCost())<0)
             return "Insufficient funds";
-        
-        Integer resultId = ticketRequestRepo.addTicketRequest(userId, ticketTypeId);
+        if(ticketType.getNeedsDocumentaion()&&documentId==null)
+            return "Requested ticket type requires but no document provided.";
+
+        TicketRequest resultingRequest = ticketRequestRepo.save(new TicketRequest(new Timestamp(System.currentTimeMillis()),userId,ticketTypeId,documentId));
         if(ticketType.getNeedsDocumentaion())
             return "Successfully added request";
         
         TicketRequestResponse response = new TicketRequestResponse();
         response.setApproved(true);
         response.setComment("Automatska obrada " + ticketType.getName());
-        response.setTicketRequestId(resultId);
+        response.setTicketRequestId(resultingRequest.getId());
         
         return addTicketResponse(response);
     
@@ -57,17 +60,15 @@ public class TicketRequestService {
     }
 
     @Transactional
-    public String addTicketResponse(TicketRequestResponse response) 
-    {
+    public String addTicketResponse(TicketRequestResponse response) {
 
-        TicketRequestResponse dbResponse =  ticketRequestResponseRepo.save(response);
-        if(ticketRequestResponseRepo.processTicketResponse(dbResponse.getId()))
+        TicketRequestResponse dbResponse = ticketRequestResponseRepo.save(response);
+        if (ticketRequestResponseRepo.processTicketResponse(dbResponse.getId()))
             return "Ticked Request Processed and Ticket bought";
         return "Ticked Request Processed and wasn't Ticket bought";
     }
 
-    public List<TicketRequest> getTicketRequestByTransporterId(Integer TRANSPORTER_Id, PageRequest pageRequest) 
-    {
+    public List<TicketRequest> getTicketRequestByTransporterId(Integer TRANSPORTER_Id, PageRequest pageRequest) {
         return ticketRequestRepo.getTicketRequestByTransporterId(TRANSPORTER_Id, pageRequest);
     }
 
@@ -77,14 +78,14 @@ public class TicketRequestService {
     }
 
     public List<TicketRequestResponse> getTicketResponses(Integer supervisorId, PageRequest pageRequest) {
-        return ticketRequestResponseRepo.findBySupervisorId(supervisorId,pageRequest);
+        return ticketRequestResponseRepo.findBySupervisorId(supervisorId, pageRequest);
     }
 
     public List<TicketRequestResponse> getTicketResponsesByUserId(Integer userId, PageRequest of) {
-        return ticketRequestResponseRepo.findByUserId(userId,of);
+        return ticketRequestResponseRepo.findByUserId(userId, of);
     }
 
     public List<TicketRequest> getTicketRequestByUserId(Integer userId, PageRequest of) {
-        return ticketRequestRepo.findByUserId(userId,of);
+        return ticketRequestRepo.findByUserId(userId, of);
     }
 }
