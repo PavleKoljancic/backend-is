@@ -1,5 +1,6 @@
 package com.app.backend.models.terminals;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
@@ -15,9 +16,12 @@ import lombok.Setter;
 public class ScanInterraction {
     
     @EmbeddedId ScanInterractionPrimaryKey id;
-    private Integer transactionId;
     
-    public ScanInterraction(ScanInterractionPrimaryKey id) {
-        this.id = id;
-    }
+    
+    @Column(name="TRANSACTION_Id")
+    private Integer transactionId;
+       
+
+    
+    
 }

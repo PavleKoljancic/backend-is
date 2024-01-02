@@ -31,4 +31,7 @@ public class ScanInterractionPrimaryKey implements Serializable {
 
     @Column(name="Time")
     Timestamp time;
+
+
+
 }

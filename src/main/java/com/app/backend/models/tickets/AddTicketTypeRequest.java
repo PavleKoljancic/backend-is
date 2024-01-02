@@ -10,4 +10,5 @@ import lombok.Setter;
 public class AddTicketTypeRequest {
     TicketType ticketType;
     Integer [] transporterIds;
+    Integer [] documentTypesIds;
 }
