@@ -142,9 +142,6 @@ public class TicketRequestService {
         return ticketRequestRepo.getTicketRequestByTransporterId(TRANSPORTER_Id);
     }
 
-    public List<TicketRequestResponse> getTicketResponses(Integer supervisorId, PageRequest pageRequest) {
-        return ticketRequestResponseRepo.findBySupervisorId(supervisorId, pageRequest);
-    }
 
     public List<TicketRequestResponse> getTicketResponsesByUserId(Integer userId, PageRequest of) {
         return ticketRequestResponseRepo.findByUserId(userId, of);

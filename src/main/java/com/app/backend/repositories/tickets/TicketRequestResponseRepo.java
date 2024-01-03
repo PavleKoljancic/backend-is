@@ -13,7 +13,6 @@ import java.util.List;
 public interface TicketRequestResponseRepo extends JpaRepository<TicketRequestResponse,Integer>{
 
 
-    public List<TicketRequestResponse> findBySupervisorId(Integer supervisorId, PageRequest pageRequest);
 
     @Query("select ticketResponse from TICKET_REQUEST_RESPONSE ticketResponse inner join TICKET_REQUEST tr on tr.Id=ticketResponse.ticketRequestId where tr.userId=:userId")
     public List<TicketRequestResponse> findByUserId(@Param("userId")Integer userId, PageRequest of);
