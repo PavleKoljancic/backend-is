@@ -34,9 +34,11 @@ public class TicketRequestController {
 
     @GetMapping("addTicketRequest={ticketTypeId}&UserId={UserID}&DocumentId={DocumentId}")
     public ResponseEntity<String> addTicketRequest(@PathVariable("ticketTypeId") Integer ticketTypeId, @PathVariable("UserID") Integer userId, @PathVariable("DocumentId") Integer DocumentId,HttpServletRequest request) 
-    {
-        Integer id = SecurityUtil.getIdFromAuthToken(request);
+    {   
 
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
+        if(DocumentId ==0)
+            DocumentId=null;
         if (id == userId)
             return ResponseEntity.ok(ticketRequestService.addTicketRequest(ticketTypeId, userId,DocumentId));
         else
