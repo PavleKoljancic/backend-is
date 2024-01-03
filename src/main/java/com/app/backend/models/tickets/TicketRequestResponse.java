@@ -17,7 +17,7 @@ public class TicketRequestResponse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer Id;
-    @Column(name="SupervisorComment")
+    @Column(name="Comment")
     String comment;
     @Column(name="TICKET_REQUEST_Id" )
     Integer ticketRequestId;
