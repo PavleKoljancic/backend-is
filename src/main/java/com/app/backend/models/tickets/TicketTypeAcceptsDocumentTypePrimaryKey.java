@@ -9,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Embeddable
+@NoArgsConstructor
 public class TicketTypeAcceptsDocumentTypePrimaryKey {
 
     @Column(name="DOCUMENT_TYPE_Id")

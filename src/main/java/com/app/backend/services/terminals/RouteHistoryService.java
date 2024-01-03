@@ -16,7 +16,6 @@ import com.app.backend.models.terminals.ScanInterractionPrimaryKey;
 import com.app.backend.models.terminals.Terminal;
 import com.app.backend.models.tickets.UserTicket;
 import com.app.backend.models.transactions.ScanTransaction;
-import com.app.backend.models.transactions.Transaction;
 import com.app.backend.models.transporters.Route;
 import com.app.backend.models.users.Driver;
 import com.app.backend.models.users.User;
@@ -26,7 +25,6 @@ import com.app.backend.repositories.tickets.AcceptedRepo;
 import com.app.backend.repositories.tickets.UserTicketRepo;
 import com.app.backend.repositories.transactions.ScanTransactionRepo;
 import com.app.backend.repositories.users.UserRepo;
-import com.app.backend.services.transactions.TransactionService;
 import com.app.backend.services.transporters.RouteService;
 import com.app.backend.services.users.DriverService;
 

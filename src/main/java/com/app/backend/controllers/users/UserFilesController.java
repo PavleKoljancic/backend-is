@@ -86,7 +86,11 @@ public class UserFilesController {
             HttpServletRequest request) {
 
         if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId == SecurityUtil.getIdFromAuthToken(request))
-            return ResponseEntity.ok().body(userFileService.saveUserDocument(userId, documentTypeId, file));
+            try {
+                return ResponseEntity.ok().body(userFileService.saveUserDocument(userId, documentTypeId, file));
+            } catch (IOException e) {
+                
+            }
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
     }

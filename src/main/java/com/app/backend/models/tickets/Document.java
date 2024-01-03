@@ -1,6 +1,5 @@
 package com.app.backend.models.tickets;
 
-import java.sql.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,6 +28,10 @@ public class Document {
     private DocumentType documentType;
     @Column(name = "Approved")
     Boolean approved;
+    @Column(name = "Comment")
+    String comment;
+    @Column(name ="SUPERVISOR_Id", nullable = true)
+    Integer supervisorId;
     
-    
+
 }

@@ -22,6 +22,4 @@ public class TicketRequestResponse {
     @Column(name="TICKET_REQUEST_Id" )
     Integer ticketRequestId;
     Boolean approved;
-    @Column(name="SUPERVISOR_Id")
-    Integer supervisorId;
 }
