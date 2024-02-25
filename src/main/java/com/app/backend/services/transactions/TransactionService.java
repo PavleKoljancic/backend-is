@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +18,30 @@ import com.app.backend.BackendApplication;
 import com.app.backend.models.transactions.CreditTransaction;
 import com.app.backend.models.transactions.ScanTransaction;
 import com.app.backend.models.transactions.Transaction;
+import com.app.backend.models.transactions.TransactionsStatistics;
+import com.app.backend.models.transactions.TransactionsStatisticsRequest;
+import com.app.backend.models.transactions.TransporterTransactionsStatistics;
 import com.app.backend.repositories.transactions.CreditTransactionRepo;
 import com.app.backend.repositories.transactions.ScanTransactionRepo;
+import com.app.backend.repositories.transactions.TicketTransactionRepo;
 import com.app.backend.repositories.transactions.TransactionRepo;
 
 
 
 @Service
 public class TransactionService {
+    
     @Autowired
-    TransactionRepo transactionRepo;
+    private TransactionRepo transactionRepo;
+
     @Autowired
-    CreditTransactionRepo creditTransactionRepo;
+    private CreditTransactionRepo creditTransactionRepo;
+
     @Autowired
-    ScanTransactionRepo scanTransactionRepo;
+    private ScanTransactionRepo scanTransactionRepo;
+
+    @Autowired
+    private TicketTransactionRepo ticketTransactionRepo;
 
     public List<Transaction> findAllWithDateTimeAfter(Timestamp dateTime) 
     {
@@ -100,5 +111,29 @@ public class TransactionService {
         }
         else 
             return null;
+    }
+
+    public TransactionsStatistics getTransactionsStatistics(TransactionsStatisticsRequest req){
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime startDate = currentDateTime.minusDays(req.getDays());
+
+        Timestamp timestamp = Timestamp.valueOf(startDate);
+
+        TransactionsStatistics stats = new TransactionsStatistics();
+
+        if(req.getTransporterIds().size() == 0)
+            return null;
+        
+        for(Integer id : req.getTransporterIds()){
+            TransporterTransactionsStatistics transporterStats = new TransporterTransactionsStatistics();
+            transporterStats.setTransporterId(id);
+            transporterStats.setCreditTransactions(creditTransactionRepo.findCreditTransactionsByTransporterId(id, timestamp));
+            transporterStats.setScanTransactions(scanTransactionRepo.findScanTransactionsByTransporterId(id, timestamp));
+            transporterStats.setTicketTransactions(ticketTransactionRepo.findTicketTransactionsByTransporterId(id, timestamp));
+
+            stats.getTransporterTransactionsStatistics().add(transporterStats);
+        }
+        return stats;
     }
 }
