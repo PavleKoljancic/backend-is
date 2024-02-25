@@ -30,7 +30,7 @@ public class Document {
     Boolean approved;
     @Column(name = "Comment")
     String comment;
-    @Column(name ="SUPERVISOR_Id", nullable = true)
+    @Column(name ="SUPERVISOR_Id")
     Integer supervisorId;
     
 
