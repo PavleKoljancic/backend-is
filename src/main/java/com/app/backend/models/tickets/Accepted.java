@@ -10,8 +10,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
-@Table(name="ACCEPTED")
+@Entity(name="ACCEPTED")
+@Table
 public class Accepted {
     @EmbeddedId 
     AcceptedPrimaryKey Id;

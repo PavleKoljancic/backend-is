@@ -10,8 +10,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
-@Table(name="AMOUNT_TICKET")
+@Entity(name="AMOUNT_TICKET")
+@Table
 @PrimaryKeyJoinColumn(name = "TICKET_TYPE_Id", referencedColumnName="Id")
 public class AmountTicket extends TicketType{
     

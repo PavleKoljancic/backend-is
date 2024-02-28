@@ -15,8 +15,15 @@ public interface TicketTransactionRepo extends JpaRepository<TicketTransaction,I
     + " where trans.Id in ( select tTrans1.Id from"
     + " TicketTransaction tTrans1 inner join TICKET_REQUEST_RESPONSE trr on tTrans1.ticketRequestResponseId = trr.id"
     + " inner join TICKET_REQUEST tr on tr.Id = trr.ticketRequestId "
-    + " inner join Accepted a on  a.Id.ticketTypeId = tr.ticketTypeId"
+    + " inner join ACCEPTED a on  a.Id.ticketTypeId = tr.ticketTypeId"
     + " where :transId = a.Id.transporterId AND trans.timestamp >= :startDate) "
     )
     List<TicketTransaction> findTicketTransactionsByTransporterId(@Param("transId") Integer transId, @Param("startDate") Timestamp startDate);
+    @Query("SELECT COUNT(trans.Id) AS transactionCount FROM TRANSACTION trans "
+    + " where trans.Id in ( select tTrans1.Id from"
+    + " TicketTransaction tTrans1 inner join TICKET_REQUEST_RESPONSE trr on tTrans1.ticketRequestResponseId = trr.id"
+    + " inner join TICKET_REQUEST tr on tr.Id = trr.ticketRequestId "
+    + " where :ticketTypeId = tr.ticketTypeId AND trans.timestamp >= :startDate) "
+    )
+    Integer findTicketTransactionsCountByTicketTypeId(@Param("ticketTypeId") Integer ticketTypeId, @Param("startDate") Timestamp startDate);
 }
