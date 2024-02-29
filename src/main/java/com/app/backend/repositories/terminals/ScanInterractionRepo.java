@@ -6,8 +6,9 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.app.backend.models.terminals.ScanInterraction;
+import com.app.backend.models.terminals.ScanInterractionPrimaryKey;
 
-public interface ScanInterractionRepo extends JpaRepository<ScanInterraction, Integer>{
+public interface ScanInterractionRepo extends JpaRepository<ScanInterraction, ScanInterractionPrimaryKey>{
 
     public List<ScanInterraction> findByIdRouteHistoryTerminalIdEqualsAndIdRouteHistoryRouteIdEquals(Integer TerminalId, Integer RouteId);
 

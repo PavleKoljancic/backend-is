@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.app.backend.models.tickets.Document;
 import com.app.backend.security.SecurityUtil;
 import com.app.backend.services.users.UserFileService;
 
@@ -95,15 +97,15 @@ public class UserFilesController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
     }
 
-    @GetMapping(value = "get/document&userId={UserId}&DocumentTypeId={DocumentTypeId}", produces = MediaType.APPLICATION_PDF_VALUE)
+    @GetMapping(value = "get/document&userId={UserId}&DocumentId={DocumentId}", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> getDocument(@PathVariable("UserId") Integer userId,
-            @PathVariable("DocumentTypeId") Integer DocumentTypeId,
+            @PathVariable("DocumentId") Integer DocumentId,
             HttpServletRequest request) {
 
         if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId != SecurityUtil.getIdFromAuthToken(request))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
     
-        File doc = userFileService.getDocument(userId, DocumentTypeId);
+        File doc = userFileService.getDocument(userId, DocumentId);
         if (doc.exists() && doc.isFile())
             try {
 
@@ -118,6 +120,16 @@ public class UserFilesController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
             }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
+    @GetMapping(value = "get/documents&userId={UserId}")
+    public ResponseEntity<List<Document>> getDocuments(@PathVariable("UserId") Integer userId,
+            HttpServletRequest request) {
+
+        if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId != SecurityUtil.getIdFromAuthToken(request))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+    
+        return ResponseEntity.ok(userFileService.getDocuments(userId));
     }
     
 }
