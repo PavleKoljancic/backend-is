@@ -15,4 +15,6 @@ public interface ScanInterractionRepo extends JpaRepository<ScanInterraction, In
     Integer RouteId, Timestamp timeSince);
 
     public List<ScanInterraction> findByIdRouteHistoryTerminalIdEqualsAndIdTimeGreaterThanEqual(Integer TerminalId, Timestamp timeSince);
+    
+   public List<ScanInterraction> findByIdRouteHistoryRouteIdEqualsAndIdTimeGreaterThanEqualAndIdTimeLessThanEqual(Integer routeId, Timestamp start, Timestamp end);
 }
