@@ -73,8 +73,9 @@ public class SecurityConfig {
         .requestMatchers("/api/routes/getAllRoutes**").hasAnyAuthority("ADMIN", "DRIVER")
         .requestMatchers("/api/tickets/getAllTickets/**").hasAnyAuthority("SUPERVISOR", "USER", "ADMIN")
         .requestMatchers("/api/tickets/getTicketsStatistics**", "/api/routes/getRoutesStatistics").hasAnyAuthority("SUPERVISOR", "ADMIN")
-        .requestMatchers("/api/routes/**", "/api/tickets/**").hasAnyAuthority("ADMIN")
-        .requestMatchers("/api/ticketRequests/**").hasAnyAuthority("SUPERVISOR")
+        .requestMatchers("/api/routes/**", "/api/tickets/**", "/api/documents/addDocumentType**").hasAnyAuthority("ADMIN")
+        .requestMatchers("/api/ticketRequests/**", "/api/documents/getAllUnapprovedDocuments", 
+        "api/documents/ChangeisApprovedDocumentId**").hasAnyAuthority("SUPERVISOR")
         .and().httpBasic();
         
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
