@@ -28,8 +28,6 @@ public class Document {
     private DocumentType documentType;
     @Column(name = "Approved")
     Boolean approved;
-    @Column(name = "Comment")
-    String comment;
     @Column(name ="SUPERVISOR_Id")
     Integer supervisorId;
     
