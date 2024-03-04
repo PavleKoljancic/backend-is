@@ -9,11 +9,13 @@ import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -143,6 +145,10 @@ public class UserFileService {
 
         return new File(getUserDocsDir(userId), documentId + ".pdf");
 
+    }
+
+    public List<Document> getDocuments(Integer userId) {
+        return documentRepo.findByUserId(userId);
     }
 
 }

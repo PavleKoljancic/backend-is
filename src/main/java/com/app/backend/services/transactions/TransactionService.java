@@ -75,10 +75,7 @@ public class TransactionService {
     {
         return transactionRepo.findTransactionsByTransporterId(transporterId, pageRequest);
     }
-    public Integer addScanTransaction(BigDecimal pAmount, Integer pUserId,Integer pTerminalId) 
-    {
-        return scanTransactionRepo.addScanTransaction(pAmount, pUserId, pTerminalId);
-    }
+
 
     public Boolean setScanTransactionAmount(BigDecimal newAmount){
         

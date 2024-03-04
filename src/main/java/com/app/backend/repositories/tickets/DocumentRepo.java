@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface DocumentRepo extends JpaRepository<Document,Integer>{
     
-    public List<Document> findByApprovedEquals(Boolean flag);
+     List<Document> findByUserId(Integer userId);
+     public List<Document> findByApprovedEquals(Boolean flag);
 }

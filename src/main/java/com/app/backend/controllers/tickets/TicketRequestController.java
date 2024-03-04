@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.backend.models.tickets.Document;
 import com.app.backend.models.tickets.TicketRequest;
 import com.app.backend.models.tickets.TicketRequestResponse;
+import com.app.backend.repositories.tickets.DocumentRepo;
 import com.app.backend.security.SecurityUtil;
 import com.app.backend.services.tickets.TicketRequestService;
 import com.app.backend.services.users.SupervisorService;
@@ -32,7 +34,7 @@ public class TicketRequestController {
 
     @GetMapping("addTicketRequest={ticketTypeId}&UserId={UserID}&DocumentId={DocumentId}")
     public ResponseEntity<String> addTicketRequest(@PathVariable("ticketTypeId") Integer ticketTypeId, @PathVariable("UserID") Integer userId, @PathVariable("DocumentId") Integer DocumentId,HttpServletRequest request) 
-    {   
+    {     
 
         Integer id = SecurityUtil.getIdFromAuthToken(request);
         if(DocumentId ==0)
@@ -56,6 +58,8 @@ public class TicketRequestController {
                 supervisorService.findTransporterId(SupervisorId), PageRequest.of(page, size)));
 
     }
+
+
 
 
 
