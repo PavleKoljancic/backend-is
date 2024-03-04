@@ -12,6 +12,5 @@ import com.app.backend.models.transactions.ScanTransaction;
 public interface ScanTransactionRepo extends JpaRepository<ScanTransaction,Integer>{
 
     public List<ScanTransaction> findByTerminalId(Integer terminalId, PageRequest pageRequest); 
-    @Procedure(name="addTicketRequest")
-    public Integer addScanTransaction(BigDecimal pAmount, Integer pUserId,Integer pTerminalId);
+
 }

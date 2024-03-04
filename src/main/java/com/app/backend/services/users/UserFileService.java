@@ -9,35 +9,40 @@ import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
-import org.hibernate.NotImplementedYetException;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.app.backend.models.tickets.Document;
+import com.app.backend.models.tickets.DocumentType;
 import com.app.backend.models.users.User;
+import com.app.backend.repositories.tickets.DocumentRepo;
+import com.app.backend.repositories.tickets.DocumentTypeRepo;
 import com.app.backend.repositories.users.UserRepo;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserFileService {
-    /*final public String USER_FILES_PATH = "userData" + File.separator + "user";
+    final public String USER_FILES_PATH = "userData" + File.separator + "user";
     final public String PROFILE_PICTURE_DIR = "profile_pic";
     final public String DOC_DIR = "docs";
 
     @Autowired
     UserRepo userRepo;
+    @Autowired
+    DocumentTypeRepo documentTypeRepo;
+    @Autowired
+    DocumentRepo documentRepo;
 
     public File getUserProfilePicDir(Integer userId) {
         File userDir = new File(USER_FILES_PATH + File.separator + userId + File.separator + PROFILE_PICTURE_DIR);
-        return userDir;
-    }
-
-    public File getUserDocsDir(Integer userId) {
-        File userDir = new File(USER_FILES_PATH + File.separator + userId + File.separator + DOC_DIR);
         return userDir;
     }
 
@@ -105,18 +110,45 @@ public class UserFileService {
         return true;
     }
 
-    public boolean saveUserDocument(Integer userId, String DocumentName, MultipartFile file) {
-        throw new NotYetImplementedException();
+    public File getUserDocsDir(Integer userId) {
+        File userDir = new File(USER_FILES_PATH + File.separator + userId + File.separator + DOC_DIR);
+        return userDir;
     }
 
-    public File getDocument(Integer userId, String DocumentName) {
-        
-        return new   File(getUserDocsDir(userId), DocumentName + ".pdf");
+    @Transactional
+    public boolean saveUserDocument(Integer userId, Integer documentTypeId, MultipartFile file) throws IOException {
+        Document doc = new Document();
+        doc.setApproved(false);
+        doc.setUserId(userId);
+        DocumentType docType = documentTypeRepo.findById(documentTypeId).get();
+        if (docType.getValidUntilDate().before(new Date()))
+            return false;
+
+        if (!getUserDocsDir(userId).isDirectory())
+            getUserDocsDir(userId).mkdirs();
+
+        doc.setDocumentType(docType);
+        Document dbResponse = documentRepo.save(doc);
+        if (dbResponse != null) {
+            File destFile = new File(getUserDocsDir(userId), dbResponse.getId() + ".pdf");
+
+            destFile.createNewFile();
+            Files.copy(file.getInputStream(), Paths.get(destFile.getAbsolutePath()),
+                    StandardCopyOption.REPLACE_EXISTING);
+            return true;
+
+        }
+        return false;
+    }
+
+    public File getDocument(Integer userId, Integer documentId) {
+
+        return new File(getUserDocsDir(userId), documentId + ".pdf");
 
     }
 
-    public boolean removeDocument(Integer userId, String documentName) {
-       throw new NotYetImplementedException();
+    public List<Document> getDocuments(Integer userId) {
+        return documentRepo.findByUserId(userId);
     }
-    */
+
 }

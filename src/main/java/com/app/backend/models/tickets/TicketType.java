@@ -2,9 +2,6 @@ package com.app.backend.models.tickets;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
-
-import org.hibernate.annotations.DialectOverride.JoinFormula;
 import org.hibernate.annotations.WhereJoinTable;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -18,7 +15,6 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

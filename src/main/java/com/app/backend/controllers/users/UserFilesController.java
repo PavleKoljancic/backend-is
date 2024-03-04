@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.app.backend.models.tickets.Document;
 import com.app.backend.security.SecurityUtil;
 import com.app.backend.services.users.UserFileService;
 
@@ -27,7 +29,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping("/api/user/files")
 public class UserFilesController {
 
-    /*@Autowired
+    @Autowired
     private UserFileService userFileService;
 
     @PostMapping("upload/profilepicture&userId={UserId}")
@@ -80,26 +82,30 @@ public class UserFilesController {
         return userFileService.getNextPossibleChangeDate(userId);
     }
 
-    @PostMapping("upload/document&userId={UserId}&DocumentName={DocumentName}")
+    @PostMapping("upload/document&userId={UserId}&DocumentTypeId={DocumentTypeId}")
     public ResponseEntity<Boolean> uploadDocument(@RequestParam("document") MultipartFile file,
-            @PathVariable("UserId") Integer userId, @PathVariable("DocumentName") String DocumentName,
+            @PathVariable("UserId") Integer userId, @PathVariable("DocumentTypeId") Integer documentTypeId,
             HttpServletRequest request) {
 
         if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId == SecurityUtil.getIdFromAuthToken(request))
-            return ResponseEntity.ok().body(userFileService.saveUserDocument(userId, DocumentName, file));
+            try {
+                return ResponseEntity.ok().body(userFileService.saveUserDocument(userId, documentTypeId, file));
+            } catch (IOException e) {
+                
+            }
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
     }
 
-    @GetMapping(value = "get/document&userId={UserId}&DocumentName={DocumentName}", produces = MediaType.APPLICATION_PDF_VALUE)
+    @GetMapping(value = "get/document&userId={UserId}&DocumentId={DocumentId}", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> getDocument(@PathVariable("UserId") Integer userId,
-            @PathVariable("DocumentName") String DocumentName,
+            @PathVariable("DocumentId") Integer DocumentId,
             HttpServletRequest request) {
 
         if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId != SecurityUtil.getIdFromAuthToken(request))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
     
-        File doc = userFileService.getDocument(userId, DocumentName);
+        File doc = userFileService.getDocument(userId, DocumentId);
         if (doc.exists() && doc.isFile())
             try {
 
@@ -115,14 +121,15 @@ public class UserFilesController {
             }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
-    @GetMapping(value = "remove/document&userId={UserId}&DocumentName={DocumentName}")
-    public ResponseEntity<Boolean> removeDocument(@PathVariable("UserId") Integer userId,
-            @PathVariable("DocumentName") String DocumentName,
+
+    @GetMapping(value = "get/documents&userId={UserId}")
+    public ResponseEntity<List<Document>> getDocuments(@PathVariable("UserId") Integer userId,
             HttpServletRequest request) {
 
-        if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId == SecurityUtil.getIdFromAuthToken(request))
-            return ResponseEntity.ok().body(userFileService.removeDocument(userId,DocumentName));
-            
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false); 
-    }*/
+        if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId != SecurityUtil.getIdFromAuthToken(request))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+    
+        return ResponseEntity.ok(userFileService.getDocuments(userId));
+    }
+    
 }

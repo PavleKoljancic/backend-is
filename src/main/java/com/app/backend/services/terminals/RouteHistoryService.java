@@ -15,14 +15,16 @@ import com.app.backend.models.terminals.ScanInterraction;
 import com.app.backend.models.terminals.ScanInterractionPrimaryKey;
 import com.app.backend.models.terminals.Terminal;
 import com.app.backend.models.tickets.UserTicket;
+import com.app.backend.models.transactions.ScanTransaction;
 import com.app.backend.models.transporters.Route;
 import com.app.backend.models.users.Driver;
 import com.app.backend.models.users.User;
 import com.app.backend.repositories.terminals.RouteHistoryRepo;
+import com.app.backend.repositories.terminals.ScanInterractionRepo;
 import com.app.backend.repositories.tickets.AcceptedRepo;
 import com.app.backend.repositories.tickets.UserTicketRepo;
+import com.app.backend.repositories.transactions.ScanTransactionRepo;
 import com.app.backend.repositories.users.UserRepo;
-import com.app.backend.services.transactions.TransactionService;
 import com.app.backend.services.transporters.RouteService;
 import com.app.backend.services.users.DriverService;
 
@@ -55,7 +57,9 @@ public class RouteHistoryService {
     private UserRepo userRepo;
 
     @Autowired
-    private TransactionService transactionService;
+    private ScanInterractionRepo scanInterractionRepo;
+    @Autowired
+    private ScanTransactionRepo scanTransactionRepo;
 
     public String updateTerminal(Integer terminalId, Integer RouteId, Integer DriverId) {
 
@@ -147,47 +151,63 @@ public class RouteHistoryService {
                         && ut.getValidUntilDate().after(new Timestamp(System.currentTimeMillis()))) ||
                         (ut.getUsage() != null && ut.getUsage() > 0))
                 .toList();
-               ScanInterraction scanInterraction = new ScanInterraction(
-                        new ScanInterractionPrimaryKey(routeHistory.getPrimaryKey().getFromDateTime(), routeHistory.getPrimaryKey().getRouteId(),
-                                routeHistory.getPrimaryKey().getTerminalId(),
-                                userId, new Timestamp(System.currentTimeMillis())));        
+
+        Integer transactionId = null;
+        String response;
+
         if (acceptedUserTickets.isEmpty()) {
-            
+
             BigDecimal scanTicketCost = BackendApplication.scanTicketCost;
             if (user.getCredit().compareTo(scanTicketCost) < 0)
                 return null;
-            scanInterraction.setTransactionId(transactionService.addScanTransaction(scanTicketCost, userId, terminalId));
-            if (scanInterraction.getTransactionId() == 1) 
 
-                if(scanInterractionService.addScanInterraction(scanInterraction) != null)
-                    return "Jednokratna karta";
-            
-            return null;
+            ScanTransaction tempScan = new ScanTransaction();
+            tempScan.setAmount(scanTicketCost);
+            tempScan.setTerminalId(terminalId);
+            tempScan.setUserId(userId);
+            tempScan.setTimestamp(new Timestamp(System.currentTimeMillis()));
 
-        }
-        else 
-        {
+            transactionId = scanTransactionRepo.save(tempScan).getId();
+            user.setCredit(user.getCredit().subtract(scanTicketCost));
+            userRepo.save(user);
 
-            List<UserTicket> periodic  = acceptedUserTickets.stream().parallel().filter(ut -> ut.getValidUntilDate()!=null).toList();
-            if(periodic.isEmpty())
-            {
-                List<UserTicket> amount = acceptedUserTickets.stream().parallel().filter(ut-> ut.getUsage()!=null).toList();
-                if(amount.isEmpty())
+            response = "Jednokratna karta";
+
+        } else {
+
+            List<UserTicket> periodic = acceptedUserTickets.stream().parallel()
+                    .filter(ut -> ut.getValidUntilDate() != null).toList();
+            // Amount
+            if (periodic.isEmpty()) {
+                List<UserTicket> amount = acceptedUserTickets.stream().parallel().filter(ut -> ut.getUsage() != null)
+                        .toList();
+                if (amount.isEmpty())
                     return null;
-                
+
                 amount.get(0).setUsage(amount.get(0).getUsage() - 1);
                 userTicketRepo.save(amount.get(0));
-                scanInterraction.setTransactionId(amount.get(0).getTRANSACTION_Id());
 
-                if(scanInterractionService.addScanInterraction(scanInterraction) != null)
-                    return amount.get(0).getType().getName();
-            }
-            else {
-                scanInterraction.setTransactionId(periodic.get(0).getTRANSACTION_Id());
+                transactionId = amount.get(0).getTRANSACTION_Id();
 
-                if(scanInterractionService.addScanInterraction(scanInterraction)!=null)
-                    return periodic.get(0).getType().getName();
+                response = amount.get(0).getType().getName();
+            } else {
+
+                transactionId = periodic.get(0).getTRANSACTION_Id();
+
+                response = periodic.get(0).getType().getName();
             }
+
+        }
+        if (transactionId != null) {
+            ScanInterractionPrimaryKey primaryKey = new ScanInterractionPrimaryKey(
+                    routeHistory.getPrimaryKey().getFromDateTime(),
+                    routeHistory.getPrimaryKey().getRouteId(),
+                    routeHistory.getPrimaryKey().getTerminalId(),
+                    userId, new Timestamp(System.currentTimeMillis()));
+
+            ScanInterraction scanInterraction = new ScanInterraction(primaryKey, transactionId);
+            scanInterractionRepo.save(scanInterraction);
+            return response;
         }
         return null;
     }

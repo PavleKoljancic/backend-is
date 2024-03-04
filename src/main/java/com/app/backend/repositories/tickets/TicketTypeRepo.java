@@ -13,5 +13,6 @@ public interface TicketTypeRepo extends JpaRepository<TicketType,Integer>  {
 
     List<TicketType> findByInUseTrue(PageRequest pageRequest);
 
+    
      
 }

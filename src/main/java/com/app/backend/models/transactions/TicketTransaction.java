@@ -1,9 +1,7 @@
-package com.app.backend.models.tickets;
+package com.app.backend.models.transactions;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import com.app.backend.models.transactions.Transaction;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

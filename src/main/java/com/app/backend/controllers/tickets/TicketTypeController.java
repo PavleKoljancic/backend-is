@@ -45,7 +45,7 @@ public class TicketTypeController {
     @PostMapping("/addTicketType")
     public Boolean addTicketType(@RequestBody AddTicketTypeRequest request) {
 
-        return ticketTypeService.addTicketType(request.getTicketType(),request.getTransporterIds());
+        return ticketTypeService.addTicketType(request.getTicketType(),request.getTransporterIds(),request.getDocumentTypesIds());
 
     }
 

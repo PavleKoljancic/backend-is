@@ -2,8 +2,6 @@ package com.app.backend.models.tickets;
 
 import java.sql.Date;
 
-import org.hibernate.annotations.JdbcType;
-import org.springframework.data.annotation.TypeAlias;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
