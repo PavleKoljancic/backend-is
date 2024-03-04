@@ -1,14 +1,9 @@
 package com.app.backend.controllers.transporters;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,12 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.backend.models.terminals.RoutesStatistics;
 import com.app.backend.models.terminals.RoutesStatisticsRequest;
-import com.app.backend.models.terminals.ScanInterraction;
 import com.app.backend.models.transporters.Route;
-import com.app.backend.repositories.terminals.ScanInterractionRepo;
 import com.app.backend.services.terminals.ScanInterractionService;
 import com.app.backend.services.transporters.RouteService;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController

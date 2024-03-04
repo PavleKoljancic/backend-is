@@ -11,10 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.backend.models.tickets.Document;
 import com.app.backend.models.tickets.TicketRequest;
 import com.app.backend.models.tickets.TicketRequestResponse;
-import com.app.backend.repositories.tickets.DocumentRepo;
 import com.app.backend.security.SecurityUtil;
 import com.app.backend.services.tickets.TicketRequestService;
 import com.app.backend.services.users.SupervisorService;
