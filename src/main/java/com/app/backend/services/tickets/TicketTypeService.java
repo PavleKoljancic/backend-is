@@ -1,6 +1,9 @@
 package com.app.backend.services.tickets;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,13 +13,22 @@ import org.springframework.stereotype.Service;
 
 import com.app.backend.models.tickets.Accepted;
 import com.app.backend.models.tickets.AcceptedPrimaryKey;
+import com.app.backend.models.tickets.AmountTicket;
+import com.app.backend.models.tickets.PeriodicTicket;
 import com.app.backend.models.tickets.TicketType;
 import com.app.backend.models.tickets.TicketTypeAcceptsDocumentType;
 import com.app.backend.models.tickets.TicketTypeAcceptsDocumentTypePrimaryKey;
+import com.app.backend.models.tickets.TicketsStatistics;
+import com.app.backend.models.tickets.TransporterTicketsStatistics;
+import com.app.backend.models.transporters.Transporter;
 import com.app.backend.repositories.tickets.AcceptedRepo;
+import com.app.backend.repositories.tickets.AmountTicketRepo;
 import com.app.backend.repositories.tickets.DocumentTypeRepo;
+import com.app.backend.repositories.tickets.PeriodicTicketRepo;
 import com.app.backend.repositories.tickets.TicketTypeRepo;
+import com.app.backend.repositories.transactions.TicketTransactionRepo;
 import com.app.backend.repositories.transporters.TransportersRepo;
+import com.app.backend.services.users.SupervisorService;
 
 import jakarta.transaction.Transactional;
 
@@ -34,6 +46,18 @@ public class TicketTypeService {
 
     @Autowired
     AcceptedRepo acceptedRepo;
+
+    @Autowired
+    private AmountTicketRepo amountTicketRepo;
+
+    @Autowired
+    private TicketTransactionRepo ticketTransactionRepo;
+
+    @Autowired
+    private PeriodicTicketRepo periodicTicketRepo;
+
+    @Autowired
+    private SupervisorService supervisorService;
 
     public List<TicketType> getTickets(PageRequest pageRequest) {
         return ticketTypeRepo.findAll(pageRequest).toList();
@@ -108,5 +132,81 @@ public class TicketTypeService {
             return true;
         }
         return false;
+    }
+
+    public TicketsStatistics getTicketsStatisticsForAdmin(Integer days){
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime startDate = currentDateTime.minusDays(days);
+
+        Timestamp timestamp = Timestamp.valueOf(startDate);
+
+        TicketsStatistics ticketsStatistics = new TicketsStatistics();
+
+        List<Transporter> transporters = transportersRepo.findAll();
+        for(Transporter trans : transporters){
+            TransporterTicketsStatistics tts = new TransporterTicketsStatistics();
+            tts.setTransporterId(trans.getId());
+            HashMap<AmountTicket, Integer> amountTicketsMap = new HashMap<>();
+            HashMap<PeriodicTicket, Integer> periodicTicketsMap = new HashMap<>();
+
+            List<AmountTicket> amountTickets = amountTicketRepo.findAmountTicketsForTransporter(trans.getId());
+            if(amountTickets.size() > 0){
+                for(AmountTicket amountTicket : amountTickets){
+                    amountTicketsMap.put(amountTicket, ticketTransactionRepo.findTicketTransactionsCountByTicketTypeId(amountTicket.getId(), timestamp));
+                }
+            }
+            tts.setAmountTickets(amountTicketsMap);
+
+            List<PeriodicTicket> periodicTickets = periodicTicketRepo.findPeriodicTicketsForTransporter(trans.getId());
+            if(periodicTickets.size() > 0){
+                for(PeriodicTicket periodicTicket : periodicTickets){
+                    periodicTicketsMap.put(periodicTicket, ticketTransactionRepo.findTicketTransactionsCountByTicketTypeId(periodicTicket.getId(), timestamp));
+                }
+            }
+            tts.setPeriodicTickets(periodicTicketsMap);
+            ticketsStatistics.getTransporterTicketsStatistics().add(tts);
+        }
+        return ticketsStatistics;
+    }
+
+    public TicketsStatistics getTicketsStatisticsForTransporter(Integer days, Integer supervisorId){
+
+        Integer transporterId = supervisorService.findTransporterId(supervisorId);
+        if(transporterId == null)
+            return null;
+        
+        else{
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            LocalDateTime startDate = currentDateTime.minusDays(days);
+    
+            Timestamp timestamp = Timestamp.valueOf(startDate);
+    
+            TicketsStatistics ticketsStatistics = new TicketsStatistics();
+            
+            TransporterTicketsStatistics tts = new TransporterTicketsStatistics();
+            tts.setTransporterId(transporterId);
+            HashMap<AmountTicket, Integer> amountTicketsMap = new HashMap<>();
+            HashMap<PeriodicTicket, Integer> periodicTicketsMap = new HashMap<>();
+
+            List<AmountTicket> amountTickets = amountTicketRepo.findAmountTicketsForTransporter(transporterId);
+            if(amountTickets.size() > 0){
+                for(AmountTicket amountTicket : amountTickets){
+                    amountTicketsMap.put(amountTicket, ticketTransactionRepo.findTicketTransactionsCountByTicketTypeId(amountTicket.getId(), timestamp));
+                }
+            }
+            tts.setAmountTickets(amountTicketsMap);
+
+            List<PeriodicTicket> periodicTickets = periodicTicketRepo.findPeriodicTicketsForTransporter(transporterId);
+            if(periodicTickets.size() > 0){
+                for(PeriodicTicket periodicTicket : periodicTickets){
+                    periodicTicketsMap.put(periodicTicket, ticketTransactionRepo.findTicketTransactionsCountByTicketTypeId(periodicTicket.getId(), timestamp));
+                }
+            }
+            tts.setPeriodicTickets(periodicTicketsMap);
+            ticketsStatistics.getTransporterTicketsStatistics().add(tts);
+
+            return ticketsStatistics;
+        }
     }
 }

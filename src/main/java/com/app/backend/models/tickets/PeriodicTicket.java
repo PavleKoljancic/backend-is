@@ -11,8 +11,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
-@Table(name="PERIODIC_TICKET")
+@Entity(name="PERIODIC_TICKET")
+@Table
 @PrimaryKeyJoinColumn(name = "TICKET_TYPE_Id", referencedColumnName="Id")
 public class PeriodicTicket extends TicketType{
     Integer ValidFor;

@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +23,8 @@ import com.app.backend.BackendApplication;
 import com.app.backend.models.transactions.CreditTransaction;
 import com.app.backend.models.transactions.ScanTransaction;
 import com.app.backend.models.transactions.Transaction;
+import com.app.backend.models.transactions.TransactionsStatistics;
+import com.app.backend.models.transactions.TransactionsStatisticsRequest;
 import com.app.backend.services.transactions.TransactionService;
 
 @RestController
@@ -112,6 +115,16 @@ public class TransactionsController {
         BigDecimal amount = BackendApplication.scanTicketCost;
         if(amount != null)
             return ResponseEntity.status(HttpStatus.OK).body(amount);
+        else
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+
+    @PostMapping("/getTransactionsStatistics")
+    public ResponseEntity<TransactionsStatistics> getTransactionsStatistics(@RequestBody TransactionsStatisticsRequest req){
+
+        TransactionsStatistics stats = transactionService.getTransactionsStatistics(req);
+        if(stats != null)
+            return ResponseEntity.status(HttpStatus.OK).body(stats);
         else
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }

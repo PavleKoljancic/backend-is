@@ -76,7 +76,7 @@ public class UserService{
     public boolean addCredit(Integer userId, BigDecimal amount, Integer supervisorId){
 
         User userToUpdate = getUserById(userId);
-        if(userToUpdate != null){
+        if(userToUpdate != null && userToUpdate.getPictureHash() != null){
             if(amount.compareTo(new BigDecimal(0)) > 0){
                 CreditTransaction creditTransaction = new CreditTransaction(amount, new Timestamp(System.currentTimeMillis()), userId, supervisorId);
                 creditTransactionRepo.save(creditTransaction);

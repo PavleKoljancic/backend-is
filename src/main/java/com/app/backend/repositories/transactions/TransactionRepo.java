@@ -25,7 +25,7 @@ public interface TransactionRepo extends JpaRepository<Transaction, Integer> {
             + " where trans.Id in ( select tTrans1.Id from"
             + " TicketTransaction tTrans1 inner join TICKET_REQUEST_RESPONSE trr on tTrans1.ticketRequestResponseId = trr.id"
             + " inner join TICKET_REQUEST tr on tr.Id = trr.ticketRequestId "
-            + " inner join Accepted a on  a.Id.ticketTypeId = tr.ticketTypeId"
+            + " inner join ACCEPTED a on  a.Id.ticketTypeId = tr.ticketTypeId"
             + " where :transId = a.Id.transporterId ) "
             + " or trans.Id in"
             + "( select cTrans.Id from CreditTransaction cTrans "
