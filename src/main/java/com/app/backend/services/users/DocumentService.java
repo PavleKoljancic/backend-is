@@ -76,4 +76,8 @@ public class DocumentService {
         
         return false;
     }
+
+    public List<Document> getDocuments(Integer userId) {
+        return documentRepo.findByUserId(userId);
+    }
 }
