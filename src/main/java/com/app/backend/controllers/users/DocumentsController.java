@@ -1,12 +1,20 @@
 package com.app.backend.controllers.users;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.backend.models.tickets.Document;
 import com.app.backend.models.tickets.DocumentType;
+import com.app.backend.security.SecurityUtil;
 import com.app.backend.services.users.DocumentService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,5 +51,14 @@ public class DocumentsController {
        
         return ResponseEntity.ok().body(documentService.addDocumentTypeToTicketType(documentTypeId, ticketTypeId));
     }
+
+    @GetMapping(value = "documents&userId={UserId}")
+    public ResponseEntity<List<Document>> getDocuments(@PathVariable("UserId") Integer userId,
+            HttpServletRequest request) {
+
+        if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId != SecurityUtil.getIdFromAuthToken(request))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
     
+        return ResponseEntity.ok(documentService.getDocuments(userId));
+    }
 }

@@ -146,8 +146,6 @@ public class UserFileService {
 
     }
 
-    public List<Document> getDocuments(Integer userId) {
-        return documentRepo.findByUserId(userId);
-    }
+    
 
 }

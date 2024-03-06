@@ -122,14 +122,6 @@ public class UserFilesController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
-    @GetMapping(value = "get/documents&userId={UserId}")
-    public ResponseEntity<List<Document>> getDocuments(@PathVariable("UserId") Integer userId,
-            HttpServletRequest request) {
-
-        if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId != SecurityUtil.getIdFromAuthToken(request))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
     
-        return ResponseEntity.ok(userFileService.getDocuments(userId));
-    }
     
 }
