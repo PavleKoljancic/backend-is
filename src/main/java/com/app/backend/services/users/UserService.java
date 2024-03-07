@@ -19,6 +19,9 @@ import com.app.backend.repositories.transactions.CreditTransactionRepo;
 import com.app.backend.repositories.users.UserRepo;
 import com.app.backend.repositories.users.UserWithPasswordRepo;
 
+import java.util.HexFormat;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 
 @Service
@@ -34,6 +37,10 @@ public class UserService{
 
     @Autowired
     UserWithPasswordRepo userWithPasswordRepo;
+
+
+    
+
 
     @Autowired
     private CreditTransactionRepo creditTransactionRepo;
@@ -61,7 +68,19 @@ public class UserService{
     public Integer registerUser(UserWithPassword user) 
     {
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+        SecureRandom secureRandom;
+        try {
+            secureRandom = SecureRandom.getInstanceStrong();
+            byte [] key  = new byte[64];
+        secureRandom.nextBytes(key);
+        
+        user.setUserKey(HexFormat.of().formatHex(key));
         return userWithPasswordRepo.save(user).getId();
+        } catch (NoSuchAlgorithmException e) {
+           
+            return 0;
+        }
+        
         
     }
 
