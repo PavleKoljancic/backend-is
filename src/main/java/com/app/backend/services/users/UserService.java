@@ -110,4 +110,11 @@ public class UserService{
             return false;
         return false;
     }
+
+    public String getUserKeyById(Integer id) {
+        Optional<UserWithPassword> optional = userWithPasswordRepo.findById(id);
+        if(optional.isEmpty())
+            return null;
+        return optional.get().getUserKey();
+    }
 }
