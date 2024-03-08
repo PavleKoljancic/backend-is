@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.backend.models.terminals.RouteHistory;
+import com.app.backend.models.terminals.ScanInteractionResponse;
 import com.app.backend.models.terminals.Terminal;
 import com.app.backend.services.terminals.RouteHistoryService;
 import com.app.backend.services.terminals.TerminalService;
@@ -40,11 +41,13 @@ public class RouteHistoryController {
         return ResponseEntity.status(HttpStatus.OK).body(routeHistoryService.getRouteHistoriesByTerminalId(TerminalId));
     }
 
-    @GetMapping("/scanInteractionTerminalId={TerminalId}&UserId={UserId}")
-    public String scanInteraction(@PathVariable("TerminalId") Integer terminalId,
-            @PathVariable("UserId") Integer userId) 
-    {
-        return routeHistoryService.tryScan(terminalId,userId);
+    @GetMapping("/scanInteractionTerminalId={TerminalId}&UserString={UserString}")
+    public ScanInteractionResponse scanInteraction(@PathVariable("TerminalId") Integer terminalId,
+            @PathVariable("UserString") String UserString) 
+    {   
+
+        
+        return routeHistoryService.tryScan(terminalId,UserString);
        
     }       
 }

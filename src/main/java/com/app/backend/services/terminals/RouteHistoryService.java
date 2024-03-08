@@ -1,6 +1,8 @@
 package com.app.backend.services.terminals;
 
 import java.math.BigDecimal;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.app.backend.BackendApplication;
 import com.app.backend.models.terminals.RouteHistory;
 import com.app.backend.models.terminals.RouteHistoryPrimaryKey;
+import com.app.backend.models.terminals.ScanInteractionResponse;
 import com.app.backend.models.terminals.ScanInterraction;
 import com.app.backend.models.terminals.ScanInterractionPrimaryKey;
 import com.app.backend.models.terminals.Terminal;
@@ -25,6 +28,8 @@ import com.app.backend.repositories.tickets.AcceptedRepo;
 import com.app.backend.repositories.tickets.UserTicketRepo;
 import com.app.backend.repositories.transactions.ScanTransactionRepo;
 import com.app.backend.repositories.users.UserRepo;
+import com.app.backend.repositories.users.UserWithPasswordRepo;
+import com.app.backend.security.TOTPVerifier;
 import com.app.backend.services.transporters.RouteService;
 import com.app.backend.services.users.DriverService;
 
@@ -55,6 +60,9 @@ public class RouteHistoryService {
     private UserTicketRepo userTicketRepo;
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private UserWithPasswordRepo userWithPasswordRepo;
 
     @Autowired
     private ScanInterractionRepo scanInterractionRepo;
@@ -134,14 +142,37 @@ public class RouteHistoryService {
     }
 
     @Transactional
-    public String tryScan(Integer terminalId, Integer userId) {
+    public ScanInteractionResponse tryScan(Integer terminalId, String  userString) {
+        String split [] = userString.split("\\.");
+        String TOTP  = split[1];
+        
+        Integer userId;
+        try {
+            userId = Integer.parseInt(split[0]);
+        }
+        catch (Exception e) 
+        {   
+            return new ScanInteractionResponse(); 
+        }
+        
         RouteHistory routeHistory = routeHistoryRepo.findByTerminalIdAndToDateTimeIsNull(terminalId);
         if (routeHistory == null)
-            return null;
+            return new ScanInteractionResponse();
         Optional<User> reuslt = userRepo.findById(userId);
         if (!reuslt.isPresent())
-            return null;
+            return new ScanInteractionResponse();
         User user = reuslt.get();
+
+        ScanInteractionResponse response = new ScanInteractionResponse();
+        response.setUser(user);
+
+        response.setAuthSuccess(isTOTPValid(user,TOTP));
+        if(!response.isAuthSuccess())
+        {   
+            
+             return response;
+        }
+
         Integer transporterId = terminalService.getById(terminalId).get().getTransporterId();
         List<Integer> acceptedTicketIds = acceptedRepo.findByIdTransporterId(transporterId).stream().parallel()
                 .map(a -> a.getId().getTicketTypeId()).toList();
@@ -153,13 +184,13 @@ public class RouteHistoryService {
                 .toList();
 
         Integer transactionId = null;
-        String response;
+        
 
         if (acceptedUserTickets.isEmpty()) {
 
             BigDecimal scanTicketCost = BackendApplication.scanTicketCost;
             if (user.getCredit().compareTo(scanTicketCost) < 0)
-                return null;
+                return response;
 
             ScanTransaction tempScan = new ScanTransaction();
             tempScan.setAmount(scanTicketCost);
@@ -171,7 +202,7 @@ public class RouteHistoryService {
             user.setCredit(user.getCredit().subtract(scanTicketCost));
             userRepo.save(user);
 
-            response = "Jednokratna karta";
+            response.setTicketName("Jednokratna karta");
 
         } else {
 
@@ -182,19 +213,19 @@ public class RouteHistoryService {
                 List<UserTicket> amount = acceptedUserTickets.stream().parallel().filter(ut -> ut.getUsage() != null)
                         .toList();
                 if (amount.isEmpty())
-                    return null;
+                return response;
 
                 amount.get(0).setUsage(amount.get(0).getUsage() - 1);
                 userTicketRepo.save(amount.get(0));
 
                 transactionId = amount.get(0).getTRANSACTION_Id();
 
-                response = amount.get(0).getType().getName();
+                response.setTicketName(amount.get(0).getType().getName());
             } else {
 
                 transactionId = periodic.get(0).getTRANSACTION_Id();
-
-                response = periodic.get(0).getType().getName();
+                response.setTicketName(periodic.get(0).getType().getName());
+                
             }
 
         }
@@ -209,6 +240,22 @@ public class RouteHistoryService {
             scanInterractionRepo.save(scanInterraction);
             return response;
         }
-        return null;
+        return response;
     }
+
+    private boolean isTOTPValid(User user, String TOTP) {
+        
+
+        TOTPVerifier verifier;
+        try {
+            verifier = new TOTPVerifier(userWithPasswordRepo.findById(user.getId()).get().getUserKey());
+            return verifier.verify(TOTP);
+        } catch (InvalidKeyException | NoSuchAlgorithmException e) {
+           
+        }
+        return false;
+        
+    }
+
+    
 }
