@@ -61,7 +61,7 @@ public class SecurityConfig {
         , "/api/transactions/getScanTransactionAmount").hasAnyAuthority("ADMIN")
         .requestMatchers("/api/pinusers/register/driver**", "/api/pinusers/drivers/**", "/api/users/addCredit**").hasAnyAuthority("SUPERVISOR")
         .requestMatchers("/api/terminals/updateTerminalId**", "/api/terminals/CloseTerminalRouteHistory", 
-        "/api/routesHistory/scanInteractionTerminalId={TerminalId}&UserId={UserId}", "/api/pinusers/getDriverByPIN={PIN}").hasAnyAuthority("DRIVER")
+        "/api/routesHistory/scanInteractionTerminalId={TerminalId}&UserString={UserString}", "/api/pinusers/getDriverByPIN={PIN}").hasAnyAuthority("DRIVER")
         .requestMatchers("/api/terminals/getScanInterractions**").hasAnyAuthority("CONTROLLER")
         .requestMatchers("/api/ticketRequests/addTicketRequest**", "/api/tickets/getInUseTickets/**", "/api/ticketRequests/getTicketResponseByUserId={userId}/**", 
         "/api/ticketRequests/getTicketRequestByUserId={userId}/**").hasAnyAuthority("USER")
@@ -76,6 +76,7 @@ public class SecurityConfig {
         .requestMatchers("/api/routes/**", "/api/tickets/**", "/api/documents/addDocumentType**").hasAnyAuthority("ADMIN")
         .requestMatchers("/api/ticketRequests/**", "/api/documents/getAllUnapprovedDocuments", 
         "api/documents/ChangeisApprovedDocumentId**").hasAnyAuthority("SUPERVISOR")
+        .requestMatchers("/api/users/getUserKeyById={Id}").hasAnyAuthority("USER")
         .and().httpBasic();
         
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

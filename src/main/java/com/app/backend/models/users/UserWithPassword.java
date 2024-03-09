@@ -26,4 +26,5 @@ public class UserWithPassword {
     private String lastName;
     private BigDecimal Credit = new BigDecimal(0.0);
     private String PasswordHash;
+    private String UserKey;
 }

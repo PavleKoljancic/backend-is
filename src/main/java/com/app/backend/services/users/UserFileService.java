@@ -9,11 +9,15 @@ import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
 
+import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,8 +28,12 @@ import com.app.backend.models.users.User;
 import com.app.backend.repositories.tickets.DocumentRepo;
 import com.app.backend.repositories.tickets.DocumentTypeRepo;
 import com.app.backend.repositories.users.UserRepo;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 
 import jakarta.transaction.Transactional;
+
+
 
 @Service
 public class UserFileService {
@@ -90,12 +98,33 @@ public class UserFileService {
             if (!userOptional.isPresent())
                 return false;
             User user = userOptional.get();
+            
+            BufferedImage inputImage =  Scalr.resize(ImageIO.read(file.getInputStream()), 300);
+            
+            Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
+            ImageWriter writer = writers.next();
+
+            
+            ImageOutputStream outputStream = ImageIO.createImageOutputStream(destFile);
+            writer.setOutput(outputStream);
+           
+
+            ImageWriteParam params = writer.getDefaultWriteParam();
+            params.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+            params.setCompressionQuality(0.5f);
+
+            writer.write(null, new IIOImage(inputImage, null, null), params);
+
+            
+            outputStream.close();
+            writer.dispose();
+
+            
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
 
-            messageDigest.update(file.getInputStream().readAllBytes());
+            messageDigest.update(Files.readAllBytes(destFile.toPath()));
             user.setPictureHash(messageDigest.digest());
-            Files.copy(file.getInputStream(), Paths.get(destFile.getAbsolutePath()),
-                    StandardCopyOption.REPLACE_EXISTING);
+
             userRepo.save(user);
         } catch (IOException e) {
 

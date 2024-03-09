@@ -151,4 +151,27 @@ public class UsersController {
         else
             return ResponseEntity.status(HttpStatus.OK).body(userService.addCredit(UserId, Amount, SupervisorId));
     }
+
+    @GetMapping("/getUserKeyById={Id}")
+    public ResponseEntity<?> getUserKey(@PathVariable("Id")Integer Id, HttpServletRequest request) {   
+        
+        String role = SecurityUtil.getRoleFromAuthToken(request);
+        Integer id = SecurityUtil.getIdFromAuthToken(request);
+
+        if("USER".compareTo(role) == 0){
+            if(id == Id)
+
+            {   
+                String userKey = userService.getUserKeyById(Id);
+                if(userKey==null)
+                    return ResponseEntity.internalServerError().body(null);
+                return ResponseEntity.status(HttpStatus.OK).body(userKey);
+            }
+                
+            else
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
+        }
+        else
+            return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(Id));
+    } 
 }
