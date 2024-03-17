@@ -13,8 +13,10 @@ import com.app.backend.repositories.tickets.DocumentTypeRepo;
 import com.app.backend.repositories.tickets.TicketTypeAcceptsDocumentTypeRepo;
 import com.app.backend.repositories.tickets.TicketTypeRepo;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
 
 @Service
 public class DocumentService {
@@ -79,5 +81,16 @@ public class DocumentService {
 
     public List<Document> getDocuments(Integer userId) {
         return documentRepo.findByUserId(userId);
+    }
+
+    public List<DocumentType> getValidDocumentTypes() {
+        
+        ArrayList<DocumentType> result = new ArrayList<DocumentType>();
+        documentTypeRepo.findAll().forEach(
+            dt-> { if(dt.getValidFromDate().before(new Date())&&dt.getValidUntilDate().after(new Date()))
+                            result.add(dt);
+        
+        });
+        return result;
     }
 }
