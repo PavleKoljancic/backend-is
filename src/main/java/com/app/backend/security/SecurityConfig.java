@@ -78,6 +78,7 @@ public class SecurityConfig {
         "api/documents/ChangeisApprovedDocumentId**").hasAnyAuthority("SUPERVISOR")
         .requestMatchers("/api/users/getUserKeyById={Id}").hasAnyAuthority("USER")
         .requestMatchers("/api/documents/validDocumentType").hasAnyAuthority("USER","ADMIN","SUPERVISOR")
+
         .and().httpBasic();
         
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
