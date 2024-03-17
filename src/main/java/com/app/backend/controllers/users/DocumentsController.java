@@ -61,4 +61,9 @@ public class DocumentsController {
     
         return ResponseEntity.ok(documentService.getDocuments(userId));
     }
+
+    @GetMapping(value = "validDocumentType")
+    public ResponseEntity<List<DocumentType>> getDocumentTypes() {
+        return ResponseEntity.ok(documentService.getValidDocumentTypes());
+    }
 }
