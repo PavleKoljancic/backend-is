@@ -35,9 +35,18 @@ public class DocumentsController {
     }
 
     @GetMapping("/ChangeisApprovedDocumentId={documentId}andIsApproved={isApproved}")
-    public ResponseEntity<?> changeDocumentStatus(@PathVariable("documentId") Integer documentId, @PathVariable("isApproved") Boolean isApproved) {
+    public ResponseEntity<?> changeDocumentStatus(@PathVariable("documentId") Integer documentId) {
 
-        return ResponseEntity.ok().body(documentService.changeIsApprovedDocumentId(documentId, isApproved));
+        return ResponseEntity.ok().body(documentService.changeIsApprovedDocumentId(documentId));
+    }
+
+    @PostMapping("/processDocumentRequest")
+    public ResponseEntity<?> processDocumentRequest(@RequestBody Document document, HttpServletRequest request) {
+
+        if(document.getSupervisorId() != SecurityUtil.getIdFromAuthToken(request))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+
+        return ResponseEntity.ok(documentService.processDocumentRequest(document));
     }
     
     @PostMapping("/addDocumentType")
