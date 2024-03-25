@@ -1,7 +1,5 @@
 package com.app.backend.models.tickets;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,9 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransporterTicketsStatistics {
+public class AmountTicketWrapper {
     
-    private Integer transporterId;
-    private List<AmountTicketWrapper> amountTickets;
-    private List<PeriodicTicketWrapper> periodicTickets;
+    AmountTicket amountTicket;
+    Integer count;
 }
