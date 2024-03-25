@@ -45,8 +45,8 @@ public class DocumentsController {
     @PostMapping("/processDocumentRequest")
     public ResponseEntity<?> processDocumentRequest(@RequestBody Document document, HttpServletRequest request) {
 
-        //if(document.getSupervisorId() != SecurityUtil.getIdFromAuthToken(request))
-            //return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        if(document.getSupervisorId() != SecurityUtil.getIdFromAuthToken(request))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 
         return ResponseEntity.ok(documentService.processDocumentRequest(document));
     }
@@ -67,8 +67,8 @@ public class DocumentsController {
     public ResponseEntity<List<Document>> getDocuments(@PathVariable("UserId") Integer userId,
             HttpServletRequest request) {
 
-        //if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId != SecurityUtil.getIdFromAuthToken(request))
-            //return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        if("USER".compareTo(SecurityUtil.getRoleFromAuthToken(request)) == 0 && userId != SecurityUtil.getIdFromAuthToken(request))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
     
         return ResponseEntity.ok(documentService.getDocuments(userId));
     }
