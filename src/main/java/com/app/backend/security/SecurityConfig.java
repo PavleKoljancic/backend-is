@@ -59,13 +59,13 @@ public class SecurityConfig {
         .requestMatchers("/api/pinusers/register/controller", "/api/pinusers/controllers/**", "/api/supervisors/**",
         "/api/terminals/admin/**", "/api/transporters/**", "/api/routesHistory/GetRouteHistoriesByTerminalId**", "/api/transactions/setScanTransactionAmount**"
         , "/api/transactions/getScanTransactionAmount").hasAnyAuthority("ADMIN")
-        .requestMatchers("/api/pinusers/register/driver**", "/api/pinusers/drivers/**", "/api/users/addCredit**").hasAnyAuthority("SUPERVISOR")
+        .requestMatchers("/api/pinusers/register/driverBy**", "/api/pinusers/drivers/**", "/api/users/addCredit**").hasAnyAuthority("SUPERVISOR")
         .requestMatchers("/api/terminals/updateTerminalId**", "/api/terminals/CloseTerminalRouteHistory", 
         "/api/routesHistory/scanInteractionTerminalId={TerminalId}&UserString={UserString}", "/api/pinusers/getDriverByPIN={PIN}").hasAnyAuthority("DRIVER")
         .requestMatchers("/api/terminals/getScanInterractions**").hasAnyAuthority("CONTROLLER")
         .requestMatchers("/api/ticketRequests/addTicketRequest**", "/api/tickets/getInUseTickets/**", "/api/ticketRequests/getTicketResponseByUserId={userId}/**", 
         "/api/ticketRequests/getTicketRequestByUserId={userId}/**").hasAnyAuthority("USER")
-        .requestMatchers("/api/routes/getAll").hasAnyAuthority("CONTROLLER", "ADMIN")
+        .requestMatchers("/api/routes/getAll").hasAnyAuthority("CONTROLLER", "ADMIN", "SUPERVISOR")
         .requestMatchers("/api/routesHistory/checkRouteHistory**").hasAnyAuthority("CONTROLLER", "DRIVER")
         .requestMatchers("/api/transactions/**", "/api/users/getUsers/**", "/api/users/find/**").hasAnyAuthority("ADMIN", "SUPERVISOR")
         .requestMatchers("/api/users/getUserById={Id}", "/api/users/getUserTickets").hasAnyAuthority("ADMIN", "SUPERVISOR", "USER", "CONTROLLER", "DRIVER")
@@ -74,7 +74,7 @@ public class SecurityConfig {
         .requestMatchers("/api/tickets/getAllTickets/**").hasAnyAuthority("SUPERVISOR", "USER", "ADMIN")
         .requestMatchers("/api/tickets/getTicketsStatistics**", "/api/routes/getRoutesStatistics").hasAnyAuthority("SUPERVISOR", "ADMIN")
         .requestMatchers("/api/routes/**", "/api/tickets/**", "/api/documents/addDocumentType**").hasAnyAuthority("ADMIN")
-        .requestMatchers("/api/ticketRequests/**", "/api/documents/getAllUnapprovedDocuments", 
+        .requestMatchers("/api/ticketRequests/**", "/api/documents/getAllUnapprovedDocuments/**", 
         "/api/documents/ChangeisApprovedDocumentId**", "/api/documents/processDocumentRequest").hasAnyAuthority("SUPERVISOR")
         .requestMatchers("/api/users/getUserKeyById={Id}").hasAnyAuthority("USER")
         .requestMatchers("/api/documents/validDocumentType", "/api/documents/documents&userId={UserId}").hasAnyAuthority("USER","ADMIN","SUPERVISOR")
