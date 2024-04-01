@@ -2,6 +2,7 @@ package com.app.backend.models.terminals;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,5 +16,5 @@ import lombok.Setter;
 public class TerminalFrequencyStatistics {
     
     private Integer terminalId;
-    private HashMap<String, Timestamp> scans = new HashMap<>();
+    private HashMap<String, List<Timestamp>> scans = new HashMap<>();
 }

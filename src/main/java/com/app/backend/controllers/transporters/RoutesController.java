@@ -1,6 +1,5 @@
 package com.app.backend.controllers.transporters;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,12 +54,7 @@ public class RoutesController {
 
     @PostMapping("/getRoutesStatistics")
     public ResponseEntity<?> getRoutesStatistics(@RequestBody RoutesStatisticsRequest routesStatisticsRequest) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd+HH:mm:ss");
         try {
-            /*Date date1 = dateFormat.parse(routesStatisticsRequest.getTimeFrom());
-            Timestamp timeFrom = new Timestamp(date1.getTime());
-            Date date2 = dateFormat.parse(routesStatisticsRequest.getTimeUntil());
-            Timestamp timeUntil = new Timestamp(date2.getTime());*/
             
             RoutesStatistics rs = scanInterractionService.getRoutesStatistics(routesStatisticsRequest);
             if(rs == null)

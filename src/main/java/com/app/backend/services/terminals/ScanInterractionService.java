@@ -50,16 +50,31 @@ public class ScanInterractionService {
         return scanInterractionRepo.findByIdRouteHistoryRouteIdEqualsAndIdTimeGreaterThanEqualAndIdTimeLessThanEqual(routeId, startTime, endTime);
     }
 
-    public HashMap<String, Timestamp> getScansForTerminal(List<ScanInterraction> scanInterractions){
+    public HashMap<String, List<Timestamp>> getScansForTerminal(List<ScanInterraction> scanInterractions){
 
-        HashMap<String, Timestamp> scans = new HashMap<>();
+        HashMap<String, List<Timestamp>> scans = new HashMap<>();
         for(ScanInterraction si : scanInterractions){
             String ticket = ticketTypeRepo.findTicketTypeByTransactionId(si.getTransactionId());
             if (ticket != null) {
-                scans.put(ticket, si.getId().getTime());
+                if(scans.containsKey(ticket)){
+                    scans.get(ticket).add(si.getId().getTime());
+                }
+                else{
+                    List<Timestamp> timestamps = new ArrayList<Timestamp>();
+                    timestamps.add(si.getId().getTime());
+                    scans.put(ticket, timestamps);
+                }
             }
-            else
-                scans.put("Jednokratna karta", si.getId().getTime());
+            else{
+                if(scans.containsKey("Jednokratna karta")){
+                    scans.get("Jednokratna karta").add(si.getId().getTime());
+                }
+                else{
+                    List<Timestamp> timestamps = new ArrayList<Timestamp>();
+                    timestamps.add(si.getId().getTime());
+                    scans.put("Jednokratna karta", timestamps);
+                }
+            }
         }
 
         return scans;

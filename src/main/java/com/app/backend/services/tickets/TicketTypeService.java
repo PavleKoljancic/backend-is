@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 import com.app.backend.models.tickets.Accepted;
 import com.app.backend.models.tickets.AcceptedPrimaryKey;
 import com.app.backend.models.tickets.AmountTicket;
+import com.app.backend.models.tickets.AmountTicketWrapper;
 import com.app.backend.models.tickets.PeriodicTicket;
+import com.app.backend.models.tickets.PeriodicTicketWrapper;
 import com.app.backend.models.tickets.TicketType;
 import com.app.backend.models.tickets.TicketTypeAcceptsDocumentType;
 import com.app.backend.models.tickets.TicketTypeAcceptsDocumentTypePrimaryKey;
@@ -25,6 +27,7 @@ import com.app.backend.repositories.tickets.AcceptedRepo;
 import com.app.backend.repositories.tickets.AmountTicketRepo;
 import com.app.backend.repositories.tickets.DocumentTypeRepo;
 import com.app.backend.repositories.tickets.PeriodicTicketRepo;
+import com.app.backend.repositories.tickets.TicketTypeAcceptsDocumentTypeRepo;
 import com.app.backend.repositories.tickets.TicketTypeRepo;
 import com.app.backend.repositories.transactions.TicketTransactionRepo;
 import com.app.backend.repositories.transporters.TransportersRepo;
@@ -59,6 +62,9 @@ public class TicketTypeService {
     @Autowired
     private SupervisorService supervisorService;
 
+    @Autowired
+    private TicketTypeAcceptsDocumentTypeRepo ticketTypeAcceptsDocumentTypeRepo;
+    
     public List<TicketType> getTickets(PageRequest pageRequest) {
         return ticketTypeRepo.findAll(pageRequest).toList();
     }
@@ -99,7 +105,8 @@ public class TicketTypeService {
                 temp.setId(new TicketTypeAcceptsDocumentTypePrimaryKey(documentTypeId,saveResult.getId()));
                 acceptedDocumentsList.add(temp);
             }
-                
+            
+            ticketTypeAcceptsDocumentTypeRepo.saveAll(acceptedDocumentsList);
 
         }
 
@@ -147,13 +154,16 @@ public class TicketTypeService {
         for(Transporter trans : transporters){
             TransporterTicketsStatistics tts = new TransporterTicketsStatistics();
             tts.setTransporterId(trans.getId());
-            HashMap<AmountTicket, Integer> amountTicketsMap = new HashMap<>();
-            HashMap<PeriodicTicket, Integer> periodicTicketsMap = new HashMap<>();
+            List<AmountTicketWrapper> amountTicketsMap = new ArrayList<>();
+            List<PeriodicTicketWrapper> periodicTicketsMap = new ArrayList<>();
 
             List<AmountTicket> amountTickets = amountTicketRepo.findAmountTicketsForTransporter(trans.getId());
             if(amountTickets.size() > 0){
                 for(AmountTicket amountTicket : amountTickets){
-                    amountTicketsMap.put(amountTicket, ticketTransactionRepo.findTicketTransactionsCountByTicketTypeId(amountTicket.getId(), timestamp));
+                    AmountTicketWrapper atw = new AmountTicketWrapper();
+                    atw.setAmountTicket(amountTicket);
+                    atw.setCount(ticketTransactionRepo.findTicketTransactionsCountByTicketTypeId(amountTicket.getId(), timestamp));
+                    amountTicketsMap.add(atw);
                 }
             }
             tts.setAmountTickets(amountTicketsMap);
@@ -161,7 +171,10 @@ public class TicketTypeService {
             List<PeriodicTicket> periodicTickets = periodicTicketRepo.findPeriodicTicketsForTransporter(trans.getId());
             if(periodicTickets.size() > 0){
                 for(PeriodicTicket periodicTicket : periodicTickets){
-                    periodicTicketsMap.put(periodicTicket, ticketTransactionRepo.findTicketTransactionsCountByTicketTypeId(periodicTicket.getId(), timestamp));
+                    PeriodicTicketWrapper ptw = new PeriodicTicketWrapper();
+                    ptw.setPeriodicTicket(periodicTicket);
+                    ptw.setCount(ticketTransactionRepo.findTicketTransactionsCountByTicketTypeId(periodicTicket.getId(), timestamp));
+                    periodicTicketsMap.add(ptw);
                 }
             }
             tts.setPeriodicTickets(periodicTicketsMap);
@@ -186,13 +199,16 @@ public class TicketTypeService {
             
             TransporterTicketsStatistics tts = new TransporterTicketsStatistics();
             tts.setTransporterId(transporterId);
-            HashMap<AmountTicket, Integer> amountTicketsMap = new HashMap<>();
-            HashMap<PeriodicTicket, Integer> periodicTicketsMap = new HashMap<>();
+            List<AmountTicketWrapper> amountTicketsMap = new ArrayList<>();
+            List<PeriodicTicketWrapper> periodicTicketsMap = new ArrayList<>();
 
             List<AmountTicket> amountTickets = amountTicketRepo.findAmountTicketsForTransporter(transporterId);
             if(amountTickets.size() > 0){
                 for(AmountTicket amountTicket : amountTickets){
-                    amountTicketsMap.put(amountTicket, ticketTransactionRepo.findTicketTransactionsCountByTicketTypeId(amountTicket.getId(), timestamp));
+                    AmountTicketWrapper atw = new AmountTicketWrapper();
+                    atw.setAmountTicket(amountTicket);
+                    atw.setCount(ticketTransactionRepo.findTicketTransactionsCountByTicketTypeId(amountTicket.getId(), timestamp));
+                    amountTicketsMap.add(atw);
                 }
             }
             tts.setAmountTickets(amountTicketsMap);
@@ -200,7 +216,10 @@ public class TicketTypeService {
             List<PeriodicTicket> periodicTickets = periodicTicketRepo.findPeriodicTicketsForTransporter(transporterId);
             if(periodicTickets.size() > 0){
                 for(PeriodicTicket periodicTicket : periodicTickets){
-                    periodicTicketsMap.put(periodicTicket, ticketTransactionRepo.findTicketTransactionsCountByTicketTypeId(periodicTicket.getId(), timestamp));
+                    PeriodicTicketWrapper ptw = new PeriodicTicketWrapper();
+                    ptw.setPeriodicTicket(periodicTicket);
+                    ptw.setCount(ticketTransactionRepo.findTicketTransactionsCountByTicketTypeId(periodicTicket.getId(), timestamp));
+                    periodicTicketsMap.add(ptw);
                 }
             }
             tts.setPeriodicTickets(periodicTicketsMap);

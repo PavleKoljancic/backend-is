@@ -3,6 +3,7 @@ package com.app.backend.controllers.users;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,16 +29,26 @@ public class DocumentsController {
     @Autowired
     private DocumentService documentService;
 
-    @GetMapping("/getAllUnapprovedDocuments")
-    public ResponseEntity<?> getAllUnapprovedDocuments() {
+    @GetMapping("/getAllUnapprovedDocuments/pagesize={pagesize}size={size}")
+    public ResponseEntity<?> getAllUnapprovedDocuments(@PathVariable("pagesize") int page, 
+    @PathVariable("size") int size) {
        
-        return ResponseEntity.ok().body(documentService.getAllUnapprovedDocuments());
+        return ResponseEntity.ok().body(documentService.getAllUnapprovedDocuments(PageRequest.of(page, size)));
     }
 
-    @GetMapping("/ChangeisApprovedDocumentId={documentId}andIsApproved={isApproved}")
-    public ResponseEntity<?> changeDocumentStatus(@PathVariable("documentId") Integer documentId, @PathVariable("isApproved") Boolean isApproved) {
+    @GetMapping("/ChangeisApprovedDocumentId={documentId}")
+    public ResponseEntity<?> changeDocumentStatus(@PathVariable("documentId") Integer documentId) {
 
-        return ResponseEntity.ok().body(documentService.changeIsApprovedDocumentId(documentId, isApproved));
+        return ResponseEntity.ok().body(documentService.changeIsApprovedDocumentId(documentId));
+    }
+
+    @PostMapping("/processDocumentRequest")
+    public ResponseEntity<?> processDocumentRequest(@RequestBody Document document, HttpServletRequest request) {
+
+        if(document.getSupervisorId() != SecurityUtil.getIdFromAuthToken(request))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+
+        return ResponseEntity.ok(documentService.processDocumentRequest(document));
     }
     
     @PostMapping("/addDocumentType")
@@ -46,8 +57,8 @@ public class DocumentsController {
         return ResponseEntity.ok().body(documentService.addDocumentType(request));
     }
 
-    @GetMapping("/addDocumentType={documentTypeId}toTicketType={ticketTypeId}")
-    public ResponseEntity<?> addDocumentTypeToTicketType(@PathVariable("documentTypeId") Integer documentTypeId, @PathVariable("ticketTypeId") Integer ticketTypeId) {
+    @GetMapping("/addDocumentTypes={documentTypeIds}toTicketType={ticketTypeId}")
+    public ResponseEntity<?> addDocumentTypeToTicketType(@PathVariable("documentTypeIds") Integer[] documentTypeId, @PathVariable("ticketTypeId") Integer ticketTypeId) {
        
         return ResponseEntity.ok().body(documentService.addDocumentTypeToTicketType(documentTypeId, ticketTypeId));
     }

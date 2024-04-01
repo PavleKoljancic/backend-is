@@ -1,6 +1,7 @@
 package com.app.backend.services.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.app.backend.models.tickets.Document;
@@ -33,17 +34,37 @@ public class DocumentService {
     @Autowired
     private TicketTypeAcceptsDocumentTypeRepo ticketTypeAcceptsDocumentTypeRepo;
 
-    public List<Document> getAllUnapprovedDocuments(){
+    public List<Document> getAllUnapprovedDocuments(PageRequest pageRequest){
 
-        return documentRepo.findByApprovedEquals(false);
+        List<Document> documents = documentRepo.findBySupervisorIdIsNull(pageRequest);
+        for(Document doc : documents){
+            if(doc.getApproved() == null)
+                doc.setApproved(false);
+        }
+
+        return documents;
     }
 
-    public boolean changeIsApprovedDocumentId(Integer documentId, boolean isApproved) {
+    public boolean changeIsApprovedDocumentId(Integer documentId) {
 
         Optional<Document> result = documentRepo.findById(documentId);
-        if (result.isPresent() && result.get().getApproved() != isApproved) {
+        if (result.isPresent() && result.get().getApproved() != false) {
             Document temp = result.get();
-            temp.setApproved(isApproved);
+            temp.setApproved(false);
+            documentRepo.save(temp);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean processDocumentRequest(Document doc) {
+
+        Optional<Document> result = documentRepo.findById(doc.getId());
+        if (result.isPresent() && result.get().getSupervisorId() == null) {
+            Document temp = result.get();
+            temp.setApproved(true);
+            temp.setSupervisorId(doc.getSupervisorId());
+            temp.setComment(doc.getComment());
             documentRepo.save(temp);
             return true;
         }
@@ -60,23 +81,28 @@ public class DocumentService {
         return false;
     }
 
-    public boolean addDocumentTypeToTicketType(Integer docId, Integer ticketId){
+    public TicketType addDocumentTypeToTicketType(Integer[] docIds, Integer ticketId){
 
-        Optional<DocumentType> docResult = documentTypeRepo.findById(docId);
-        Optional<TicketType> ticketResult = ticketTypeRepo.findById(ticketId);
-        if(docResult.isPresent() && ticketResult.isPresent()){
-            if(ticketTypeAcceptsDocumentTypeRepo.findById(new TicketTypeAcceptsDocumentTypePrimaryKey(docId, ticketId)) == null){
-                TicketTypeAcceptsDocumentType temp = new TicketTypeAcceptsDocumentType();
-                temp.setId(new TicketTypeAcceptsDocumentTypePrimaryKey(docId, ticketId));
-                ticketTypeAcceptsDocumentTypeRepo.save(temp);
-
-                return true;
+        if(docIds.length != 0){
+            for(Integer docId : docIds){
+                Optional<DocumentType> docResult = documentTypeRepo.findById(docId);
+                Optional<TicketType> ticketResult = ticketTypeRepo.findById(ticketId);
+                if(docResult.isPresent() && ticketResult.isPresent()){
+                    if(ticketTypeAcceptsDocumentTypeRepo.findById(new TicketTypeAcceptsDocumentTypePrimaryKey(docId, ticketId)) == null){
+                        TicketTypeAcceptsDocumentType temp = new TicketTypeAcceptsDocumentType();
+                        temp.setId(new TicketTypeAcceptsDocumentTypePrimaryKey(docId, ticketId));
+                        ticketTypeAcceptsDocumentTypeRepo.save(temp);
+                    }
+                    else
+                        return null;
+                }
+                else
+                    return null;
             }
 
-            return false;
+            return ticketTypeRepo.findById(ticketId).get();
         }
-        
-        return false;
+        return null;
     }
 
     public List<Document> getDocuments(Integer userId) {
