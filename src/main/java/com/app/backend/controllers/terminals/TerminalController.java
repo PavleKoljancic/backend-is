@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -143,5 +144,12 @@ public class TerminalController {
     public boolean getIsTerminalActivationProcessed(@PathVariable("SerialNumber") String serialNumber){
 
         return terminalService.isTerminalActivationProcessed(serialNumber);
+    }
+
+    @GetMapping("/ByUserIdGetScanInterractions={UserId}")
+    public List<ScanInterraction> getScanInterractionsByTerminalId(@PathVariable("UserId") Integer userId){
+
+        return scanInterractionService.getScandInterractionsByUserId(userId);
+        
     }
 }

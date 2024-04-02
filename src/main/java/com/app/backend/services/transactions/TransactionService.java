@@ -58,9 +58,9 @@ public class TransactionService {
         return transactionRepo.findByTimestampGreaterThanEqualAndTimestampLessThanEqual(start, end,pageRequest);
     }
 
-    public List<Transaction> findUserTransactions(Integer UserId,PageRequest pageRequest) 
+    public List<Transaction> findUserTransactions(Integer UserId) 
     {
-        return transactionRepo.findByUserId(UserId, pageRequest);
+        return transactionRepo.findByUserId(UserId);
     }
     public List<CreditTransaction> findSupervisorTransactions(Integer supervisorId, PageRequest of) {
         return creditTransactionRepo.findBySupervisorId(supervisorId, of);
