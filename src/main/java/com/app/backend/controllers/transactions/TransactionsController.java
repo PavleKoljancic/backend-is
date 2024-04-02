@@ -27,6 +27,7 @@ import com.app.backend.models.transactions.TransactionsStatistics;
 import com.app.backend.models.transactions.TransactionsStatisticsRequest;
 import com.app.backend.services.transactions.TransactionService;
 
+
 @RestController
 @RequestMapping("/api/transactions")
 public class TransactionsController {
@@ -75,10 +76,9 @@ public class TransactionsController {
         }
     }
 
-    @GetMapping("/getTransactionsForUser={UserId}page={page}size={size}")
-    public List<Transaction> geTransactionsByUserID(@PathVariable("UserId") Integer UserId,
-            @PathVariable("page") Integer page, @PathVariable("size") Integer size) {
-        return transactionService.findUserTransactions(UserId, PageRequest.of(page, size));
+    @GetMapping("/getTransactionsForUser={UserId}")
+    public List<Transaction> geTransactionsByUserID(@PathVariable("UserId") Integer UserId) {
+        return transactionService.findUserTransactions(UserId);
     }
 
     @GetMapping("/getCreditTransactionsBySupervisorId={SupervisorId}page={page}size={size}")

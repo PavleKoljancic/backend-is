@@ -19,7 +19,7 @@ public interface TransactionRepo extends JpaRepository<Transaction, Integer> {
     List<Transaction> findByTimestampGreaterThanEqualAndTimestampLessThanEqual(Timestamp start, Timestamp end,
             PageRequest page);
 
-    List<Transaction> findByUserId(Integer userId, PageRequest pageRequest);
+    List<Transaction> findByUserId(Integer userId);
 
     @Query("SELECT trans FROM TRANSACTION trans "
             + " where trans.Id in ( select tTrans1.Id from"
