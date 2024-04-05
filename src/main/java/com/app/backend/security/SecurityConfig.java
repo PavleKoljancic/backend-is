@@ -63,10 +63,9 @@ public class SecurityConfig {
         .requestMatchers("/api/terminals/updateTerminalId**", "/api/terminals/CloseTerminalRouteHistory", 
         "/api/routesHistory/scanInteractionTerminalId={TerminalId}&UserString={UserString}", "/api/pinusers/getDriverByPIN={PIN}").hasAnyAuthority("DRIVER")
         .requestMatchers("/api/terminals/getScanInterractions**").hasAnyAuthority("CONTROLLER")
+        .requestMatchers("/api/transactions/getTransactionsForUser**").hasAnyAuthority("ADMIN", "USER", "SUPERVISOR")
         .requestMatchers("/api/ticketRequests/addTicketRequest**", "/api/tickets/getInUseTickets/**", "/api/ticketRequests/getTicketResponseByUserId={userId}/**", 
-        "/api/ticketRequests/getTicketRequestByUserId={userId}/**","/api/transactions/getTransactionsForUser**",
-        "/api/terminals/ByUserIdGetScanInterractions**"
-        ).hasAnyAuthority("USER")
+        "/api/ticketRequests/getTicketRequestByUserId={userId}/**","/api/terminals/ByUserIdGetScanInterractions**").hasAnyAuthority("USER")
         .requestMatchers("/api/routes/getAll").hasAnyAuthority("USER","CONTROLLER", "ADMIN", "SUPERVISOR")
         .requestMatchers("/api/routesHistory/checkRouteHistory**").hasAnyAuthority("CONTROLLER", "DRIVER")
         .requestMatchers("/api/transactions/**", "/api/users/getUsers/**", "/api/users/find/**").hasAnyAuthority("ADMIN", "SUPERVISOR")
