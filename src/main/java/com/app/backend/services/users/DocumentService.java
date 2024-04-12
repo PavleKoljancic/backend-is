@@ -62,7 +62,7 @@ public class DocumentService {
         Optional<Document> result = documentRepo.findById(doc.getId());
         if (result.isPresent() && result.get().getSupervisorId() == null) {
             Document temp = result.get();
-            temp.setApproved(true);
+            temp.setApproved(doc.getApproved());
             temp.setSupervisorId(doc.getSupervisorId());
             temp.setComment(doc.getComment());
             documentRepo.save(temp);
